@@ -10,7 +10,7 @@ export default async function HomePage() {
   return (
     <>
       <Header variant="home" />
-      <div className="w-full max-w-md mx-auto px-5 pt-6 pb-24">
+      <div className="w-full max-w-md mx-auto px-6 pt-8 pb-24">
         <header className="text-center mb-8">
           <h1 className="font-heading font-bold text-sm text-text-secondary uppercase tracking-[3px]">
             Nuestro Menú
@@ -18,7 +18,7 @@ export default async function HomePage() {
         </header>
 
         {categories.length > 0 ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {categories.map((category) => (
               <CategoryCard key={category.id} category={category} />
             ))}

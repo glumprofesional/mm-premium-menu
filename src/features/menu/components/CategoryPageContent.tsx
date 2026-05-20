@@ -26,9 +26,9 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
   return (
     <>
       <Header variant="category" name={initialCategory.name} />
-      <div className="w-full max-w-md mx-auto px-5 pt-4 pb-24">
+      <div className="w-full max-w-md mx-auto px-6 pt-6 pb-24">
         {initialProducts.length > 0 ? (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-4">
             {initialProducts.map((product) => (
               <ProductCard key={product.id} product={product} onSelect={handleProductClick} />
             ))}
