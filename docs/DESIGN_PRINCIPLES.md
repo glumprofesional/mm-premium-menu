@@ -1,104 +1,123 @@
-# Sistema de Diseño: Menú Premium M&M
+DESIGN PRINCIPLES — M&M Premium Menu
+Filosofía: Cinematic Minimalism
+Premium no es agregar, es reducir. Cada elemento visual debe justificar su existencia. Si se puede quitar sin perder funcionalidad, se quita.
 
-## 1. Filosofía de Diseño: "Everything is Design"
-
-Cada decisión, desde la elección de una fuente hasta la latencia de una animación, es una decisión de diseño. No hay elementos neutros. Cada componente, cada píxel y cada milisegundo contribuye a la percepción de la marca y a la experiencia del usuario. Nuestro principio rector es la **intencionalidad**. Nada es arbitrario.
-
----
-
-## 2. Principios Fundamentales
-
-### 2.1. Cinematic Minimalism
-No es solo "diseño oscuro", es una aproximación cinematográfica. Pensamos en términos de dirección de fotografía: la luz (blancos y colores de acento) se usa deliberadamente para guiar el ojo en un entorno predominantemente oscuro. El espacio negativo es tan importante como el contenido. El objetivo es crear enfoque, drama y claridad, eliminando todo lo superfluo.
-
-### 2.2. Premium Through Restraint (Lo Premium a través de la Contención)
-La verdadera sofisticación no grita; susurra. Evitamos la decoración excesiva. La calidad se manifiesta en la contención: animaciones sutiles, una paleta de colores limitada pero impactante y una jerarquía visual impecable. La fuerza de nuestro diseño reside en lo que decidimos *no* mostrar.
-
-### 2.3. Intentionality Over Decoration (Intencionalidad sobre Decoración)
-Cada línea, sombra y animación debe tener un propósito: mejorar la legibilidad, proporcionar feedback o guiar al usuario. No se añade nada por mero valor estético. Si un elemento puede ser eliminado sin afectar negativamente la función o la claridad, debe ser eliminado.
-
-### 2.4. Anti-Generic AI Design
-Rechazamos activamente la estética predeterminada, las plantillas comunes y los patrones de diseño genéricos que a menudo surgen de herramientas de IA sin dirección. Nuestro diseño debe sentirse único, artesanal y alineado con la identidad de marca de M&M. Buscamos una personalidad visual distintiva, no una solución algorítmica.
-
----
-
-## 3. Principios de Experiencia de Usuario (UX)
-
-### 3.1. Emotional Performance
-La performance no es solo una métrica técnica (ms de carga), sino una sensación. Una interfaz que se siente instantánea genera confianza, control y una percepción de calidad. Priorizamos la **velocidad percibida**: la aplicación debe sentirse más rápida de lo que es. Esto se logra a través de transiciones optimistas, skeletons y una respuesta inmediata al input del usuario.
-
-### 3.2. Tactile Feeling
-La interfaz debe responder al tacto de una manera que se sienta física y gratificante. Los botones deben dar la sensación de ser presionados, las listas deben desplazarse con una inercia natural y las transiciones deben ser fluidas. Esta sensación táctil es clave para que la experiencia se sienta nativa y no como una simple página web.
-
-### 3.3. Mobile-First & Performance-First
-El diseño comienza en el viewport más pequeño y restrictivo. Esta restricción nos fuerza a priorizar y ser intencionales. El rendimiento visual es un componente del diseño, no una ocurrencia tardía. Los elementos visuales se eligen y optimizan para garantizar que no degraden la velocidad.
-
-### 3.4. Accessibility as a Foundation
-La accesibilidad no es una lista de verificación, es un pilar del diseño premium. Un diseño accesible es, por definición, un diseño más claro y usable para todos. Garantizamos un alto contraste, tipografía legible, navegación coherente y áreas de toque adecuadas.
-
----
-
-## 4. Sistema Visual
-
-### 4.1. Typography Philosophy
-La tipografía es la voz de nuestra interfaz.
-*   **Reglas Explícitas:**
-    *   **Jerarquía:** Usar una escala tipográfica clara y consistente (ej. 3-4 niveles: Título de página, Título de sección, Cuerpo de texto, Texto secundario). La variación de peso (Bold, Regular) y tamaño crea ritmo y guía al usuario.
-    *   **Legibilidad:** Priorizar la legibilidad en condiciones de poca luz. El interlineado debe ser generoso (aprox. 150% del tamaño de la fuente) para facilitar la lectura rápida.
-    *   **Intencionalidad:** Cada elección de fuente debe tener una justificación. Evitar el uso de más de dos familias tipográficas.
-
-### 4.2. Color Philosophy
-Nuestra paleta es restringida y de alto contraste, diseñada para un entorno oscuro.
-*   **Reglas Explícitas:**
-    *   **Base:** Un fondo casi negro (ej. `#0A0A0A`) en lugar de negro puro para reducir la fatiga visual.
-    *   **Contenido:** Blancos y grises de alto contraste para el texto (`#FFFFFF`, `#E0E0E0`).
-    *   **Acento:** 1-2 colores de acento vibrantes pero no abrumadores. Se usan exclusivamente para elementos interactivos (botones, enlaces activos) y puntos de interés clave.
-    *   **Gradientes:** **Prohibidos**. Los gradientes introducen complejidad visual y una sensación de "diseño web" que queremos evitar. Usamos colores sólidos.
-
-### 4.3. Spacing & Rhythm
-El espacio es una herramienta activa para reducir la carga cognitiva.
-*   **Reglas Explícitas:**
-    *   **Sistema de Espaciado:** Usar una cuadrícula base (ej. 8px). Todos los márgenes, paddings y espaciados deben ser múltiplos de esta base para crear un ritmo visual consistente.
-    *   **Densidad de Información:** Moderada. Evitar el desorden visual, pero asegurar que la información esencial sea accesible sin necesidad de hacer scroll excesivo. El equilibrio es clave.
-    *   **Asimetría vs. Balance:** Emplear un balance asimétrico para crear interés visual y guiar la mirada, pero mantener una estructura subyacente que se sienta ordenada y estable.
-
-### 4.4. Motion & Animation Philosophy
-El movimiento debe ser sutil, funcional y performante.
-*   **Reglas Explícitas:**
-    *   **Motion Restraint:** Menos es más. Las animaciones deben ser casi imperceptibles, como transiciones de opacidad o movimientos muy sutiles.
-    *   **Duración:** Las animaciones deben ser rápidas (150-250ms). Cualquier cosa más lenta se percibe como un retraso.
-    *   **Propósito:** El movimiento se usa para:
-        1.  **Feedback:** Confirmar una acción (ej. un botón que cambia sutilmente al ser presionado).
-        2.  **Transición de Estado:** Guiar al usuario entre dos vistas (ej. una tarjeta que se expande).
-    *   **Blur & Glassmorphism:** **Prohibidos**. Estos efectos son costosos en términos de rendimiento y contradicen nuestros principios de minimalismo y velocidad. La claridad se logra con opacidad y color, no con desenfoque.
-
----
-
-## 5. Componentes y Patrones
-
-### 5.1. Cards, Buttons & Badges
-*   **Cards:** Deben sentirse como objetos físicos y elevados.
-    *   **Sombras:** Usar sombras sutiles y difusas para crear profundidad. **Regla explícita:** Evitar sombras duras y oscuras. Utilizar múltiples capas de sombra suave para un efecto más natural. No usar `box-shadow` genéricos.
-*   **Buttons:** Son la principal llamada a la acción.
-    *   **Feedback:** Deben tener estados claros (default, hover, pressed). El estado presionado debe dar una sensación táctil, hundiéndose ligeramente.
-    *   **Premium Interaction:** Evitar efectos de "glow" o animaciones llamativas. La interacción premium es sutil: un cambio de color o una ligera transformación de escala.
-*   **Loading States (Skeletons):**
-    *   **Regla explícita:** Siempre usar "skeletons" (marcadores de posición con la forma del contenido final) en lugar de spinners genéricos. Esto reduce la velocidad percibida de carga y gestiona las expectativas del usuario. Los skeletons deben tener una animación de pulso muy sutil para indicar actividad.
-
-### 5.2. Imágenes
-*   **Reglas Explícitas:**
-    *   **Propósito:** Las imágenes de los productos deben ser de alta calidad, pero optimizadas agresivamente para la web.
-    *   **Carga:** Implementar "lazy loading" por defecto. Las imágenes que no están en el viewport no se cargan.
-    *   **Placeholder:** Usar un placeholder de color sólido o un blur de muy baja resolución (LQIP) mientras la imagen carga para evitar saltos de layout.
-
----
-
-## 6. Anti-Patrones: Lo que Debemos Evitar
-
-*   **Sin Decoración Innecesaria:** Divisores, iconos decorativos, fondos con patrones.
-*   **Sin Desorden Visual:** Demasiada información compitiendo por la atención.
-*   **Sin Sensación de Plantilla:** Diseños que se sienten prefabricados o genéricos.
-*   **Sin Estética de IA por Defecto:** Colores sobresaturados, gradientes, sombras irreales, tipografía sin personalidad.
-*   **Sin Tiempos de Carga Perceptibles:** Evitar spinners siempre que sea posible.
-*   **Sin Animaciones Injustificadas:** El movimiento porque sí está prohibido.
-
+Principios fundamentales
+1. Restricción sobre decoración
+Gradientes: PROHIBIDOS
+Glassmorphism / blur: PROHIBIDO
+Sombras decorativas: solo las mínimas necesarias para profundidad
+Animaciones: 150-250ms, ease-out, solo en interacciones
+Máximo 3 elementos decorativos por pantalla
+2. Intencionalidad sobre tendencia
+Cada decisión visual debe tener un propósito funcional
+No agregar features porque "queda lindo"
+Diseño mobile-first, oscuro-first
+3. Rendimiento emocional
+La velocidad de carga ES parte del diseño
+Skeleton screens, NO spinners
+Transiciones sutiles que comunican estado
+60fps sin jank en dispositivos de gama media
+Paleta de colores
+Dark mode (default)
+Base: #111111 (fondo principal — gris profundo, suave a la vista)
+Surface: #1A1A1A (tarjetas, superficies elevadas)
+Surface Alt: #222222 (elementos elevados adicionales)
+Surface Hover: #252525 (hover sobre superficies)
+Border: #2A2A2A (bordes sutiles)
+Text Primary: #F0F0F0 (texto principal — blanco suave, no puro)
+Text Secondary: #999999 (texto secundario)
+Text Muted: #666666 (texto deshabilitado o captions)
+Accent: #C8A96E (dorado — premium)
+Accent Hover: #D4B87A (dorado hover)
+Accent Subtle: rgba(200, 169, 110, 0.15) (fondo accent sutil)
+Success: #22C55E (disponible)
+Danger: #EF4444 (no disponible)
+Light mode
+Base: #FAFAFA (fondo principal — off-white, no puro)
+Surface: #F0F0F0 (tarjetas, superficies elevadas)
+Surface Alt: #E8E8E8 (elementos elevados adicionales)
+Surface Hover: #E0E0E0 (hover sobre superficies)
+Border: #D4D4D4 (bordes sutiles)
+Text Primary: #1A1A1A (texto principal — casi negro, no puro)
+Text Secondary: #666666 (texto secundario)
+Text Muted: #999999 (texto deshabilitado o captions)
+Accent: #C8A96E (se mantiene dorado)
+Accent Hover: #B8964E (dorado más oscuro en light)
+Accent Subtle: rgba(200, 169, 110, 0.12) (fondo accent sutil)
+Success: #16A34A
+Danger: #DC2626
+Tipografía
+Cabinet Grotesk — Headings
+Categorías, títulos, precios
+Pesos: Bold (700) para títulos, Medium (500) para subtítulos
+Tamaños: 24px categorías, 18px subcategorías, 16px precios
+Manrope — Body
+Descripciones, texto general, UI
+Pesos: Regular (400) body, Medium (500) labels, SemiBold (600) botones
+Tamaños: 14px body, 12px captions, 16px inputs
+Espaciado — Grilla 8px
+4px: micro-espacios (iconos adyacentes)
+8px: elementos relacionados
+16px: separación entre elementos
+24px: separación entre secciones
+32px: separación entre bloques grandes
+48px: separación entre pantallas conceptuales
+Componentes específicos
+Header
+Altura: 56px
+Sticky con backdrop sutil
+Dark mode: fondo #111111 con opacity 0.95
+Light mode: fondo #FAFAFA con opacity 0.95
+Border bottom: 1px solid var(--border)
+CategoryCard — Horizontal
+Imagen izquierda (80×80px), sin fondo, WebP
+Nombre + descripción derecha
+SIN cantidad de productos
+Tacto: escala sutil al presionar (transform: scale(0.98), 150ms)
+Border radius: 12px
+ProductCard — Horizontal
+Miniatura izquierda (64×64px)
+Nombre, descripción corta, precio derecha
+Precio siempre visible, accent color
+Si no disponible: opacity reducida + badge "No disponible"
+Border radius: 12px
+ProductModal
+Fondo oscuro con blur mínimo (solo aquí se permite blur, es overlay)
+Imagen grande arriba
+Nombre, descripción completa, precio destacado
+Botón cerrar y volver al inicio
+Animación: slide-up 200ms ease-out
+Intro Animation
+Logo centrado + texto del brand
+Duración máxima: 1.5 segundos
+Se puede skippear con touch
+Solo primera vez por sesión (sessionStorage flag)
+Animación: CSS-only (fade-in + scale), NO Lottie, NO Framer Motion
+Toggle Dark/Light
+Icono sol/luna
+Transición suave 200ms
+Persistencia en localStorage
+Default: dark
+Reglas de imagen
+Tipo	Formato	Tamaño	Peso máx	Fondo
+Categoría	WebP	400×400px	50KB	Transparente
+Producto	WebP	300×300px	100KB	Con o sin fondo
+Logo brand	SVG/WebP	Variable	20KB	Transparente
+OG Image	WebP/PNG	1200×630px	200KB	Con fondo
+Anti-patrones (PROHIBIDO)
+Spinners de carga → usar skeleton screens
+Scroll horizontal en tarjetas de categoría → lista vertical
+Conteo de productos en tarjetas de categoría
+Imágenes de fondo en tarjetas
+Parallax, scroll snap agresivo
+Popups, banners, notificaciones push
+Autoplay de cualquier tipo
+Texto justificado (usar left-align)
+Mayúsculas sostenidas en body (solo labels cortos)
+Métricas de rendimiento
+FCP < 1.2s
+TTI < 2.0s
+LCP < 2.0s
+Bundle JS < 150KB (gzipped)
+60fps sin jank (los 120fps se benefician automáticamente)

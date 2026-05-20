@@ -1,26 +1,181 @@
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* ==========================================================================
+     COLOR TOKENS - Definidos estrictamente según @DESIGN_PRINCIPLES.md
+     ========================================================================== */
+  --color-dark-base: #111111;
+  --color-dark-surface: #1A1A1A;
+  --color-dark-surface-alt: #222222;
+  --color-dark-surface-hover: #252525;
+  --color-dark-border: #2A2A2A;
+  --color-dark-text-primary: #F0F0F0;
+  --color-dark-text-secondary: #999999;
+  --color-dark-text-muted: #666666;
+  --color-dark-accent: #C8A96E;
+  --color-dark-accent-hover: #D4B87A;
+  --color-dark-accent-subtle: rgba(200, 169, 110, 0.15);
+  --color-dark-success: #22C55E;
+  --color-dark-danger: #EF4444;
+  --color-dark-stock-bg: #3D1A1A;
+  --color-dark-stock-text: #E57373;
+
+  --color-light-base: #FAFAFA;
+  --color-light-surface: #F0F0F0;
+  --color-light-surface-alt: #E8E8E8;
+  --color-light-surface-hover: #E0E0E0;
+  --color-light-border: #D4D4D4;
+  --color-light-text-primary: #1A1A1A;
+  --color-light-text-secondary: #666666;
+  --color-light-text-muted: #999999;
+  --color-light-accent: #C8A96E;
+  --color-light-accent-hover: #B8964E;
+  --color-light-accent-subtle: rgba(200, 169, 110, 0.12);
+  --color-light-success: #16A34A;
+  --color-light-danger: #DC2626;
+  --color-light-stock-bg: #FDEAEA;
+  --color-light-stock-text: #C62828;
+  
+  --color-on-accent: #111111;
+
+  /* ==========================================================================
+     SPACING TOKENS - Grilla de 4px/8px
+     ========================================================================== */
+  --spacing-1: 0.25rem;  /* 4px */
+  --spacing-2: 0.5rem;   /* 8px */
+  --spacing-4: 1rem;     /* 16px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-8: 2rem;     /* 32px */
+  --spacing-12: 3rem;    /* 48px */
+  --spacing-safe: env(safe-area-inset-bottom);
+
+  /* ==========================================================================
+     FONT TOKENS - Declaración por peso
+     ========================================================================== */
+  --font-heading: 'CabinetGrotesk', sans-serif;
+  --font-interface: 'Manrope', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ==========================================================================
+   FONT FACE DECLARATIONS
+   ========================================================================== */
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/cabinet-grotesk/CabinetGrotesk-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope/Manrope-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope/Manrope-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/manrope/Manrope-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ==========================================================================
+   BASE & THEME SETUP
+   ========================================================================== */
+:root, :host, body, html {
+  --base: var(--color-dark-base);
+  --surface: var(--color-dark-surface);
+  --surface-alt: var(--color-dark-surface-alt);
+  --surface-hover: var(--color-dark-surface-hover);
+  --border: var(--color-dark-border);
+  --text-primary: var(--color-dark-text-primary);
+  --text-secondary: var(--color-dark-text-secondary);
+  --text-muted: var(--color-dark-text-muted);
+  --accent: var(--color-dark-accent);
+  --accent-hover: var(--color-dark-accent-hover);
+  --accent-subtle: var(--color-dark-accent-subtle);
+  --success: var(--color-dark-success);
+  --danger: var(--color-dark-danger);
+  --stock-bg: var(--color-dark-stock-bg);
+  --stock-text: var(--color-dark-stock-text);
+  color-scheme: dark;
+}
+
+.light, .light body {
+  --base: var(--color-light-base);
+  --surface: var(--color-light-surface);
+  --surface-alt: var(--color-light-surface-alt);
+  --surface-hover: var(--color-light-surface-hover);
+  --border: var(--color-light-border);
+  --text-primary: var(--color-light-text-primary);
+  --text-secondary: var(--color-light-text-secondary);
+  --text-muted: var(--color-light-text-muted);
+  --accent: var(--color-light-accent);
+  --accent-hover: var(--color-light-accent-hover);
+  --accent-subtle: var(--color-light-accent-subtle);
+  --success: var(--color-light-success);
+  --danger: var(--color-light-danger);
+  --stock-bg: var(--color-light-stock-bg);
+  --stock-text: var(--color-light-stock-text);
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background: var(--base);
+  color: var(--text-primary);
+  overscroll-behavior-y: none;
+  transition: background 200ms ease-in-out, color 200ms ease-in-out;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-interface);
+  min-height: 100vh;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--base);
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.modal-overlay-bg {
+  background-color: color-mix(in srgb, var(--base) 90%, transparent);
 }
