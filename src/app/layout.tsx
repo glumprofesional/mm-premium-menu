@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Header from "@/components/layout/Header";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#111111", // Corregido: usa el color base dark correcto
+  themeColor: "#111111",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -40,31 +39,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html 
-      lang="es" 
-      className="dark" // Corregido: Sin variables de next/font
-      suppressHydrationWarning
-    >
+    <html lang="es" className="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           (function() {
             try {
               var theme = localStorage.getItem('theme');
               if (theme === 'light') {
-                document.documentElement.classList.remove('dark'); // Corregido: elimina dark
+                document.documentElement.classList.remove('dark');
                 document.documentElement.classList.add('light');
               }
             } catch(e) {}
           })()
         `}} />
       </head>
-      {/* Corregido: se eliminaron las clases de selection hardcodeadas */}
       <body className="antialiased">
-        <Header variant="home" />
-        <main id="main-content" role="main" className="relative min-h-screen">
-          {children}
-        </main>
-        <div id="portal-root" />
+        <main>{children}</main>
       </body>
     </html>
   );

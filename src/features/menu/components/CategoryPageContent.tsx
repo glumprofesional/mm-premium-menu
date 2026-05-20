@@ -1,16 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import Header from '@/components/layout/Header';
 import type { Product } from '@/types/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
-
-const ArrowLeftIcon = () => (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-);
 
 interface CategoryPageContentProps {
   slug: string;
@@ -19,11 +13,7 @@ interface CategoryPageContentProps {
 }
 
 export default function CategoryPageContent({ slug, initialCategory, initialProducts }: CategoryPageContentProps) {
-  const [category, setCategory] = useState(initialCategory);
-  const [products, setProducts] = useState(initialProducts);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  
-  const router = useRouter();
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -34,35 +24,28 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
   };
 
   return (
-    <div className="min-h-screen bg-base">
-      <header className="sticky top-0 bg-base/80 backdrop-blur-lg z-10 border-b border-border">
-        <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16">
-                <button onClick={() => router.push('/')} className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
-                    <ArrowLeftIcon />
-                    <span className="font-interface text-sm font-medium">Menú</span>
-                </button>
-                <div className="flex items-center gap-4">
-                    <h1 className="font-heading text-lg font-medium text-text-primary whitespace-nowrap overflow-hidden text-ellipsis">{category.name}</h1>
-                </div>
-            </div>
-        </div>
-      </header>
+    <>
+      <Header variant="category" name={initialCategory.name} />
+      <div className="w-full max-w-md mx-auto px-5 pt-4 pb-24">
+        {initialProducts.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {initialProducts.map((product) => (
+              <ProductCard key={product.id} product={product} onSelect={handleProductClick} />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-text-muted">No hay productos disponibles en esta categoría.</p>
+          </div>
+        )}
+      </div>
 
-      <main className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col gap-3">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} onSelect={handleProductClick} />
-          ))}
-        </div>
-      </main>
-
-      <ProductModal 
-        product={selectedProduct} 
+      <ProductModal
+        product={selectedProduct}
         categorySlug={slug}
         isOpen={!!selectedProduct}
         onClose={handleCloseModal}
       />
-    </div>
+    </>
   );
 }
