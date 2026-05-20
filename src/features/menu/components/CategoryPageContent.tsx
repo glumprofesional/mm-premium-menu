@@ -36,7 +36,7 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
   return (
     <div className="min-h-screen bg-base">
       <header className="sticky top-0 bg-base/80 backdrop-blur-lg z-10 border-b border-border">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
                 <button onClick={() => router.push('/')} className="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors">
                     <ArrowLeftIcon />
@@ -49,8 +49,8 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+      <main className="max-w-3xl mx-auto px-5 sm:px-6 lg:px-8 py-8">
+        <div className="flex flex-col gap-3">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} onSelect={handleProductClick} />
           ))}

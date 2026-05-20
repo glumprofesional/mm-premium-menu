@@ -51,7 +51,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       </div>
 
       {/* Precio y Badge */}
-      <div className="flex-shrink-0 flex flex-col items-end justify-center ml-2">
+      <div className="flex-shrink-0 flex flex-col items-end justify-center ml-2 pr-2">
         {!product.is_available ? (
            <span className="px-2 py-1 text-xs font-bold text-white bg-danger rounded-full">
              No disponible

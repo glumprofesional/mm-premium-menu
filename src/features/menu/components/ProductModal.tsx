@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import type { Product } from '@/types/product';
 
 const CloseIcon = () => (
@@ -26,7 +25,7 @@ interface ProductModalProps {
   onClose: () => void;
 }
 
-export default function ProductModal({ product, categorySlug, isOpen, onClose }: ProductModalProps) {
+export default function ProductModal({ product, isOpen, onClose }: ProductModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
@@ -38,7 +37,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
   const handleTouchMove = (e: React.TouchEvent) => {
     if (touchStart === null) return;
     const diff = e.touches[0].clientY - touchStart;
-    if (diff > 80) { // 80px threshold
+    if (diff > 120) { // Increased threshold for swipe
       onClose();
       setTouchStart(null);
     }
@@ -110,8 +109,8 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
 
   return (
     <div
-      className={`fixed inset-0 z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} modal-overlay-bg`}
-      style={{ backdropFilter: 'blur(8px)' }}
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} modal-overlay-bg p-4`}
+      style={{ backdropFilter: 'blur(8px)', touchAction: 'pan-y' }}
       onClick={onClose}
       role="dialog" aria-modal="true" aria-labelledby="product-modal-title"
     >
@@ -121,7 +120,9 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`fixed bottom-0 left-0 right-0 mx-auto w-full max-w-md h-[92vh] bg-surface rounded-t-2xl shadow-2xl transition-transform duration-[250ms] ${isOpen ? 'translate-y-0 ease-out' : 'translate-y-full ease-in'}`}>
+        className={`relative w-full max-w-md max-h-[80vh] bg-surface rounded-2xl shadow-2xl transition-all duration-[200ms] overflow-hidden ${isOpen ? 'scale-100 opacity-100 ease-out' : 'scale-95 opacity-0 ease-in'}`}
+        style={{ overscrollBehaviorY: 'contain' }}
+      >
         <div className="h-full flex flex-col">
           <div className="flex-shrink-0 px-2 pt-2 flex justify-end">
             <button onClick={onClose} className="w-11 h-11 flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors" aria-label="Cerrar modal">
@@ -130,7 +131,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
           </div>
           
           <div className="flex-1 overflow-y-auto px-6 pb-6">
-            <div className="relative aspect-[4/3] max-h-[280px] w-full rounded-xl overflow-hidden mb-6 bg-surface-alt">
+            <div className="relative aspect-[4/3] max-h-[240px] w-full rounded-xl overflow-hidden mb-6 bg-surface-alt">
               {product.image_url ? (
                 <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
               ) : (
