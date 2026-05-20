@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { Category } from '@/types/category';
 import type { Product } from '@/types/product';
 import ProductCard from './ProductCard';
 import ProductModal from './ProductModal';
@@ -15,7 +14,7 @@ const ArrowLeftIcon = () => (
 
 interface CategoryPageContentProps {
   slug: string;
-  initialCategory: Category;
+  initialCategory: { name: string; slug: string };
   initialProducts: Product[];
 }
 
