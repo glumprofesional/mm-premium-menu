@@ -10,23 +10,23 @@ export default async function HomePage() {
   return (
     <>
       <Header variant="home" />
-      <div className="w-full max-w-md mx-auto px-6 pt-8 pb-24">
-        <header className="text-center mb-8">
-          <h1 className="font-heading font-bold text-sm text-text-secondary uppercase tracking-[3px]">
+      <div style={{ maxWidth: '448px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '32px', paddingBottom: '96px' }}>
+        <header style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h1 className="font-heading font-bold text-sm text-text-secondary uppercase" style={{ letterSpacing: '3px' }}>
             Nuestro Menú
           </h1>
         </header>
 
         {categories.length > 0 ? (
-          <div className="flex flex-col gap-4">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             {categories.map((category) => (
               <CategoryCard key={category.id} category={category} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-20">
+          <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p className="text-text-muted">Menú no disponible</p>
-            <p className="text-sm text-text-muted mt-2">Por favor, intente de nuevo más tarde.</p>
+            <p className="text-text-muted" style={{ fontSize: '14px', marginTop: '8px' }}>Por favor, intente de nuevo más tarde.</p>
           </div>
         )}
       </div>
