@@ -10,23 +10,65 @@ export default async function HomePage() {
   return (
     <>
       <Header variant="home" />
-      <div style={{ maxWidth: '448px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '32px', paddingBottom: '96px' }}>
-        <header style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <h1 className="font-heading font-bold text-sm text-text-secondary uppercase" style={{ letterSpacing: '3px' }}>
+
+      <div
+        style={{
+          maxWidth: '448px',
+          margin: '0 auto',
+          paddingLeft: '24px',
+          paddingRight: '24px',
+          paddingTop: '32px',
+          paddingBottom: '96px',
+        }}
+      >
+        {/* Welcome */}
+        <div style={{ marginBottom: '36px' }}>
+          <h1
+            className="font-heading"
+            style={{
+              fontSize: '28px',
+              fontWeight: 700,
+              color: '#F4F7F9',
+              margin: '0 0 8px 0',
+              lineHeight: 1.2,
+              letterSpacing: '0.5px',
+            }}
+          >
             Nuestro Menú
           </h1>
-        </header>
+          <p
+            style={{
+              fontSize: '14px',
+              color: '#5B6D8A',
+              margin: 0,
+              lineHeight: 1.6,
+            }}
+          >
+            Descubrí nuestra selección premium
+          </p>
+        </div>
 
+        {/* Gold separator */}
+        <div className="gold-line-left" style={{ marginBottom: '28px' }} />
+
+        {/* Categories */}
         {categories.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {categories.map((category) => (
               <CategoryCard key={category.id} category={category} />
             ))}
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <p className="text-text-muted">Menú no disponible</p>
-            <p className="text-text-muted" style={{ fontSize: '14px', marginTop: '8px' }}>Por favor, intente de nuevo más tarde.</p>
+            <p
+              className="font-heading"
+              style={{ color: '#5B6D8A', fontSize: '16px', margin: '0 0 8px 0' }}
+            >
+              Menú no disponible
+            </p>
+            <p style={{ color: '#3d4f6a', fontSize: '14px', margin: 0 }}>
+              Por favor, intente de nuevo más tarde.
+            </p>
           </div>
         )}
       </div>

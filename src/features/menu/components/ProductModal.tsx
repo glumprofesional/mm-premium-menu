@@ -1,23 +1,30 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
 import type { Product } from '@/types/product';
 
+// ==========================================================================
+// ICONOS
+// ==========================================================================
+
 const CloseIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M6 6L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
 const CupIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" strokeWidth="1.5">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="1.5">
     <path d="M8 3L4 7h16l-4-4H8z" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M18 7H6a1 1 0 00-1 1v6c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V8a1 1 0 00-1-1z" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M10 21h4M12 17v4" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
+
+// ==========================================================================
+// MODAL
+// ==========================================================================
 
 interface ProductModalProps {
   product: Product | null;
@@ -30,8 +37,8 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
   const [isMounted, setIsMounted] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
+  /* ---- Mount animation ---- */
   useEffect(() => {
     if (isOpen) {
       setIsMounted(true);
@@ -45,6 +52,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     }
   }, [isOpen]);
 
+  /* ---- Escape key ---- */
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -53,6 +61,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  /* ---- Focus trap ---- */
   useEffect(() => {
     if (!isOpen) return;
     const modal = modalRef.current;
@@ -84,6 +93,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     return () => modal.removeEventListener('keydown', handleTabKey);
   }, [isOpen]);
 
+  /* ---- Swipe down to close ---- */
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientY);
   };
@@ -101,13 +111,17 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     setTouchStart(null);
   };
 
-  if (!isMounted || !product) return null;
-
+  /* ---- Format price ---- */
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 }).format(price);
 
+  if (!isMounted || !product) return null;
+
+  const isAvailable = product.is_available !== false;
+
   return (
     <div
+      className="animate-fade-in"
       style={{
         position: 'fixed',
         inset: 0,
@@ -116,8 +130,9 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        backgroundColor: 'color-mix(in srgb, var(--color-bg) 90%, transparent)',
-        backdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(10, 17, 40, 0.9)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
         transition: 'opacity 200ms',
         opacity: isOpen ? 1 : 0,
       }}
@@ -128,6 +143,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     >
       <div
         ref={modalRef}
+        className="glass-modal animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -135,123 +151,190 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
         style={{
           width: '100%',
           maxWidth: '384px',
-          backgroundColor: 'var(--color-surface)',
-          borderRadius: '16px',
-          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
           transition: 'all 200ms',
           transform: isOpen ? 'scale(1)' : 'scale(0.95)',
           overscrollBehaviorY: 'contain',
           touchAction: 'pan-y',
           maxHeight: '80vh',
           overflowY: 'auto',
+          position: 'relative',
         }}
       >
-        {/* Botón cerrar */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 16px 0 16px' }}>
+        {/* Swipe indicator */}
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px 0' }}>
+          <div
+            style={{
+              width: '36px',
+              height: '4px',
+              borderRadius: '2px',
+              background: 'rgba(192, 192, 192, 0.3)',
+            }}
+          />
+        </div>
+
+        {/* Close button */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 16px' }}>
           <button
             onClick={onClose}
+            aria-label="Cerrar modal"
             style={{
-              width: '40px',
-              height: '40px',
+              width: '36px',
+              height: '36px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '50%',
-              color: 'var(--color-text-secondary)',
-              background: 'none',
-              border: 'none',
+              color: '#5B6D8A',
+              background: 'rgba(16, 25, 53, 0.6)',
+              border: '1px solid rgba(192, 192, 192, 0.2)',
               cursor: 'pointer',
+              transition: 'color 0.2s ease, border-color 0.2s ease',
             }}
-            aria-label="Cerrar modal"
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = '#d4af37';
+              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = '#5B6D8A';
+              e.currentTarget.style.borderColor = 'rgba(192, 192, 192, 0.2)';
+            }}
           >
             <CloseIcon />
           </button>
         </div>
 
-        {/* Imagen */}
+        {/* Image */}
         <div style={{ padding: '0 24px 16px 24px' }}>
-          <div style={{
-            position: 'relative',
-            aspectRatio: '4/3',
-            width: '100%',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            backgroundColor: 'var(--color-surface-alt)',
-          }}>
+          <div
+            style={{
+              position: 'relative',
+              aspectRatio: '4/3',
+              width: '100%',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              background: 'rgba(10, 17, 40, 0.5)',
+            }}
+          >
             {product.image_url ? (
-              <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              <img
+                src={product.image_url}
+                alt={product.name}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  opacity: isAvailable ? 1 : 0.4,
+                }}
+              />
             ) : (
-              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)' }}>
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
                 <CupIcon />
               </div>
             )}
-            {!product.is_available && <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />}
+            {!isAvailable && (
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'rgba(10, 17, 40, 0.5)',
+                  backdropFilter: 'blur(4px)',
+                  WebkitBackdropFilter: 'blur(4px)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: 'var(--font-interface)',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    letterSpacing: '1px',
+                    textTransform: 'uppercase',
+                    color: '#ef4444',
+                  }}
+                >
+                  Sin stock
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Info */}
+        {/* Content */}
         <div style={{ padding: '0 24px 24px 24px' }}>
-          <h2 id="product-modal-title" className="font-heading font-bold text-2xl text-text-primary" style={{ marginBottom: '8px' }}>
+          <h2
+            id="product-modal-title"
+            className="font-heading"
+            style={{
+              fontSize: '22px',
+              fontWeight: 700,
+              color: '#F4F7F9',
+              margin: '0 0 8px 0',
+              lineHeight: 1.25,
+              letterSpacing: '0.3px',
+            }}
+          >
             {product.name}
           </h2>
+
+          {/* Gold separator */}
+          <div className="gold-line-left" style={{ margin: '12px 0' }} />
+
           {product.description && (
-            <p className="font-interface text-sm text-text-secondary" style={{ lineHeight: '1.6', marginBottom: '24px' }}>
+            <p
+              className="font-interface"
+              style={{
+                fontSize: '14px',
+                color: '#5B6D8A',
+                lineHeight: 1.65,
+                margin: '0 0 20px 0',
+              }}
+            >
               {product.description}
             </p>
           )}
 
-          {/* Precio / Sin stock */}
+          {/* Price / Stock badge */}
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-            {product.is_available ? (
-              <span style={{
-                display: 'inline-block',
-                backgroundColor: 'var(--color-accent)',
-                color: 'var(--color-on-accent)',
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 700,
-                fontSize: '20px',
-                padding: '12px 24px',
-                borderRadius: '12px',
-              }}>
+            {isAvailable ? (
+              <span className="price-badge" style={{ fontSize: '16px', padding: '8px 18px' }}>
                 {formatPrice(product.price)}
               </span>
             ) : (
-              <span style={{
-                display: 'inline-block',
-                backgroundColor: 'var(--color-stock-bg)',
-                color: 'var(--color-stock-text)',
-                fontFamily: 'var(--font-interface)',
-                fontWeight: 500,
-                fontSize: '14px',
-                padding: '12px 24px',
-                borderRadius: '12px',
-              }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontFamily: 'var(--font-interface)',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  letterSpacing: '1px',
+                  textTransform: 'uppercase',
+                  color: '#ef4444',
+                  background: 'rgba(239, 68, 68, 0.1)',
+                  border: '1px solid rgba(239, 68, 68, 0.25)',
+                  borderRadius: '8px',
+                  padding: '8px 18px',
+                }}
+              >
                 Sin stock
               </span>
             )}
           </div>
 
-          {/* Botón volver */}
+          {/* Back button — pill style */}
           <button
-            onClick={() => {
-              onClose();
-              router.push(`/categoria/${categorySlug}`);
-            }}
-            style={{
-              width: '100%',
-              height: '48px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: '1px solid var(--color-border)',
-              borderRadius: '12px',
-              fontSize: '14px',
-              fontFamily: 'var(--font-interface)',
-              fontWeight: 500,
-              color: 'var(--color-text-secondary)',
-              background: 'none',
-              cursor: 'pointer',
-            }}
+            onClick={onClose}
+            className="pill-button"
+            style={{ width: '100%', height: '48px' }}
           >
             Volver al menú
           </button>

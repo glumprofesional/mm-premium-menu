@@ -4,24 +4,24 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 // ==========================================================================
-// ICONOS SVG INLINE — Usan currentColor para heredar el color del padre
+// ICONOS SVG INLINE
 // ==========================================================================
 
 const SearchIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
 const BackArrowIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
 const SunIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <path d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M12 1V3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M12 21V23" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -35,14 +35,8 @@ const SunIcon = () => (
 );
 
 const MoonIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <path d="M21 12.79C21 17.61 17.18 21.43 12.39 21.43C10.61 21.43 8.95 20.94 7.55 20.08C4.54 18.12 3.19 14.65 4.08 11.53C4.97 8.41 7.82 5.92 11.16 5.57C14.5 5.22 17.68 6.84 19.46 9.45C20.45 10.45 21 11.59 21 12.79Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-const Logo = () => (
-  <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect width="32" height="32" rx="8" className="fill-accent"/>
   </svg>
 );
 
@@ -70,8 +64,22 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="w-11 h-11 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary transition-colors"
       aria-label={isLight ? 'Activar modo oscuro' : 'Activar modo claro'}
+      style={{
+        width: '36px',
+        height: '36px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '50%',
+        color: '#5B6D8A',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        transition: 'color 0.2s ease',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
     >
       {isLight ? <MoonIcon /> : <SunIcon />}
     </button>
@@ -79,7 +87,7 @@ const ThemeToggle = () => {
 };
 
 // ==========================================================================
-// HEADER PRINCIPAL
+// HEADER
 // ==========================================================================
 
 interface HeaderProps {
@@ -89,45 +97,139 @@ interface HeaderProps {
 
 export default function Header({ variant = 'home', name }: HeaderProps) {
   return (
-    <header className="sticky top-0 z-50 h-14 w-full bg-bg/95 border-b border-border">
-      <div className="h-full max-w-md mx-auto px-5 flex items-center justify-between">
-
+    <header
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+        background: 'rgba(10, 17, 40, 0.95)',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '448px',
+          margin: '0 auto',
+          paddingLeft: '24px',
+          paddingRight: '24px',
+          height: '56px',
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
         {/* Izquierda */}
-        <div className="flex items-center h-full">
-          {variant === 'category' ? (
-            <Link href="/" className="flex items-center h-full -ml-2 text-text-secondary hover:text-text-primary transition-colors">
-              <div className="w-11 h-11 flex items-center justify-center">
-                <BackArrowIcon />
-              </div>
-              <span className="ml-1 font-interface font-medium text-sm">
-                Menú
-              </span>
-            </Link>
-          ) : (
-            <button className="w-11 h-11 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary transition-colors" aria-label="Buscar">
-              <SearchIcon />
-            </button>
-          )}
-        </div>
+        {variant === 'category' ? (
+          <Link
+            href="/"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: '#5B6D8A',
+              textDecoration: 'none',
+              fontSize: '14px',
+              fontWeight: 500,
+              transition: 'color 0.2s ease',
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
+          >
+            <BackArrowIcon />
+            <span className="font-interface">Menú</span>
+          </Link>
+        ) : (
+          <button
+            aria-label="Buscar"
+            style={{
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              color: '#5B6D8A',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
+          >
+            <SearchIcon />
+          </button>
+        )}
 
-        {/* Centro — nombre de categoría o logo */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        {/* Centro */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '50%',
+            top: '50%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
           {variant === 'category' ? (
-            <h1 className="font-heading font-medium text-lg text-text-primary whitespace-nowrap">
+            <h1
+              className="font-heading"
+              style={{
+                fontSize: '16px',
+                fontWeight: 600,
+                color: '#d4af37',
+                margin: 0,
+                letterSpacing: '0.3px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '60vw',
+              }}
+            >
               {name || 'Categoría'}
             </h1>
           ) : (
-            <Link href="/" aria-label="Ir al inicio">
-              <Logo />
+            <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* Gold diamond logo */}
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(45 12 12)" stroke="#d4af37" strokeWidth="1.5" fill="rgba(212,175,55,0.1)"/>
+              </svg>
+              <span
+                className="font-heading"
+                style={{
+                  fontSize: '20px',
+                  fontWeight: 700,
+                  color: '#F4F7F9',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                M&M
+              </span>
+              <span
+                className="font-interface"
+                style={{
+                  fontSize: '10px',
+                  color: '#5B6D8A',
+                  fontWeight: 600,
+                  letterSpacing: '1.5px',
+                  textTransform: 'uppercase',
+                  alignSelf: 'flex-end',
+                  marginBottom: '2px',
+                }}
+              >
+                Multiespacio
+              </span>
             </Link>
           )}
         </div>
 
         {/* Derecha */}
-        <div className="flex items-center">
+        <div style={{ marginLeft: 'auto' }}>
           <ThemeToggle />
         </div>
       </div>
+
+      {/* Gold accent line */}
+      <div className="gold-line" />
     </header>
   );
 }

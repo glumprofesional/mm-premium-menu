@@ -26,16 +26,35 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
   return (
     <>
       <Header variant="category" name={initialCategory.name} />
-      <div style={{ maxWidth: '448px', margin: '0 auto', paddingLeft: '24px', paddingRight: '24px', paddingTop: '24px', paddingBottom: '96px' }}>
+
+      <div
+        style={{
+          maxWidth: '448px',
+          margin: '0 auto',
+          paddingLeft: '24px',
+          paddingRight: '24px',
+          paddingTop: '24px',
+          paddingBottom: '96px',
+        }}
+      >
         {initialProducts.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {initialProducts.map((product) => (
-              <ProductCard key={product.id} product={product} onSelect={handleProductClick} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onSelect={handleProductClick}
+              />
             ))}
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
-            <p className="text-text-muted">No hay productos disponibles en esta categoría.</p>
+            <p
+              className="font-heading"
+              style={{ color: '#5B6D8A', fontSize: '16px', margin: 0 }}
+            >
+              No hay productos disponibles en esta categoría.
+            </p>
           </div>
         )}
       </div>

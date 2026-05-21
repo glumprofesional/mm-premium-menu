@@ -16,50 +16,117 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
     }).format(price);
   };
 
+  const isAvailable = product.is_available !== false;
+
   return (
-    <button 
+    <button
       onClick={() => onSelect(product)}
-      className={`group w-full bg-surface border border-border rounded-xl p-3 transition-transform duration-150 ease-out active:scale-[0.98] flex items-center gap-3 text-left ${!product.is_available ? 'opacity-50' : ''}`}
+      className={`glass-card ${!isAvailable ? 'opacity-50' : ''}`}
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '14px',
+        cursor: 'pointer',
+        textAlign: 'left',
+        width: '100%',
+        border: 'none',
+        outline: 'none',
+        background: 'transparent',
+        position: 'relative',
+      }}
     >
-      {/* Imagen o Placeholder */}
-      <div className="w-16 h-16 flex-shrink-0 rounded-lg flex items-center justify-center bg-surface-alt overflow-hidden">
+      {/* Imagen o Monograma */}
+      <div
+        style={{
+          width: '44px',
+          height: '44px',
+          borderRadius: '10px',
+          flexShrink: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          background: 'rgba(212, 175, 55, 0.06)',
+          border: '1px solid rgba(212, 175, 55, 0.15)',
+        }}
+      >
         {product.image_url ? (
-          <img 
-            src={product.image_url} 
-            alt={`Imagen de ${product.name}`} 
-            className="w-full h-full object-contain"
+          <img
+            src={product.image_url}
+            alt={`Imagen de ${product.name}`}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         ) : (
-          <div className="w-10 h-10 flex items-center justify-center">
-            <span className="font-heading font-bold text-2xl text-accent">
-              {product.name.charAt(0).toUpperCase()}
-            </span>
-          </div>
+          <span
+            className="font-heading"
+            style={{
+              fontSize: '18px',
+              fontWeight: 700,
+              color: '#d4af37',
+            }}
+          >
+            {product.name.charAt(0).toUpperCase()}
+          </span>
         )}
       </div>
 
-      {/* Contenido de Texto */}
-      <div className="flex-grow min-w-0">
-        <h3 className="font-heading font-medium text-base text-text-primary truncate">
+      {/* Contenido */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <h3
+          className="font-heading"
+          style={{
+            fontSize: '15px',
+            fontWeight: 700,
+            color: '#F4F7F9',
+            margin: 0,
+            lineHeight: 1.3,
+            letterSpacing: '0.2px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {product.name}
         </h3>
         {product.description && (
-          <p className="font-interface text-xs text-text-secondary mt-1 truncate">
+          <p
+            className="font-interface"
+            style={{
+              fontSize: '12px',
+              color: '#5B6D8A',
+              margin: '3px 0 0 0',
+              lineHeight: 1.4,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+            }}
+          >
             {product.description}
           </p>
         )}
       </div>
 
-      {/* Precio y Badge */}
-      <div className="flex-shrink-0 flex flex-col items-end justify-center ml-2 pr-2">
-        {!product.is_available ? (
-           <span className="px-2 py-1 text-xs font-bold text-white bg-danger rounded-full">
-             No disponible
-           </span>
+      {/* Precio o Badge */}
+      <div style={{ flexShrink: 0, marginLeft: '4px' }}>
+        {!isAvailable ? (
+          <span
+            style={{
+              fontSize: '10px',
+              fontWeight: 700,
+              color: '#ef4444',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              borderRadius: '6px',
+              padding: '3px 8px',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Sin stock
+          </span>
         ) : (
-          <p className="font-heading font-bold text-lg text-accent whitespace-nowrap">
-            {formatPrice(product.price)}
-          </p>
+          <span className="price-badge">{formatPrice(product.price)}</span>
         )}
       </div>
     </button>
