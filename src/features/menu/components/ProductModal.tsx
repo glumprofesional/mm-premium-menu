@@ -108,8 +108,19 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center p-6 transition-opacity duration-200 ${isOpen ? 'opacity-100' : 'opacity-0'}`}
-      style={{ backgroundColor: 'color-mix(in srgb, var(--color-bg) 90%, transparent)', backdropFilter: 'blur(8px)' }}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '24px',
+        backgroundColor: 'color-mix(in srgb, var(--color-bg) 90%, transparent)',
+        backdropFilter: 'blur(8px)',
+        transition: 'opacity 200ms',
+        opacity: isOpen ? 1 : 0,
+      }}
       onClick={onClose}
       role="dialog"
       aria-modal="true"
@@ -121,14 +132,36 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
-        className={`w-full max-w-sm bg-surface rounded-2xl shadow-2xl transition-all duration-200 ${isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'}`}
-        style={{ overscrollBehaviorY: 'contain', touchAction: 'pan-y' }}
+        style={{
+          width: '100%',
+          maxWidth: '384px',
+          backgroundColor: 'var(--color-surface)',
+          borderRadius: '16px',
+          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
+          transition: 'all 200ms',
+          transform: isOpen ? 'scale(1)' : 'scale(0.95)',
+          overscrollBehaviorY: 'contain',
+          touchAction: 'pan-y',
+          maxHeight: '80vh',
+          overflowY: 'auto',
+        }}
       >
         {/* Botón cerrar */}
-        <div className="flex justify-end p-4 pb-0">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '16px 16px 0 16px' }}>
           <button
             onClick={onClose}
-            className="w-10 h-10 flex items-center justify-center rounded-full text-text-secondary hover:text-text-primary transition-colors"
+            style={{
+              width: '40px',
+              height: '40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              color: 'var(--color-text-secondary)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+            }}
             aria-label="Cerrar modal"
           >
             <CloseIcon />
@@ -136,38 +169,63 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
         </div>
 
         {/* Imagen */}
-        <div className="px-6 pb-4">
-          <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-surface-alt">
+        <div style={{ padding: '0 24px 16px 24px' }}>
+          <div style={{
+            position: 'relative',
+            aspectRatio: '4/3',
+            width: '100%',
+            borderRadius: '12px',
+            overflow: 'hidden',
+            backgroundColor: 'var(--color-surface-alt)',
+          }}>
             {product.image_url ? (
-              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+              <img src={product.image_url} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-accent">
+              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-accent)' }}>
                 <CupIcon />
               </div>
             )}
-            {!product.is_available && <div className="absolute inset-0 bg-black/40" />}
+            {!product.is_available && <div style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.4)' }} />}
           </div>
         </div>
 
         {/* Info */}
-        <div className="px-6 pb-6">
-          <h2 id="product-modal-title" className="font-heading font-bold text-2xl text-text-primary mb-2">
+        <div style={{ padding: '0 24px 24px 24px' }}>
+          <h2 id="product-modal-title" className="font-heading font-bold text-2xl text-text-primary" style={{ marginBottom: '8px' }}>
             {product.name}
           </h2>
           {product.description && (
-            <p className="font-interface text-sm text-text-secondary leading-relaxed mb-6">
+            <p className="font-interface text-sm text-text-secondary" style={{ lineHeight: '1.6', marginBottom: '24px' }}>
               {product.description}
             </p>
           )}
 
           {/* Precio / Sin stock */}
-          <div className="text-center mb-6">
+          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             {product.is_available ? (
-              <span className="inline-block bg-accent text-on-accent font-heading font-bold text-xl px-6 py-3 rounded-xl">
+              <span style={{
+                display: 'inline-block',
+                backgroundColor: 'var(--color-accent)',
+                color: 'var(--color-on-accent)',
+                fontFamily: 'var(--font-heading)',
+                fontWeight: 700,
+                fontSize: '20px',
+                padding: '12px 24px',
+                borderRadius: '12px',
+              }}>
                 {formatPrice(product.price)}
               </span>
             ) : (
-              <span className="inline-block bg-stock-bg text-stock-text font-interface font-medium text-sm px-6 py-3 rounded-xl">
+              <span style={{
+                display: 'inline-block',
+                backgroundColor: 'var(--color-stock-bg)',
+                color: 'var(--color-stock-text)',
+                fontFamily: 'var(--font-interface)',
+                fontWeight: 500,
+                fontSize: '14px',
+                padding: '12px 24px',
+                borderRadius: '12px',
+              }}>
                 Sin stock
               </span>
             )}
@@ -179,7 +237,21 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               onClose();
               router.push(`/categoria/${categorySlug}`);
             }}
-            className="w-full h-12 flex items-center justify-center border border-border rounded-xl text-sm font-interface font-medium text-text-secondary hover:border-accent hover:text-accent transition-colors"
+            style={{
+              width: '100%',
+              height: '48px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: '1px solid var(--color-border)',
+              borderRadius: '12px',
+              fontSize: '14px',
+              fontFamily: 'var(--font-interface)',
+              fontWeight: 500,
+              color: 'var(--color-text-secondary)',
+              background: 'none',
+              cursor: 'pointer',
+            }}
           >
             Volver al menú
           </button>
