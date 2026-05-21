@@ -5,6 +5,20 @@
    M&M Multiespacio Premium Menu
    ============================================ */
 
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope.woff2') format('woff2');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 @theme {
   /* ---- Backgrounds ---- */
   --color-bg: #0A1128;
@@ -17,8 +31,8 @@
 
   /* ---- Text ---- */
   --color-text-primary: #F4F7F9;
-  --color-text-secondary: #5B6D8A;
-  --color-text-muted: #3d4f6a;
+  --color-text-secondary: #8892a4;
+  --color-text-muted: #5a6478;
 
   /* ---- Borders ---- */
   --color-border: #1e2a4a;
@@ -28,10 +42,10 @@
   --color-stock-bg: #2a1215;
   --color-stock-text: #ef4444;
 
-  /* ---- Fonts (set by next/font/google in layout.tsx) ---- */
-  --font-heading: var(--font-playfair);
-  --font-interface: var(--font-montserrat);
-  --font-body: var(--font-inter);
+  /* ---- Fonts ---- */
+  --font-heading: 'CabinetGrotesk', sans-serif;
+  --font-interface: 'Manrope', sans-serif;
+  --font-body: 'Manrope', sans-serif;
 }
 
 /* ============================================
@@ -39,13 +53,13 @@
    ============================================ */
 
 html {
-  background-color: #0A1128;
+  background-color: var(--color-bg);
 }
 
 body {
-  font-family: var(--font-body), system-ui, sans-serif;
-  color: #F4F7F9;
-  background-color: #0A1128;
+  font-family: var(--font-body);
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -112,10 +126,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-heading), Georgia, serif;
+  font-family: var(--font-heading);
   font-size: 22px;
   font-weight: 700;
-  color: #d4af37;
+  color: var(--color-accent);
   background: rgba(212, 175, 55, 0.08);
   flex-shrink: 0;
   transition: border-color 0.25s ease, background 0.25s ease;
@@ -131,11 +145,11 @@ body {
    ============================================ */
 
 .price-badge {
-  font-family: var(--font-interface), system-ui, sans-serif;
+  font-family: var(--font-interface);
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.5px;
-  color: #d4af37;
+  color: var(--color-accent);
   background: rgba(212, 175, 55, 0.12);
   border: 1px solid rgba(212, 175, 55, 0.25);
   border-radius: 8px;
@@ -148,7 +162,7 @@ body {
    ============================================ */
 
 .pill-button {
-  font-family: var(--font-interface), system-ui, sans-serif;
+  font-family: var(--font-interface);
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.5px;
@@ -163,7 +177,7 @@ body {
 
 .pill-button:hover {
   border-color: rgba(212, 175, 55, 0.5);
-  color: #d4af37;
+  color: var(--color-accent);
   background: rgba(212, 175, 55, 0.08);
 }
 
@@ -211,7 +225,7 @@ body {
 }
 
 /* ============================================
-   Light Mode Overrides (future)
+   Light Mode Overrides
    ============================================ */
 
 .light {
@@ -227,4 +241,47 @@ body {
   --color-danger: #dc2626;
   --color-stock-bg: #fef2f2;
   --color-stock-text: #dc2626;
+}
+
+.light .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.light .glass-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 12px rgba(184, 150, 12, 0.08);
+}
+
+.light .glass-modal {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+.light .monogram {
+  border-color: rgba(184, 150, 12, 0.5);
+  color: var(--color-accent);
+  background: rgba(184, 150, 12, 0.08);
+}
+
+.light .price-badge {
+  color: var(--color-accent);
+  background: rgba(184, 150, 12, 0.1);
+  border-color: rgba(184, 150, 12, 0.25);
+}
+
+.light .gold-line,
+.light .gold-line-left {
+  background: linear-gradient(90deg, rgba(184, 150, 12, 0.3), transparent);
+}
+
+.light .pill-button {
+  color: #6b7280;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+
+.light .pill-button:hover {
+  color: var(--color-accent);
+  border-color: rgba(184, 150, 12, 0.4);
 }

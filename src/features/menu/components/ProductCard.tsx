@@ -63,7 +63,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             style={{
               fontSize: '18px',
               fontWeight: 700,
-              color: '#d4af37',
+              color: 'var(--color-accent)',
             }}
           >
             {product.name.charAt(0).toUpperCase()}
@@ -78,7 +78,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           style={{
             fontSize: '15px',
             fontWeight: 700,
-            color: '#F4F7F9',
+            color: 'var(--color-text-primary)',
             margin: 0,
             lineHeight: 1.3,
             letterSpacing: '0.2px',
@@ -94,7 +94,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             className="font-interface"
             style={{
               fontSize: '12px',
-              color: '#5B6D8A',
+              color: 'var(--color-text-secondary)',
               margin: '3px 0 0 0',
               lineHeight: 1.4,
               overflow: 'hidden',
@@ -114,8 +114,8 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             style={{
               fontSize: '10px',
               fontWeight: 700,
-              color: '#ef4444',
-              background: 'rgba(239, 68, 68, 0.1)',
+              color: 'var(--color-danger)',
+              background: 'var(--color-stock-bg)',
               border: '1px solid rgba(239, 68, 68, 0.25)',
               borderRadius: '6px',
               padding: '3px 8px',

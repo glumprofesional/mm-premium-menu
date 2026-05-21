@@ -21,35 +21,38 @@ export default async function HomePage() {
           paddingBottom: '96px',
         }}
       >
-        {/* Welcome */}
-        <div style={{ marginBottom: '36px' }}>
+        {/* Welcome — centrado */}
+        <div style={{ textAlign: 'center', marginBottom: '36px' }}>
           <h1
             className="font-heading"
             style={{
               fontSize: '28px',
               fontWeight: 700,
-              color: '#F4F7F9',
+              color: 'var(--color-text-primary)',
               margin: '0 0 8px 0',
               lineHeight: 1.2,
+              letterSpacing: '1px',
+              textTransform: 'uppercase',
+            }}
+          >
+            Carta Exclusiva
+          </h1>
+          <p
+            className="font-interface"
+            style={{
+              fontSize: '13px',
+              color: 'var(--color-text-secondary)',
+              margin: 0,
+              lineHeight: 1.6,
               letterSpacing: '0.5px',
             }}
           >
-            Nuestro Menú
-          </h1>
-          <p
-            style={{
-              fontSize: '14px',
-              color: '#5B6D8A',
-              margin: 0,
-              lineHeight: 1.6,
-            }}
-          >
-            Descubrí nuestra selección premium
+            Selección premium de bebidas y experiencias
           </p>
         </div>
 
         {/* Gold separator */}
-        <div className="gold-line-left" style={{ marginBottom: '28px' }} />
+        <div className="gold-line" style={{ marginBottom: '28px' }} />
 
         {/* Categories */}
         {categories.length > 0 ? (
@@ -62,11 +65,11 @@ export default async function HomePage() {
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p
               className="font-heading"
-              style={{ color: '#5B6D8A', fontSize: '16px', margin: '0 0 8px 0' }}
+              style={{ color: 'var(--color-text-secondary)', fontSize: '16px', margin: '0 0 8px 0' }}
             >
               Menú no disponible
             </p>
-            <p style={{ color: '#3d4f6a', fontSize: '14px', margin: 0 }}>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '14px', margin: 0 }}>
               Por favor, intente de nuevo más tarde.
             </p>
           </div>

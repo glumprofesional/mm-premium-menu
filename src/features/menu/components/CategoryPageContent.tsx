@@ -51,7 +51,7 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
           <div style={{ textAlign: 'center', padding: '80px 0' }}>
             <p
               className="font-heading"
-              style={{ color: '#5B6D8A', fontSize: '16px', margin: 0 }}
+              style={{ color: 'var(--color-text-secondary)', fontSize: '16px', margin: 0 }}
             >
               No hay productos disponibles en esta categoría.
             </p>

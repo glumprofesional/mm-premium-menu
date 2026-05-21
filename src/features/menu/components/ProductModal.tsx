@@ -15,7 +15,7 @@ const CloseIcon = () => (
 );
 
 const CupIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#d4af37" strokeWidth="1.5">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5">
     <path d="M8 3L4 7h16l-4-4H8z" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M18 7H6a1 1 0 00-1 1v6c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V8a1 1 0 00-1-1z" strokeLinecap="round" strokeLinejoin="round"/>
     <path d="M10 21h4M12 17v4" strokeLinecap="round" strokeLinejoin="round"/>
@@ -184,18 +184,18 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '50%',
-              color: '#5B6D8A',
+              color: 'var(--color-text-secondary)',
               background: 'rgba(16, 25, 53, 0.6)',
               border: '1px solid rgba(192, 192, 192, 0.2)',
               cursor: 'pointer',
               transition: 'color 0.2s ease, border-color 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = '#d4af37';
+              e.currentTarget.style.color = 'var(--color-accent)';
               e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = '#5B6D8A';
+              e.currentTarget.style.color = 'var(--color-text-secondary)';
               e.currentTarget.style.borderColor = 'rgba(192, 192, 192, 0.2)';
             }}
           >
@@ -212,7 +212,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               width: '100%',
               borderRadius: '12px',
               overflow: 'hidden',
-              background: 'rgba(10, 17, 40, 0.5)',
+              background: 'var(--color-surface-alt)',
             }}
           >
             {product.image_url ? (
@@ -253,13 +253,13 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
                 }}
               >
                 <span
+                  className="font-interface"
                   style={{
-                    fontFamily: 'var(--font-interface)',
                     fontWeight: 700,
                     fontSize: '13px',
                     letterSpacing: '1px',
                     textTransform: 'uppercase',
-                    color: '#ef4444',
+                    color: 'var(--color-danger)',
                   }}
                 >
                   Sin stock
@@ -277,7 +277,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
             style={{
               fontSize: '22px',
               fontWeight: 700,
-              color: '#F4F7F9',
+              color: 'var(--color-text-primary)',
               margin: '0 0 8px 0',
               lineHeight: 1.25,
               letterSpacing: '0.3px',
@@ -294,7 +294,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               className="font-interface"
               style={{
                 fontSize: '14px',
-                color: '#5B6D8A',
+                color: 'var(--color-text-secondary)',
                 lineHeight: 1.65,
                 margin: '0 0 20px 0',
               }}
@@ -311,15 +311,15 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               </span>
             ) : (
               <span
+                className="font-interface"
                 style={{
                   display: 'inline-block',
-                  fontFamily: 'var(--font-interface)',
                   fontWeight: 700,
                   fontSize: '13px',
                   letterSpacing: '1px',
                   textTransform: 'uppercase',
-                  color: '#ef4444',
-                  background: 'rgba(239, 68, 68, 0.1)',
+                  color: 'var(--color-danger)',
+                  background: 'var(--color-stock-bg)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
                   borderRadius: '8px',
                   padding: '8px 18px',

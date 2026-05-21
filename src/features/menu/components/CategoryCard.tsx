@@ -9,7 +9,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const monogram = category.name.charAt(0).toUpperCase();
 
   return (
-    <Link href={`/categoria/${category.slug}`} className="block no-underline" style={{ textDecoration: 'none' }}>
+    <Link href={`/categoria/${category.slug}`} style={{ textDecoration: 'none' }}>
       <div
         className="glass-card"
         style={{
@@ -50,7 +50,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             style={{
               fontSize: '18px',
               fontWeight: 700,
-              color: '#F4F7F9',
+              color: 'var(--color-text-primary)',
               margin: 0,
               lineHeight: 1.3,
               letterSpacing: '0.3px',
@@ -63,7 +63,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               className="font-interface"
               style={{
                 fontSize: '13px',
-                color: '#5B6D8A',
+                color: 'var(--color-text-secondary)',
                 margin: '4px 0 0 0',
                 lineHeight: 1.4,
                 overflow: 'hidden',
@@ -82,7 +82,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           height="18"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#d4af37"
+          stroke="var(--color-accent)"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"

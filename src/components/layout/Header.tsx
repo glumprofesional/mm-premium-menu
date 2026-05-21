@@ -72,14 +72,14 @@ const ThemeToggle = () => {
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: '50%',
-        color: '#5B6D8A',
+        color: 'var(--color-text-secondary)',
         background: 'none',
         border: 'none',
         cursor: 'pointer',
         transition: 'color 0.2s ease',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
+      onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
     >
       {isLight ? <MoonIcon /> : <SunIcon />}
     </button>
@@ -102,7 +102,8 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        background: 'rgba(10, 17, 40, 0.95)',
+        background: 'var(--color-bg)',
+        borderBottom: '1px solid var(--color-border)',
       }}
     >
       <div
@@ -125,15 +126,15 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
-              color: '#5B6D8A',
+              color: 'var(--color-text-primary)',
               textDecoration: 'none',
               fontSize: '14px',
               fontWeight: 500,
               transition: 'color 0.2s ease',
               flexShrink: 0,
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)'; }}
           >
             <BackArrowIcon />
             <span className="font-interface">Menú</span>
@@ -148,14 +149,14 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '50%',
-              color: '#5B6D8A',
+              color: 'var(--color-text-secondary)',
               background: 'none',
               border: 'none',
               cursor: 'pointer',
               transition: 'color 0.2s ease',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = '#d4af37'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = '#5B6D8A'; }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
           >
             <SearchIcon />
           </button>
@@ -176,7 +177,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               style={{
                 fontSize: '16px',
                 fontWeight: 600,
-                color: '#d4af37',
+                color: 'var(--color-accent)',
                 margin: 0,
                 letterSpacing: '0.3px',
                 whiteSpace: 'nowrap',
@@ -189,16 +190,15 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
             </h1>
           ) : (
             <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* Gold diamond logo */}
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(45 12 12)" stroke="#d4af37" strokeWidth="1.5" fill="rgba(212,175,55,0.1)"/>
+                <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(45 12 12)" stroke="var(--color-accent)" strokeWidth="1.5" fill="rgba(212,175,55,0.1)"/>
               </svg>
               <span
                 className="font-heading"
                 style={{
                   fontSize: '20px',
                   fontWeight: 700,
-                  color: '#F4F7F9',
+                  color: 'var(--color-text-primary)',
                   letterSpacing: '0.5px',
                 }}
               >
@@ -208,7 +208,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
                 className="font-interface"
                 style={{
                   fontSize: '10px',
-                  color: '#5B6D8A',
+                  color: 'var(--color-text-secondary)',
                   fontWeight: 600,
                   letterSpacing: '1.5px',
                   textTransform: 'uppercase',
