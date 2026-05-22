@@ -4,8 +4,28 @@ import './globals.css';
 
 /* ---- Metadata ---- */
 export const metadata: Metadata = {
-  title: 'M&M Multiespacio — Menú Premium',
-  description: 'Catálogo premium de bebidas y experiencias. Escanea y descubre nuestra selección.',
+  title: 'M&M Multiespacio — Carta Exclusiva',
+  description: 'Catálogo premium de bebidas y experiencias. Escanea el QR y descubrí nuestra selección exclusiva en M&M Multiespacio, La Rioja.',
+  keywords: ['M&M', 'Multiespacio', 'carta', 'bebidas', 'La Rioja', 'menú', 'premium', 'nocturno'],
+  authors: [{ name: 'M&M Multiespacio' }],
+  creator: 'M&M Multiespacio',
+  openGraph: {
+    title: 'M&M Multiespacio — Carta Exclusiva',
+    description: 'Descubrí nuestra selección premium de bebidas y experiencias. La Rioja.',
+    type: 'website',
+    locale: 'es_AR',
+    siteName: 'M&M Multiespacio',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'M&M Multiespacio — Carta Exclusiva',
+    description: 'Descubrí nuestra selección premium de bebidas y experiencias. La Rioja.',
+  },
+  robots: {
+    index: false,
+    follow: true,
+  },
+  manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {

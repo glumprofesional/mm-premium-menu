@@ -1,0 +1,16 @@
+{
+  "name": "M&M Multiespacio",
+  "short_name": "M&M",
+  "description": "Catálogo premium de bebidas y experiencias",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A1128",
+  "theme_color": "#0A1128",
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
