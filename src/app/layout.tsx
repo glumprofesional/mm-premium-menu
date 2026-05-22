@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import TopLoadingBar from '@/components/TopLoadingBar';
 import './globals.css';
 
 /* ---- Metadata ---- */
@@ -44,6 +45,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
       </head>
       <body className="antialiased">
+        <TopLoadingBar />
         <main>{children}</main>
       </body>
     </html>

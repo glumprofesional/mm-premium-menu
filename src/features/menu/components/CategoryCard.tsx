@@ -9,7 +9,11 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const monogram = category.name.charAt(0).toUpperCase();
 
   return (
-    <Link href={`/categoria/${category.slug}`} style={{ textDecoration: 'none' }}>
+    <Link
+      href={`/categoria/${category.slug}`}
+      prefetch={true}
+      style={{ textDecoration: 'none' }}
+    >
       <div
         className="glass-card"
         style={{
