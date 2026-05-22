@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // ==========================================================================
 // ICONOS SVG INLINE
@@ -112,7 +113,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
           margin: '0 auto',
           paddingLeft: '24px',
           paddingRight: '24px',
-          height: '56px',
+          height: '64px',
           display: 'flex',
           alignItems: 'center',
           position: 'relative',
@@ -162,7 +163,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
           </button>
         )}
 
-        {/* Centro */}
+        {/* Centro — Logo o categoría */}
         <div
           style={{
             position: 'absolute',
@@ -189,35 +190,16 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               {name || 'Categoría'}
             </h1>
           ) : (
-            <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <rect x="4" y="4" width="16" height="16" rx="2" transform="rotate(45 12 12)" stroke="var(--color-accent)" strokeWidth="1.5" fill="rgba(212,175,55,0.1)"/>
-              </svg>
-              <span
-                className="font-heading"
-                style={{
-                  fontSize: '20px',
-                  fontWeight: 700,
-                  color: 'var(--color-text-primary)',
-                  letterSpacing: '0.5px',
-                }}
-              >
-                M&M
-              </span>
-              <span
-                className="font-interface"
-                style={{
-                  fontSize: '10px',
-                  color: 'var(--color-text-secondary)',
-                  fontWeight: 600,
-                  letterSpacing: '1.5px',
-                  textTransform: 'uppercase',
-                  alignSelf: 'flex-end',
-                  marginBottom: '2px',
-                }}
-              >
-                Multiespacio
-              </span>
+            <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none' }}>
+              <div style={{ width: '44px', height: '44px', position: 'relative' }}>
+                <Image
+                  src="/images/logo.png"
+                  alt="M&M Multiespacio"
+                  fill
+                  sizes="44px"
+                  priority
+                />
+              </div>
             </Link>
           )}
         </div>
