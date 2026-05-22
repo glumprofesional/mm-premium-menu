@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import SearchOverlay from '@/components/SearchOverlay';
 
 // ==========================================================================
 // ICONOS SVG INLINE
@@ -97,121 +98,132 @@ interface HeaderProps {
 }
 
 export default function Header({ variant = 'home', name }: HeaderProps) {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+
   return (
-    <header
-      style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        background: 'var(--color-bg)',
-        borderBottom: '1px solid var(--color-border)',
-      }}
-    >
-      <div
+    <>
+      <header
         style={{
-          maxWidth: '448px',
-          margin: '0 auto',
-          paddingLeft: '24px',
-          paddingRight: '24px',
-          height: '64px',
-          display: 'flex',
-          alignItems: 'center',
-          position: 'relative',
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+          background: 'var(--color-bg)',
+          borderBottom: '1px solid var(--color-border)',
         }}
       >
-        {/* Izquierda */}
-        {variant === 'category' ? (
-          <Link
-            href="/"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              color: 'var(--color-text-primary)',
-              textDecoration: 'none',
-              fontSize: '14px',
-              fontWeight: 500,
-              transition: 'color 0.2s ease',
-              flexShrink: 0,
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)'; }}
-          >
-            <BackArrowIcon />
-            <span className="font-interface">Menú</span>
-          </Link>
-        ) : (
-          <button
-            aria-label="Buscar"
-            style={{
-              width: '36px',
-              height: '36px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '50%',
-              color: 'var(--color-text-secondary)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              transition: 'color 0.2s ease',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
-          >
-            <SearchIcon />
-          </button>
-        )}
-
-        {/* Centro — Logo o categoría */}
         <div
           style={{
-            position: 'absolute',
-            left: '50%',
-            top: '50%',
-            transform: 'translate(-50%, -50%)',
+            maxWidth: '448px',
+            margin: '0 auto',
+            paddingLeft: '24px',
+            paddingRight: '24px',
+            height: '64px',
+            display: 'flex',
+            alignItems: 'center',
+            position: 'relative',
           }}
         >
+          {/* Izquierda */}
           {variant === 'category' ? (
-            <h1
-              className="font-heading"
+            <Link
+              href="/"
               style={{
-                fontSize: '16px',
-                fontWeight: 600,
-                color: 'var(--color-accent)',
-                margin: 0,
-                letterSpacing: '0.3px',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '60vw',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: 'var(--color-text-primary)',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: 500,
+                transition: 'color 0.2s ease',
+                flexShrink: 0,
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-primary)'; }}
             >
-              {name || 'Categoría'}
-            </h1>
-          ) : (
-            <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none' }}>
-              <div style={{ width: '44px', height: '44px', position: 'relative' }}>
-                <Image
-                  src="/images/logo.png"
-                  alt="M&M Multiespacio"
-                  fill
-                  sizes="44px"
-                  priority
-                />
-              </div>
+              <BackArrowIcon />
+              <span className="font-interface">Menú</span>
             </Link>
+          ) : (
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Buscar"
+              style={{
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                color: 'var(--color-text-secondary)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
+            >
+              <SearchIcon />
+            </button>
           )}
+
+          {/* Centro — Logo o categoría */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+            {variant === 'category' ? (
+              <h1
+                className="font-heading"
+                style={{
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  color: 'var(--color-accent)',
+                  margin: 0,
+                  letterSpacing: '0.3px',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '60vw',
+                }}
+              >
+                {name || 'Categoría'}
+              </h1>
+            ) : (
+              <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none' }}>
+                <div style={{ width: '44px', height: '44px', position: 'relative' }}>
+                  <Image
+                    src="/images/logo.png"
+                    alt="M&M Multiespacio"
+                    fill
+                    sizes="44px"
+                    priority
+                  />
+                </div>
+              </Link>
+            )}
+          </div>
+
+          {/* Derecha */}
+          <div style={{ marginLeft: 'auto' }}>
+            <ThemeToggle />
+          </div>
         </div>
 
-        {/* Derecha */}
-        <div style={{ marginLeft: 'auto' }}>
-          <ThemeToggle />
-        </div>
-      </div>
+        {/* Gold accent line */}
+        <div className="gold-line" />
+      </header>
 
-      {/* Gold accent line */}
-      <div className="gold-line" />
-    </header>
+      {/* Search Overlay */}
+      <SearchOverlay
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
+    </>
   );
 }
