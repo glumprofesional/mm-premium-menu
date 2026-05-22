@@ -24,7 +24,7 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
   };
 
   return (
-    <>
+    <div className="animate-fade-in">
       <Header variant="category" name={initialCategory.name} />
 
       <div
@@ -65,6 +65,6 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
         isOpen={!!selectedProduct}
         onClose={handleCloseModal}
       />
-    </>
+    </div>
   );
 }
