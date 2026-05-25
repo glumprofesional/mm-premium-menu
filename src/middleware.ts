@@ -1,12 +1,14 @@
-import { updateSession } from '@/lib/supabase/middleware';
-import { type NextRequest } from 'next/server';
+import { type NextRequest } from "next/server"
+import { updateSession } from "@/lib/supabase/middleware"
 
 export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+  // Excluir API routes del middleware
+  if (request.nextUrl.pathname.startsWith("/admin/api/")) {
+    return
+  }
+  return await updateSession(request)
 }
 
 export const config = {
-  matcher: [
-    '/admin/:path*',
-  ],
-};
+  matcher: ["/admin/:path*"],
+}
