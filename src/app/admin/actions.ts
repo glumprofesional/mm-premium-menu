@@ -78,6 +78,10 @@ export async function createCategory(formData: FormData) {
     const isActive = formData.get("is_active") === "on"
     const imageFile = formData.get("image") as File | null
 
+    if (!name || name.trim().length === 0) {
+      return { error: "El nombre es obligatorio" }
+    }
+
     let image_url: string | null = null
     if (imageFile && imageFile.size > 0) {
       image_url = await uploadToStorage(imageFile, "category-images")
@@ -118,6 +122,10 @@ export async function updateCategory(formData: FormData) {
     const description = formData.get("description") as string
     const isActive = formData.get("is_active") === "on"
     const imageFile = formData.get("image") as File | null
+
+    if (!name || name.trim().length === 0) {
+      return { error: "El nombre es obligatorio" }
+    }
 
     const updateData: Record<string, unknown> = {
       name,
@@ -190,13 +198,26 @@ export async function createProduct(formData: FormData) {
     const isAvailable = formData.get("is_available") === "on"
     const imageFile = formData.get("image") as File | null
 
+    if (!name || name.trim().length === 0) {
+      return { error: "El nombre es obligatorio" }
+    }
+    if (!categoryId || categoryId.trim().length === 0) {
+      return { error: "Seleccioná una categoría" }
+    }
+    if (isNaN(price) || price <= 0) {
+      return { error: "El precio debe ser mayor a 0" }
+    }
+
     let image_url: string | null = null
     if (imageFile && imageFile.size > 0) {
       image_url = await uploadToStorage(imageFile, "product-images")
     }
 
+    const slug = generateSlug(name)
+
     const { error } = await adminDb.from("products").insert({
       name,
+      slug,
       price,
       description: description || null,
       category_id: categoryId,
@@ -223,8 +244,19 @@ export async function updateProduct(formData: FormData) {
     const isAvailable = formData.get("is_available") === "on"
     const imageFile = formData.get("image") as File | null
 
+    if (!name || name.trim().length === 0) {
+      return { error: "El nombre es obligatorio" }
+    }
+    if (!categoryId || categoryId.trim().length === 0) {
+      return { error: "Seleccioná una categoría" }
+    }
+    if (isNaN(price) || price <= 0) {
+      return { error: "El precio debe ser mayor a 0" }
+    }
+
     const updateData: Record<string, unknown> = {
       name,
+      slug: generateSlug(name),
       price,
       description: description || null,
       category_id: categoryId,
