@@ -333,14 +333,24 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
-          <button
-            type="button"
-            onClick={() => handleOpenCategoryModal("create")}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
-          >
-            <span className="pointer-events-none"><IconPlus /></span>
-            Nueva Categoría
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => handleOpenCategoryModal("create")}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+            >
+              <span className="pointer-events-none"><IconPlus /></span>
+              Nueva Categoría
+            </button>
+            <button
+              type="button"
+              onClick={() => handleOpenProductModal("create", "")}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+            >
+              <span className="pointer-events-none"><IconPlus /></span>
+              Nuevo Producto
+            </button>
+          </div>
         </div>
 
         {/* Loading bar */}
@@ -523,7 +533,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                           </div>
                         )}
 
-                        {/* Add Product */}
+                        {/* Add Product inside category */}
                         <button
                           type="button"
                           onClick={() => handleOpenProductModal("create", category.id)}
@@ -671,7 +681,29 @@ export default function AdminPageClient({ initialData }: { initialData: Category
               {productModal.mode === "edit" && productModal.data && (
                 <input type="hidden" name="id" value={productModal.data.id} />
               )}
-              <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
+
+              {/* Category selector - always visible when no categoryId, also in edit mode */}
+              {(!productModal.categoryId || productModal.mode === "edit") && (
+                <div>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">Categoría *</label>
+                  <select
+                    name="category_id"
+                    required
+                    defaultValue={productModal.data?.category_id ?? productModal.categoryId ?? ""}
+                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  >
+                    <option value="">Seleccionar categoría</option>
+                    {initialData.map((cat) => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Hidden category_id when it comes from inside a category */}
+              {productModal.categoryId && productModal.mode === "create" && (
+                <input type="hidden" name="category_id" value={productModal.categoryId} />
+              )}
 
               <div>
                 <label className="block text-sm font-medium text-[#14130e] mb-1">Nombre *</label>
@@ -709,21 +741,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   placeholder="Descripción breve del producto"
                 />
               </div>
-
-              {productModal.mode === "edit" && (
-                <div>
-                  <label className="block text-sm font-medium text-[#14130e] mb-1">Categoría</label>
-                  <select
-                    name="category_id"
-                    defaultValue={productModal.data?.category_id ?? productModal.categoryId ?? ""}
-                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
-                  >
-                    {initialData.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
 
               <div>
                 <label className="block text-sm font-medium text-[#14130e] mb-1">Imagen</label>

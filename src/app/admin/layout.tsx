@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import Image from "next/image"
 import { adminDb } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
@@ -14,24 +13,26 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
+  // No autenticado — renderizar sin shell de admin (el middleware redirige)
   if (!user) {
-    redirect("/admin/login")
+    return <div className="min-h-screen bg-[#e6dec8]">{children}</div>
   }
 
-  // Check allowed_users
+  // Verificar allowed_users
   const { data: allowed } = await adminDb
     .from("allowed_users")
     .select("id")
     .eq("email", user.email)
     .single()
 
+  // No autorizado — renderizar sin shell de admin
   if (!allowed) {
-    redirect("/admin/login")
+    return <div className="min-h-screen bg-[#e6dec8]">{children}</div>
   }
 
+  // Autenticado y autorizado — renderizar admin completo
   return (
     <div className="min-h-screen bg-[#e6dec8]">
-      {/* Header */}
       <header className="sticky top-0 z-30 bg-[#eee7d4] border-b-2 border-[#da5a47]">
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -63,8 +64,6 @@ export default async function AdminLayout({
           </div>
         </div>
       </header>
-
-      {/* Main content */}
       <main>{children}</main>
     </div>
   )
