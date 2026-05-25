@@ -61,7 +61,7 @@ type ToastState = {
   type: "success" | "error"
 }
 
-/* ─── Icons ─── */
+/* ─── Icons (inline SVGs) ─── */
 function IconEdit() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -161,6 +161,15 @@ function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; 
   )
 }
 
+/* ─── Product Count Badge ─── */
+function ProductCountBadge({ count }: { count: number }) {
+  return (
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#d4cbaf] text-[#6b6858]">
+      {count} {count === 1 ? "producto" : "productos"}
+    </span>
+  )
+}
+
 /* ─── Main Component ─── */
 export default function AdminPageClient({ initialData }: { initialData: Category[] }) {
   const router = useRouter()
@@ -193,9 +202,9 @@ export default function AdminPageClient({ initialData }: { initialData: Category
   const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null)
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
 
-  // Inline validation
-  const [priceError, setPriceError] = useState<string | null>(null)
+  /* Live price validation */
   const [priceValue, setPriceValue] = useState<string>("")
+  const [priceError, setPriceError] = useState<string>("")
 
   const categoryFormRef = useRef<HTMLFormElement>(null)
   const productFormRef = useRef<HTMLFormElement>(null)
@@ -208,6 +217,19 @@ export default function AdminPageClient({ initialData }: { initialData: Category
 
   function toggleAccordion(id: string) {
     setExpandedId((prev) => (prev === id ? null : id))
+  }
+
+  /* ─── Price Validation ─── */
+  function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const val = e.target.value
+    setPriceValue(val)
+    if (val === "") {
+      setPriceError("")
+    } else if (parseFloat(val) <= 0) {
+      setPriceError("El precio debe ser mayor a 0")
+    } else {
+      setPriceError("")
+    }
   }
 
   /* ─── Action Handlers ─── */
@@ -288,10 +310,14 @@ export default function AdminPageClient({ initialData }: { initialData: Category
   }
 
   /* ─── Product Modal ─── */
-  function handleOpenProductModal(mode: "create" | "edit", categoryId: string, product?: Product) {
+  function handleOpenProductModal(mode: "create" | "edit", categoryId: string | null, product?: Product) {
     setProductImagePreview(product?.image_url ?? null)
-    setPriceValue(product?.price?.toString() ?? "")
-    setPriceError(null)
+    if (product) {
+      setPriceValue(String(product.price))
+    } else {
+      setPriceValue("")
+    }
+    setPriceError("")
     setProductModal({ open: true, mode, data: product ?? null, categoryId })
   }
 
@@ -299,39 +325,17 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     setProductModal({ open: false, mode: "create", data: null, categoryId: null })
     setProductImagePreview(null)
     setPriceValue("")
-    setPriceError(null)
-  }
-
-  function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const value = e.target.value
-    setPriceValue(value)
-
-    if (value === "") {
-      setPriceError(null)
-    } else {
-      const num = parseFloat(value)
-      if (isNaN(num) || num <= 0) {
-        setPriceError("El precio debe ser mayor a $0")
-      } else {
-        setPriceError(null)
-      }
-    }
+    setPriceError("")
   }
 
   async function handleProductFormSubmit(formData: FormData) {
-    const price = parseFloat(formData.get("price") as string)
-    if (isNaN(price) || price <= 0) {
-      setPriceError("El precio debe ser mayor a $0")
-      return
-    }
-
     startTransition(async () => {
       const action = productModal.mode === "create" ? createProduct : updateProduct
       const result = await action(formData)
+      handleCloseProductModal()
       if (result?.error) {
         showToast(result.error, "error")
       } else {
-        handleCloseProductModal()
         showToast(
           productModal.mode === "create" ? "Producto creado" : "Producto actualizado",
           "success"
@@ -341,7 +345,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     })
   }
 
-  /* ─── Image preview ─── */
+  /* ─── Image preview handler ─── */
   function handleImageChange(
     e: React.ChangeEvent<HTMLInputElement>,
     setPreview: (url: string | null) => void
@@ -359,23 +363,23 @@ export default function AdminPageClient({ initialData }: { initialData: Category
   /* ─── Render ─── */
   return (
     <div className="min-h-screen bg-[#e6dec8]">
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
-          <div className="flex items-center gap-2">
+      <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+        {/* Header - responsive */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
+          <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
               onClick={() => handleOpenCategoryModal("create")}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+              className="inline-flex items-center gap-2 px-3 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
             >
               <span className="pointer-events-none"><IconPlus /></span>
               Nueva Categoría
             </button>
             <button
               type="button"
-              onClick={() => handleOpenProductModal("create", "")}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+              onClick={() => handleOpenProductModal("create", null)}
+              className="inline-flex items-center gap-2 px-3 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
             >
               <span className="pointer-events-none"><IconPlus /></span>
               Nuevo Producto
@@ -390,7 +394,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
           </div>
         )}
 
-        {/* Categories */}
+        {/* Categories list */}
         {initialData.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[#6b6858] text-lg">No hay categorías aún.</p>
@@ -412,13 +416,13 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   key={category.id}
                   className="border-2 border-[#da5a47] rounded-xl bg-[#eee7d4] overflow-hidden"
                 >
-                  {/* Category Header */}
+                  {/* ── Category Header (Accordion Trigger) ── */}
                   <button
                     type="button"
                     onClick={() => toggleAccordion(category.id)}
-                    className="w-full flex items-center justify-between p-4 text-left cursor-pointer hover:bg-[#e6dec8] transition-colors rounded-t-xl"
+                    className="w-full flex items-center justify-between p-3 sm:p-4 text-left cursor-pointer hover:bg-[#e6dec8] transition-colors rounded-t-xl"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
+                    <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                       {category.image_url ? (
                         <Image
                           src={category.image_url}
@@ -433,13 +437,19 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                         </div>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-[#14130e] truncate">{category.name}</h3>
+                        <h3 className="font-semibold text-[#14130e] truncate text-sm sm:text-base">{category.name}</h3>
                         {category.description && (
-                          <p className="text-sm text-[#6b6858] truncate">{category.description}</p>
+                          <p className="text-xs sm:text-sm text-[#6b6858] truncate">{category.description}</p>
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                    <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0 ml-2 sm:ml-3">
+                      <span className="hidden sm:inline-flex">
+                        <ProductCountBadge count={category.products.length} />
+                      </span>
+                      <span className="sm:hidden inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#d4cbaf] text-[#6b6858]">
+                        {category.products.length}
+                      </span>
                       <StatusBadge
                         active={category.is_active}
                         activeLabel="Activo"
@@ -451,15 +461,15 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                     </div>
                   </button>
 
-                  {/* Expanded Content */}
+                  {/* ── Expanded Content ── */}
                   {isExpanded && (
                     <div className="border-t border-[#d4cbaf]">
                       {/* Category Actions */}
-                      <div className="flex items-center gap-2 px-4 py-3 bg-[#e6dec8] border-b border-[#d4cbaf]">
+                      <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 bg-[#e6dec8] border-b border-[#d4cbaf] flex-wrap">
                         <button
                           type="button"
                           onClick={() => handleOpenCategoryModal("edit", category)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm font-medium text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
                           title="Editar categoría"
                         >
                           <span className="pointer-events-none"><IconEdit /></span>
@@ -468,7 +478,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                         <button
                           type="button"
                           onClick={() => handleToggleCategory(category.id)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm font-medium text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
                           title={category.is_active ? "Desactivar categoría" : "Activar categoría"}
                         >
                           <span className="pointer-events-none">
@@ -479,7 +489,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                         <button
                           type="button"
                           onClick={() => handleOpenDeleteConfirm("category", category.id, category.name)}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
+                          className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-sm font-medium text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
                           title="Eliminar categoría"
                         >
                           <span className="pointer-events-none"><IconTrash /></span>
@@ -487,8 +497,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                         </button>
                       </div>
 
-                      {/* Products */}
-                      <div className="p-4">
+                      {/* Products List */}
+                      <div className="p-3 sm:p-4">
                         {category.products.length === 0 ? (
                           <p className="text-sm text-[#6b6858] text-center py-4">
                             No hay productos en esta categoría.
@@ -517,10 +527,10 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                                     </div>
                                   )}
                                   <div className="min-w-0">
-                                    <p className="font-medium text-[#14130e] text-sm truncate">
+                                    <p className="font-bold text-[#14130e] text-[15px] truncate">
                                       {product.name}
                                     </p>
-                                    <p className="text-xs text-[#6b6858]">
+                                    <p className="font-bold text-[13px] text-[#6b6858]">
                                       ${product.price.toLocaleString("es-AR")}
                                     </p>
                                   </div>
@@ -563,7 +573,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                           </div>
                         )}
 
-                        {/* Add Product inside category */}
+                        {/* Add Product Button */}
                         <button
                           type="button"
                           onClick={() => handleOpenProductModal("create", category.id)}
@@ -607,8 +617,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <input type="hidden" name="id" value={categoryModal.data.id} />
               )}
 
+              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Nombre *</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Nombre *
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -619,8 +632,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
+              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Descripción
+                </label>
                 <textarea
                   name="description"
                   rows={2}
@@ -630,8 +646,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
+              {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Imagen</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Imagen
+                </label>
                 <div className="flex items-center gap-3">
                   {(categoryImagePreview || categoryModal.data?.image_url) && (
                     <div className="relative w-16 h-16 flex-shrink-0">
@@ -653,6 +672,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </div>
               </div>
 
+              {/* Active Toggle */}
               <div className="flex items-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -666,6 +686,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <span className="text-sm font-medium text-[#14130e]">Categoría activa</span>
               </div>
 
+              {/* Submit */}
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
@@ -679,7 +700,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   disabled={isPending}
                   className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isPending ? "Guardando..." : categoryModal.mode === "create" ? "Crear Categoría" : "Guardar Cambios"}
+                  {isPending
+                    ? "Guardando..."
+                    : categoryModal.mode === "create"
+                    ? "Crear Categoría"
+                    : "Guardar Cambios"}
                 </button>
               </div>
             </form>
@@ -711,31 +736,35 @@ export default function AdminPageClient({ initialData }: { initialData: Category
               {productModal.mode === "edit" && productModal.data && (
                 <input type="hidden" name="id" value={productModal.data.id} />
               )}
+              <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
 
-              {/* Category selector */}
-              {(!productModal.categoryId || productModal.mode === "edit") && (
+              {/* Category Selector (when no categoryId pre-selected) */}
+              {!productModal.categoryId && (
                 <div>
-                  <label className="block text-sm font-medium text-[#14130e] mb-1">Categoría *</label>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">
+                    Categoría *
+                  </label>
                   <select
                     name="category_id"
                     required
-                    defaultValue={productModal.data?.category_id ?? productModal.categoryId ?? ""}
+                    defaultValue={productModal.data?.category_id ?? ""}
                     className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
                   >
-                    <option value="">Seleccionar categoría</option>
+                    <option value="">Seleccioná una categoría</option>
                     {initialData.map((cat) => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
                     ))}
                   </select>
                 </div>
               )}
 
-              {productModal.categoryId && productModal.mode === "create" && (
-                <input type="hidden" name="category_id" value={productModal.categoryId} />
-              )}
-
+              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Nombre *</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Nombre *
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -746,30 +775,35 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
+              {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Precio *</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Precio *
+                </label>
                 <input
                   type="number"
                   name="price"
                   required
                   min="0.01"
                   step="0.01"
+                  defaultValue={productModal.data?.price ?? ""}
                   value={priceValue}
                   onChange={handlePriceChange}
-                  className={`w-full px-3 py-2 rounded-lg border bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:border-transparent text-sm ${
-                    priceError
-                      ? "border-[#da5a47] focus:ring-[#da5a47]"
-                      : "border-[#d4cbaf] focus:ring-[#da5a47]"
+                  className={`w-full px-3 py-2 rounded-lg border bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm ${
+                    priceError ? "border-[#da5a47]" : "border-[#d4cbaf]"
                   }`}
                   placeholder="0.00"
                 />
                 {priceError && (
-                  <p className="mt-1 text-sm text-[#da5a47] font-medium">{priceError}</p>
+                  <p className="mt-1 text-xs text-[#da5a47] font-medium">{priceError}</p>
                 )}
               </div>
 
+              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Descripción</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Descripción
+                </label>
                 <textarea
                   name="description"
                   rows={2}
@@ -779,8 +813,31 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
+              {/* Category Selector (edit mode) */}
+              {productModal.mode === "edit" && productModal.categoryId && (
+                <div>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">
+                    Categoría
+                  </label>
+                  <select
+                    name="category_id"
+                    defaultValue={productModal.data?.category_id ?? productModal.categoryId ?? ""}
+                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  >
+                    {initialData.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">Imagen</label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Imagen
+                </label>
                 <div className="flex items-center gap-3">
                   {(productImagePreview || productModal.data?.image_url) && (
                     <div className="relative w-16 h-16 flex-shrink-0">
@@ -802,6 +859,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </div>
               </div>
 
+              {/* Available Toggle */}
               <div className="flex items-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -815,6 +873,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <span className="text-sm font-medium text-[#14130e]">Producto disponible</span>
               </div>
 
+              {/* Submit */}
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
@@ -828,7 +887,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   disabled={isPending || !!priceError}
                   className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isPending ? "Guardando..." : productModal.mode === "create" ? "Crear Producto" : "Guardar Cambios"}
+                  {isPending
+                    ? "Guardando..."
+                    : productModal.mode === "create"
+                    ? "Crear Producto"
+                    : "Guardar Cambios"}
                 </button>
               </div>
             </form>
@@ -836,7 +899,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         </div>
       )}
 
-      {/* ─── Delete Confirmation ─── */}
+      {/* ─── Delete Confirmation Modal ─── */}
       {deleteConfirm.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-sm p-6">
@@ -871,11 +934,11 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         </div>
       )}
 
-      {/* ─── Toast ─── */}
+      {/* ─── Toast Notification ─── */}
       {toast.show && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 max-w-md w-[90%]">
           <div
-            className={`px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium text-center ${
+            className={`px-5 py-3 rounded-lg shadow-lg text-white text-sm font-medium text-center ${
               toast.type === "success" ? "bg-emerald-600" : "bg-[#da5a47]"
             }`}
           >
