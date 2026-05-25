@@ -28,9 +28,9 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-dvh bg-[#0A1128] dark:bg-[#0A1128]">
+    <div className="min-h-dvh bg-[var(--admin-bg)] transition-colors duration-300">
       {/* Admin Header */}
-      <header className="sticky top-0 z-50 bg-[#0A1128] dark:bg-[#0A1128] border-b border-[rgba(212,175,55,0.12)]">
+      <header className="sticky top-0 z-50 bg-[var(--admin-bg)] border-b border-[var(--admin-border)] transition-colors duration-300">
         <div className="max-w-[960px] mx-auto px-6 h-16 flex items-center gap-3">
           <Image
             src="/images/logo.png"
@@ -40,7 +40,7 @@ export default async function AdminLayout({
             className="rounded-full"
           />
 
-          <span className="text-xs text-gray-500 font-medium uppercase tracking-widest">
+          <span className="text-xs text-[var(--admin-text-secondary)] font-medium uppercase tracking-widest transition-colors duration-300">
             Admin
           </span>
 
@@ -48,7 +48,7 @@ export default async function AdminLayout({
             <ThemeToggle />
             <Link
               href="/"
-              className="text-xs font-semibold text-gray-400 px-4 py-2 rounded-full border border-[rgba(255,255,255,0.1)] hover:border-[rgba(212,175,55,0.3)] hover:text-[#d4af37] transition-colors"
+              className="text-xs font-semibold text-[var(--admin-text-secondary)] px-4 py-2 rounded-full border border-[var(--admin-border)] hover:border-[rgba(212,175,55,0.3)] hover:text-[#d4af37] transition-colors"
             >
               Ver Carta
             </Link>

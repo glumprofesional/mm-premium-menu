@@ -288,10 +288,10 @@ export default function AdminPageClient({
   }) => (
     <button
       type="button"
-      onClick={(e) => { e.stopPropagation(); onClick() }}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); onClick() }}
+      onMouseDown={(e) => e.stopPropagation()}
       title={title}
-      disabled={isPending}
-      className={`p-2 rounded-lg transition-colors disabled:opacity-40 ${
+      className={`p-2 rounded-lg cursor-pointer transition-colors active:scale-95 ${
         variant === 'danger'
           ? 'text-red-400 hover:bg-red-900/30'
           : 'text-gray-400 hover:text-[#d4af37] hover:bg-[rgba(212,175,55,0.1)]'
@@ -305,7 +305,7 @@ export default function AdminPageClient({
      RENDER
      ═══════════════════════════════════════════════════ */
   return (
-    <div className="min-h-screen bg-[#0A1128] text-white px-4 py-6 md:px-8 md:py-10">
+    <div className="min-h-screen bg-[var(--admin-bg)] text-[var(--admin-text)] px-4 py-6 md:px-8 md:py-10 transition-colors duration-300">
       {/* ─── Header ─── */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-[#d4af37]">
@@ -318,8 +318,7 @@ export default function AdminPageClient({
               setCategoryImagePreview(null)
               setCategoryModal({ open: true, mode: 'create' })
             }}
-            disabled={isPending}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[rgba(212,175,55,0.1)] text-[#d4af37] font-semibold text-sm border border-[rgba(212,175,55,0.2)] hover:bg-[rgba(212,175,55,0.18)] transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[rgba(212,175,55,0.1)] text-[#d4af37] font-semibold text-sm border border-[rgba(212,175,55,0.2)] hover:bg-[rgba(212,175,55,0.18)] transition-colors"
           >
             <IconPlus /> Nueva Categoría
           </button>
@@ -333,7 +332,7 @@ export default function AdminPageClient({
                 categoryId: initialCategories[0]?.id,
               })
             }}
-            disabled={isPending || initialCategories.length === 0}
+            disabled={initialCategories.length === 0}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#d4af37] text-[#0A1128] font-semibold text-sm hover:bg-[#c4a030] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IconPlus /> Nuevo Producto
@@ -379,9 +378,9 @@ export default function AdminPageClient({
                       </div>
                     )}
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-white truncate">{category.name}</h3>
+                      <h3 className="font-semibold text-[var(--admin-text)] truncate">{category.name}</h3>
                       {category.description && (
-                        <p className="text-sm text-gray-400 truncate">{category.description}</p>
+                        <p className="text-sm text-[var(--admin-text-secondary)] truncate">{category.description}</p>
                       )}
                     </div>
                   </div>
@@ -396,7 +395,7 @@ export default function AdminPageClient({
                     >
                       {category.is_active ? 'Activa' : 'Inactiva'}
                     </span>
-                    <span className="text-xs px-2.5 py-1 rounded-full bg-[rgba(255,255,255,0.05)] text-gray-400">
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-[var(--admin-surface)] text-[var(--admin-text-secondary)]">
                       {categoryProducts.length} prod.
                     </span>
                     <IconChevron open={isExpanded} />
@@ -405,9 +404,9 @@ export default function AdminPageClient({
 
                 {/* ── Contenido expandido ── */}
                 {isExpanded && (
-                  <div className="border-t border-[rgba(212,175,55,0.1)]">
+                  <div className="border-t border-[var(--admin-border)]">
                     {/* Botones de acción de categoría */}
-                    <div className="flex items-center gap-1 px-4 md:px-5 py-3 border-b border-[rgba(255,255,255,0.04)]">
+                    <div className="flex items-center gap-1 px-4 md:px-5 py-3 border-b border-[var(--admin-border)]">
                       <ActionButton
                         onClick={() => {
                           setCategoryImagePreview(category.image_url ?? null)
@@ -445,7 +444,7 @@ export default function AdminPageClient({
                           No hay productos en esta categoría
                         </p>
                       ) : (
-                        <div className="divide-y divide-[rgba(255,255,255,0.04)]">
+                        <div className="divide-y divide-[var(--admin-border)]">
                           {categoryProducts.map(product => (
                             <div
                               key={product.id}
@@ -466,10 +465,10 @@ export default function AdminPageClient({
                                   </div>
                                 )}
                                 <div className="min-w-0">
-                                  <p className="font-medium text-sm text-white truncate">
+                                  <p className="font-medium text-sm text-[var(--admin-text)] truncate">
                                     {product.name}
                                   </p>
-                                  <p className="text-xs text-gray-400">
+                                  <p className="text-xs text-[var(--admin-text-secondary)]">
                                     $ {product.price.toLocaleString('es-AR')}
                                     {product.family && (
                                       <span className="ml-2 text-gray-500">· {product.family}</span>
@@ -539,8 +538,7 @@ export default function AdminPageClient({
                             categoryId: category.id,
                           })
                         }}
-                        disabled={isPending}
-                        className="mt-2 w-full py-2.5 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] text-[#d4af37] text-sm font-medium hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center gap-2 disabled:opacity-40"
+                        className="mt-2 w-full py-2.5 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] text-[#d4af37] text-sm font-medium hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <IconPlus /> Nuevo Producto
                       </button>
@@ -572,7 +570,7 @@ export default function AdminPageClient({
               <button
                 type="button"
                 onClick={() => { setCategoryModal({ open: false, mode: 'create' }); setCategoryImagePreview(null) }}
-                className="p-1 text-gray-400 hover:text-white transition-colors"
+                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer"
               >
                 <IconX />
               </button>
@@ -591,7 +589,7 @@ export default function AdminPageClient({
                   required
                   defaultValue={categoryModal.data?.name ?? ''}
                   placeholder="Ej: Tragos de Autor"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
                 />
               </div>
 
@@ -602,7 +600,7 @@ export default function AdminPageClient({
                   rows={2}
                   defaultValue={categoryModal.data?.description ?? ''}
                   placeholder="Descripción breve de la categoría"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors resize-none"
                 />
               </div>
 
@@ -619,7 +617,7 @@ export default function AdminPageClient({
                 <button
                   type="button"
                   onClick={() => categoryImageRef.current?.click()}
-                  className="w-full py-3 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center overflow-hidden"
+                  className="w-full py-3 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center overflow-hidden cursor-pointer"
                 >
                   {categoryImagePreview ? (
                     <img src={categoryImagePreview} alt="Preview" className="max-h-24 rounded-lg object-contain" />
@@ -636,16 +634,16 @@ export default function AdminPageClient({
                   name="is_active"
                   type="checkbox"
                   defaultChecked={categoryModal.data?.is_active ?? true}
-                  className="w-4 h-4 rounded border-[rgba(212,175,55,0.3)] bg-[rgba(255,255,255,0.05)] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0"
+                  className="w-4 h-4 rounded border-[rgba(212,175,55,0.3)] bg-[var(--admin-surface)] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0"
                 />
-                <span className="text-sm text-gray-300">Categoría activa</span>
+                <span className="text-sm text-[var(--admin-text-secondary)]">Categoría activa</span>
               </label>
 
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => { setCategoryModal({ open: false, mode: 'create' }); setCategoryImagePreview(null) }}
-                  className="flex-1 py-2.5 rounded-xl border border-[rgba(255,255,255,0.1)] text-gray-300 text-sm font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                  className="flex-1 py-2.5 rounded-xl border border-[var(--admin-border)] text-[var(--admin-text-secondary)] text-sm font-medium hover:bg-[var(--admin-surface-hover)] transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -681,7 +679,7 @@ export default function AdminPageClient({
               <button
                 type="button"
                 onClick={() => { setProductModal({ open: false, mode: 'create' }); setProductImagePreview(null) }}
-                className="p-1 text-gray-400 hover:text-white transition-colors"
+                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer"
               >
                 <IconX />
               </button>
@@ -699,7 +697,7 @@ export default function AdminPageClient({
                   name="category_id"
                   required
                   defaultValue={productModal.categoryId ?? productModal.data?.category_id ?? ''}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white focus:outline-none focus:border-[#d4af37] transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] focus:outline-none focus:border-[#d4af37] transition-colors"
                 >
                   {initialCategories.map(cat => (
                     <option key={cat.id} value={cat.id} className="bg-[#0A1128] text-white">
@@ -717,7 +715,7 @@ export default function AdminPageClient({
                   required
                   defaultValue={productModal.data?.name ?? ''}
                   placeholder="Ej: Fernet con Cola"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
                 />
               </div>
 
@@ -732,7 +730,7 @@ export default function AdminPageClient({
                     step="0.01"
                     defaultValue={productModal.data?.price ?? ''}
                     placeholder="4500"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
                   />
                 </div>
                 <div>
@@ -742,7 +740,7 @@ export default function AdminPageClient({
                     type="text"
                     defaultValue={productModal.data?.family ?? ''}
                     placeholder="Ej: Fernet"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors"
                   />
                 </div>
               </div>
@@ -754,7 +752,7 @@ export default function AdminPageClient({
                   rows={2}
                   defaultValue={productModal.data?.description ?? ''}
                   placeholder="Descripción breve del producto"
-                  className="w-full px-4 py-2.5 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(212,175,55,0.12)] text-white placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors resize-none"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[var(--admin-surface)] border border-[var(--admin-border)] text-[var(--admin-text)] placeholder-gray-500 focus:outline-none focus:border-[#d4af37] transition-colors resize-none"
                 />
               </div>
 
@@ -771,7 +769,7 @@ export default function AdminPageClient({
                 <button
                   type="button"
                   onClick={() => productImageRef.current?.click()}
-                  className="w-full py-3 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center overflow-hidden"
+                  className="w-full py-3 rounded-xl border border-dashed border-[rgba(212,175,55,0.25)] hover:bg-[rgba(212,175,55,0.05)] transition-colors flex items-center justify-center overflow-hidden cursor-pointer"
                 >
                   {productImagePreview ? (
                     <img src={productImagePreview} alt="Preview" className="max-h-24 rounded-lg object-contain" />
@@ -788,16 +786,16 @@ export default function AdminPageClient({
                   name="is_available"
                   type="checkbox"
                   defaultChecked={productModal.data?.is_available ?? true}
-                  className="w-4 h-4 rounded border-[rgba(212,175,55,0.3)] bg-[rgba(255,255,255,0.05)] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0"
+                  className="w-4 h-4 rounded border-[rgba(212,175,55,0.3)] bg-[var(--admin-surface)] text-[#d4af37] focus:ring-[#d4af37] focus:ring-offset-0"
                 />
-                <span className="text-sm text-gray-300">Producto disponible</span>
+                <span className="text-sm text-[var(--admin-text-secondary)]">Producto disponible</span>
               </label>
 
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => { setProductModal({ open: false, mode: 'create' }); setProductImagePreview(null) }}
-                  className="flex-1 py-2.5 rounded-xl border border-[rgba(255,255,255,0.1)] text-gray-300 text-sm font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                  className="flex-1 py-2.5 rounded-xl border border-[var(--admin-border)] text-[var(--admin-text-secondary)] text-sm font-medium hover:bg-[var(--admin-surface-hover)] transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
@@ -827,9 +825,9 @@ export default function AdminPageClient({
             onClick={e => e.stopPropagation()}
           >
             <h2 className="text-lg font-bold text-red-400 mb-2">Confirmar eliminación</h2>
-            <p className="text-gray-300 text-sm mb-6">
+            <p className="text-[var(--admin-text-secondary)] text-sm mb-6">
               ¿Estás seguro de eliminar{' '}
-              <span className="text-white font-medium">{deleteConfirm.name}</span>?
+              <span className="text-[var(--admin-text)] font-medium">{deleteConfirm.name}</span>?
               {deleteConfirm.type === 'category' && (
                 <span className="block mt-1 text-xs text-gray-500">
                   También se eliminarán todos los productos de esta categoría.
@@ -841,7 +839,7 @@ export default function AdminPageClient({
               <button
                 type="button"
                 onClick={() => setDeleteConfirm(null)}
-                className="flex-1 py-2.5 rounded-xl border border-[rgba(255,255,255,0.1)] text-gray-300 text-sm font-medium hover:bg-[rgba(255,255,255,0.05)] transition-colors"
+                className="flex-1 py-2.5 rounded-xl border border-[var(--admin-border)] text-[var(--admin-text-secondary)] text-sm font-medium hover:bg-[var(--admin-surface-hover)] transition-colors cursor-pointer"
               >
                 Cancelar
               </button>
@@ -853,7 +851,7 @@ export default function AdminPageClient({
                     : handleDeleteProduct(deleteConfirm.id)
                 }
                 disabled={isPending}
-                className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50"
+                className="flex-1 py-2.5 rounded-xl bg-red-600 text-white text-sm font-semibold hover:bg-red-700 transition-colors disabled:opacity-50 cursor-pointer"
               >
                 {isPending ? 'Eliminando...' : 'Eliminar'}
               </button>
