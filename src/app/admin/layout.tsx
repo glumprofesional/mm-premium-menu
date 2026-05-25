@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { adminDb } from '@/lib/supabase/admin'
 import { signOut } from './actions'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default async function AdminLayout({
   children,
@@ -11,12 +12,10 @@ export default async function AdminLayout({
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Si no hay usuario, solo renderizar children (página de login)
   if (!user) {
     return <>{children}</>
   }
 
-  // Verificar si está autorizado (usar adminDb para bypass RLS)
   const { data: allowedUser } = await adminDb
     .from('allowed_users')
     .select('email, role')
@@ -31,11 +30,15 @@ export default async function AdminLayout({
     <div className="min-h-dvh bg-[#0A1128]">
       {/* Admin Header */}
       <header className="sticky top-0 z-50 bg-[#0A1128] border-b border-[rgba(212,175,55,0.12)]">
-        <div className="max-w-[960px] mx-auto px-6 h-16 flex items-center gap-4">
-          {/* Logo */}
-          <span className="text-xl font-bold text-[#d4af37] tracking-wider">
-            M&amp;M
-          </span>
+        <div className="max-w-[960px] mx-auto px-6 h-16 flex items-center gap-3">
+          {/* Logo real */}
+          <Image
+            src="/images/logo.png"
+            alt="M&M Multiespacio"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
 
           <span className="text-xs text-gray-500 font-medium uppercase tracking-widest">
             Admin
