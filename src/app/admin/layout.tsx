@@ -3,6 +3,7 @@ import { adminDb } from '@/lib/supabase/admin'
 import { signOut } from './actions'
 import Link from 'next/link'
 import Image from 'next/image'
+import ThemeToggle from './ThemeToggle'
 
 export default async function AdminLayout({
   children,
@@ -27,11 +28,10 @@ export default async function AdminLayout({
   }
 
   return (
-    <div className="min-h-dvh bg-[#0A1128]">
+    <div className="min-h-dvh bg-[#0A1128] dark:bg-[#0A1128]">
       {/* Admin Header */}
-      <header className="sticky top-0 z-50 bg-[#0A1128] border-b border-[rgba(212,175,55,0.12)]">
+      <header className="sticky top-0 z-50 bg-[#0A1128] dark:bg-[#0A1128] border-b border-[rgba(212,175,55,0.12)]">
         <div className="max-w-[960px] mx-auto px-6 h-16 flex items-center gap-3">
-          {/* Logo real */}
           <Image
             src="/images/logo.png"
             alt="M&M Multiespacio"
@@ -45,13 +45,13 @@ export default async function AdminLayout({
           </span>
 
           <div className="ml-auto flex items-center gap-3">
+            <ThemeToggle />
             <Link
               href="/"
               className="text-xs font-semibold text-gray-400 px-4 py-2 rounded-full border border-[rgba(255,255,255,0.1)] hover:border-[rgba(212,175,55,0.3)] hover:text-[#d4af37] transition-colors"
             >
               Ver Carta
             </Link>
-
             <form action={signOut}>
               <button
                 type="submit"
