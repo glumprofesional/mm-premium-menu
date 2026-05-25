@@ -1,392 +1,271 @@
-'use server';
+"use server"
 
-import { createClient } from '@/lib/supabase/server';
-import { adminDb } from '@/lib/supabase/admin';
-import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath } from "next/cache"
+import { adminDb } from "@/lib/supabase/admin"
+import { createClient } from "@/lib/supabase/server"
 
-// ==========================================================================
-// Auth helper
-// ==========================================================================
-
+/* ─── Auth Check ─── */
 async function checkAuth() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) throw new Error("No autenticado")
 
-  if (!user) {
-    throw new Error('No autenticado');
-  }
+  const { data: allowed } = await adminDb
+    .from("allowed_users")
+    .select("id")
+    .eq("email", user.email)
+    .single()
+  if (!allowed) throw new Error("No autorizado")
 
-  const { data: allowedUser } = await adminDb
-    .from('allowed_users')
-    .select('email, role')
-    .eq('email', user.email)
-    .single();
-
-  if (!allowedUser) {
-    throw new Error('No autorizado');
-  }
-
-  return { user, role: allowedUser.role };
+  return user
 }
 
-// ==========================================================================
-// Sign out
-// ==========================================================================
+/* ─── Image Upload Helper ─── */
+async function uploadToStorage(
+  file: File,
+  bucket: "category-images" | "product-images"
+): Promise<string> {
+  const ext = file.name.split(".").pop() || "webp"
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+  const arrayBuffer = await file.arrayBuffer()
+  const buffer = Buffer.from(arrayBuffer)
 
-export async function signOut() {
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect('/admin/login');
-}
-
-// ==========================================================================
-// Get admin data (all categories + products, including inactive)
-// ==========================================================================
-
-export async function getAdminData() {
-  await checkAuth();
-
-  const { data: categories, error: catError } = await adminDb
-    .from('categories')
-    .select('*')
-    .order('sort_order', { ascending: true });
-
-  if (catError) {
-    return { categories: [], products: [] };
-  }
-
-  const { data: products, error: prodError } = await adminDb
-    .from('products')
-    .select('*')
-    .order('sort_order', { ascending: true });
-
-  if (prodError) {
-    return { categories: categories || [], products: [] };
-  }
-
-  return { categories: categories || [], products: products || [] };
-}
-
-// ==========================================================================
-// Image upload helper
-// ==========================================================================
-
-async function uploadToStorage(file: File, bucket: 'category-images' | 'product-images') {
-  const ext = file.name.split('.').pop() || 'webp';
-  const filename = `${Date.now()}-${Math.random().toString(36).substring(2)}.${ext}`;
-
-  const { error } = await adminDb.storage
+  const { data, error } = await adminDb.storage
     .from(bucket)
-    .upload(filename, file, {
+    .upload(filename, buffer, {
       contentType: file.type,
       upsert: false,
-    });
+    })
 
-  if (error) {
-    return { error: error.message };
-  }
+  if (error) throw new Error(`Error subiendo imagen: ${error.message}`)
 
-  const { data: urlData } = adminDb.storage
-    .from(bucket)
-    .getPublicUrl(filename);
-
-  return { url: urlData.publicUrl };
+  const { data: urlData } = adminDb.storage.from(bucket).getPublicUrl(filename)
+  return urlData.publicUrl
 }
 
-// ==========================================================================
-// Slug generator
-// ==========================================================================
+/* ─── Get Admin Data ─── */
+export async function getAdminData() {
+  await checkAuth()
 
-function generateSlug(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+  const { data: categories, error } = await adminDb
+    .from("categories")
+    .select("*, products(*)")
+    .order("sort_order", { ascending: true })
+
+  if (error) throw new Error(`Error cargando datos: ${error.message}`)
+  return categories || []
 }
 
-// ==========================================================================
-// Categories CRUD
-// ==========================================================================
-
+/* ─── Category Actions ─── */
 export async function createCategory(formData: FormData) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const isActive = formData.get("is_active") === "on"
+    const imageFile = formData.get("image") as File | null
 
-  const name = formData.get('name') as string;
-  const description = formData.get('description') as string;
-  const isActive = formData.get('is_active') === 'on';
-  const imageFile = formData.get('image') as File | null;
-
-  let imageUrl: string | null = null;
-
-  if (imageFile && imageFile.size > 0) {
-    const result = await uploadToStorage(imageFile, 'category-images');
-    if (result.error) {
-      return { error: result.error };
+    let image_url: string | null = null
+    if (imageFile && imageFile.size > 0) {
+      image_url = await uploadToStorage(imageFile, "category-images")
     }
-    imageUrl = result.url ?? null;
-  }
 
-  const { data: existing } = await adminDb
-    .from('categories')
-    .select('sort_order')
-    .order('sort_order', { ascending: false })
-    .limit(1);
+    const { data: maxSort } = await adminDb
+      .from("categories")
+      .select("sort_order")
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .single()
 
-  const nextOrder = existing && existing.length > 0 ? existing[0].sort_order + 1 : 0;
+    const nextSort = (maxSort?.sort_order ?? 0) + 1
 
-  const { error } = await adminDb
-    .from('categories')
-    .insert({
+    const { error } = await adminDb.from("categories").insert({
       name,
-      slug: generateSlug(name),
       description: description || null,
-      image_url: imageUrl,
-      sort_order: nextOrder,
       is_active: isActive,
-    });
+      image_url,
+      sort_order: nextSort,
+    })
 
-  if (error) {
-    return { error: error.message };
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }
 
 export async function updateCategory(formData: FormData) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const id = formData.get("id") as string
+    const name = formData.get("name") as string
+    const description = formData.get("description") as string
+    const isActive = formData.get("is_active") === "on"
+    const imageFile = formData.get("image") as File | null
 
-  const id = formData.get('id') as string;
-  const name = formData.get('name') as string;
-  const description = formData.get('description') as string;
-  const isActive = formData.get('is_active') === 'on';
-  const imageFile = formData.get('image') as File | null;
-
-  let imageUrl: string | null = null;
-
-  if (imageFile && imageFile.size > 0) {
-    const result = await uploadToStorage(imageFile, 'category-images');
-    if (result.error) {
-      return { error: result.error };
+    const updateData: Record<string, unknown> = {
+      name,
+      description: description || null,
+      is_active: isActive,
     }
-    imageUrl = result.url ?? null;
+
+    if (imageFile && imageFile.size > 0) {
+      updateData.image_url = await uploadToStorage(imageFile, "category-images")
+    }
+
+    const { error } = await adminDb
+      .from("categories")
+      .update(updateData)
+      .eq("id", id)
+
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  const updateData: Record<string, unknown> = {
-    name,
-    slug: generateSlug(name),
-    description: description || null,
-    is_active: isActive,
-  };
-
-  if (imageUrl !== null) {
-    updateData.image_url = imageUrl;
-  }
-
-  const { error } = await adminDb
-    .from('categories')
-    .update(updateData)
-    .eq('id', id);
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
-}
-
-export async function deleteCategory(id: string) {
-  await checkAuth();
-
-  await adminDb.from('products').delete().eq('category_id', id);
-  const { error } = await adminDb.from('categories').delete().eq('id', id);
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }
 
 export async function toggleCategoryActive(id: string) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const { data: category } = await adminDb
+      .from("categories")
+      .select("is_active")
+      .eq("id", id)
+      .single()
 
-  const { data: category } = await adminDb
-    .from('categories')
-    .select('is_active')
-    .eq('id', id)
-    .single();
+    if (!category) throw new Error("Categoría no encontrada")
 
-  if (!category) {
-    return { error: 'Categoría no encontrada' };
+    const { error } = await adminDb
+      .from("categories")
+      .update({ is_active: !category.is_active })
+      .eq("id", id)
+
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  const { error } = await adminDb
-    .from('categories')
-    .update({ is_active: !category.is_active })
-    .eq('id', id);
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }
 
-// ==========================================================================
-// Products CRUD
-// ==========================================================================
+export async function deleteCategory(id: string) {
+  try {
+    await checkAuth()
+    const { error } = await adminDb.from("categories").delete().eq("id", id)
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
+  }
+}
 
+/* ─── Product Actions ─── */
 export async function createProduct(formData: FormData) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const name = formData.get("name") as string
+    const price = parseFloat(formData.get("price") as string)
+    const description = formData.get("description") as string
+    const categoryId = formData.get("category_id") as string
+    const isAvailable = formData.get("is_available") === "on"
+    const imageFile = formData.get("image") as File | null
 
-  const name = formData.get('name') as string;
-  const categoryId = formData.get('category_id') as string;
-  const description = formData.get('description') as string;
-  const price = parseFloat(formData.get('price') as string);
-  const family = formData.get('family') as string;
-  const isAvailable = formData.get('is_available') === 'on';
-  const imageFile = formData.get('image') as File | null;
-
-  let imageUrl: string | null = null;
-
-  if (imageFile && imageFile.size > 0) {
-    const result = await uploadToStorage(imageFile, 'product-images');
-    if (result.error) {
-      return { error: result.error };
+    let image_url: string | null = null
+    if (imageFile && imageFile.size > 0) {
+      image_url = await uploadToStorage(imageFile, "product-images")
     }
-    imageUrl = result.url ?? null;
-  }
 
-  const { data: existing } = await adminDb
-    .from('products')
-    .select('sort_order')
-    .eq('category_id', categoryId)
-    .order('sort_order', { ascending: false })
-    .limit(1);
-
-  const nextOrder = existing && existing.length > 0 ? existing[0].sort_order + 1 : 0;
-
-  const { error } = await adminDb
-    .from('products')
-    .insert({
+    const { error } = await adminDb.from("products").insert({
       name,
-      slug: generateSlug(name),
-      category_id: categoryId,
+      price,
       description: description || null,
-      price: isNaN(price) ? 0 : price,
-      image_url: imageUrl,
-      family: family || null,
+      category_id: categoryId,
       is_available: isAvailable,
-      sort_order: nextOrder,
-    });
+      image_url,
+    })
 
-  if (error) {
-    return { error: error.message };
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }
 
 export async function updateProduct(formData: FormData) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const id = formData.get("id") as string
+    const name = formData.get("name") as string
+    const price = parseFloat(formData.get("price") as string)
+    const description = formData.get("description") as string
+    const categoryId = formData.get("category_id") as string
+    const isAvailable = formData.get("is_available") === "on"
+    const imageFile = formData.get("image") as File | null
 
-  const id = formData.get('id') as string;
-  const name = formData.get('name') as string;
-  const categoryId = formData.get('category_id') as string;
-  const description = formData.get('description') as string;
-  const price = parseFloat(formData.get('price') as string);
-  const family = formData.get('family') as string;
-  const isAvailable = formData.get('is_available') === 'on';
-  const imageFile = formData.get('image') as File | null;
-
-  let imageUrl: string | null = null;
-
-  if (imageFile && imageFile.size > 0) {
-    const result = await uploadToStorage(imageFile, 'product-images');
-    if (result.error) {
-      return { error: result.error };
+    const updateData: Record<string, unknown> = {
+      name,
+      price,
+      description: description || null,
+      category_id: categoryId,
+      is_available: isAvailable,
     }
-    imageUrl = result.url ?? null;
+
+    if (imageFile && imageFile.size > 0) {
+      updateData.image_url = await uploadToStorage(imageFile, "product-images")
+    }
+
+    const { error } = await adminDb
+      .from("products")
+      .update(updateData)
+      .eq("id", id)
+
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  const updateData: Record<string, unknown> = {
-    name,
-    slug: generateSlug(name),
-    category_id: categoryId,
-    description: description || null,
-    price: isNaN(price) ? 0 : price,
-    family: family || null,
-    is_available: isAvailable,
-  };
-
-  if (imageUrl !== null) {
-    updateData.image_url = imageUrl;
-  }
-
-  const { error } = await adminDb
-    .from('products')
-    .update(updateData)
-    .eq('id', id);
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
-}
-
-export async function deleteProduct(id: string) {
-  await checkAuth();
-
-  const { error } = await adminDb.from('products').delete().eq('id', id);
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }
 
 export async function toggleProductAvailable(id: string) {
-  await checkAuth();
+  try {
+    await checkAuth()
+    const { data: product } = await adminDb
+      .from("products")
+      .select("is_available")
+      .eq("id", id)
+      .single()
 
-  const { data: product } = await adminDb
-    .from('products')
-    .select('is_available')
-    .eq('id', id)
-    .single();
+    if (!product) throw new Error("Producto no encontrado")
 
-  if (!product) {
-    return { error: 'Producto no encontrado' };
+    const { error } = await adminDb
+      .from("products")
+      .update({ is_available: !product.is_available })
+      .eq("id", id)
+
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
+}
 
-  const { error } = await adminDb
-    .from('products')
-    .update({ is_available: !product.is_available })
-    .eq('id', id);
-
-  if (error) {
-    return { error: error.message };
+export async function deleteProduct(id: string) {
+  try {
+    await checkAuth()
+    const { error } = await adminDb.from("products").delete().eq("id", id)
+    if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
-
-  revalidatePath('/admin');
-  revalidatePath('/');
-  return { success: true };
 }

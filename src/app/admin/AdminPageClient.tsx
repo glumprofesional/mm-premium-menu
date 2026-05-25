@@ -61,7 +61,7 @@ type ToastState = {
   type: "success" | "error"
 }
 
-/* ─── Icons (inline SVGs) ─── */
+/* ─── Icons ─── */
 function IconEdit() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -311,7 +311,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     })
   }
 
-  /* ─── Image preview handler ─── */
+  /* ─── Image preview ─── */
   function handleImageChange(
     e: React.ChangeEvent<HTMLInputElement>,
     setPreview: (url: string | null) => void
@@ -350,7 +350,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
           </div>
         )}
 
-        {/* Categories list */}
+        {/* Categories */}
         {initialData.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-[#6b6858] text-lg">No hay categorías aún.</p>
@@ -372,7 +372,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   key={category.id}
                   className="border-2 border-[#da5a47] rounded-xl bg-[#eee7d4] overflow-hidden"
                 >
-                  {/* ── Category Header (Accordion Trigger) ── */}
+                  {/* Category Header */}
                   <button
                     type="button"
                     onClick={() => toggleAccordion(category.id)}
@@ -411,7 +411,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                     </div>
                   </button>
 
-                  {/* ── Expanded Content ── */}
+                  {/* Expanded Content */}
                   {isExpanded && (
                     <div className="border-t border-[#d4cbaf]">
                       {/* Category Actions */}
@@ -447,7 +447,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                         </button>
                       </div>
 
-                      {/* Products List */}
+                      {/* Products */}
                       <div className="p-4">
                         {category.products.length === 0 ? (
                           <p className="text-sm text-[#6b6858] text-center py-4">
@@ -523,7 +523,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                           </div>
                         )}
 
-                        {/* Add Product Button */}
+                        {/* Add Product */}
                         <button
                           type="button"
                           onClick={() => handleOpenProductModal("create", category.id)}
@@ -567,11 +567,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <input type="hidden" name="id" value={categoryModal.data.id} />
               )}
 
-              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Nombre *
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Nombre *</label>
                 <input
                   type="text"
                   name="name"
@@ -582,11 +579,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
-              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Descripción
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Descripción</label>
                 <textarea
                   name="description"
                   rows={2}
@@ -596,11 +590,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
-              {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Imagen
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Imagen</label>
                 <div className="flex items-center gap-3">
                   {(categoryImagePreview || categoryModal.data?.image_url) && (
                     <div className="relative w-16 h-16 flex-shrink-0">
@@ -622,7 +613,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </div>
               </div>
 
-              {/* Active Toggle */}
               <div className="flex items-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -636,7 +626,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <span className="text-sm font-medium text-[#14130e]">Categoría activa</span>
               </div>
 
-              {/* Submit */}
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
@@ -650,11 +639,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   disabled={isPending}
                   className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isPending
-                    ? "Guardando..."
-                    : categoryModal.mode === "create"
-                    ? "Crear Categoría"
-                    : "Guardar Cambios"}
+                  {isPending ? "Guardando..." : categoryModal.mode === "create" ? "Crear Categoría" : "Guardar Cambios"}
                 </button>
               </div>
             </form>
@@ -688,11 +673,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
               )}
               <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
 
-              {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Nombre *
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Nombre *</label>
                 <input
                   type="text"
                   name="name"
@@ -703,11 +685,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
-              {/* Price */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Precio *
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Precio *</label>
                 <input
                   type="number"
                   name="price"
@@ -720,11 +699,8 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
-              {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Descripción
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Descripción</label>
                 <textarea
                   name="description"
                   rows={2}
@@ -734,31 +710,23 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 />
               </div>
 
-              {/* Category Selector (edit mode) */}
               {productModal.mode === "edit" && (
                 <div>
-                  <label className="block text-sm font-medium text-[#14130e] mb-1">
-                    Categoría
-                  </label>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">Categoría</label>
                   <select
                     name="category_id"
                     defaultValue={productModal.data?.category_id ?? productModal.categoryId ?? ""}
                     className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
                   >
                     {initialData.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
                     ))}
                   </select>
                 </div>
               )}
 
-              {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Imagen
-                </label>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Imagen</label>
                 <div className="flex items-center gap-3">
                   {(productImagePreview || productModal.data?.image_url) && (
                     <div className="relative w-16 h-16 flex-shrink-0">
@@ -780,7 +748,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </div>
               </div>
 
-              {/* Available Toggle */}
               <div className="flex items-center gap-3">
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -794,7 +761,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <span className="text-sm font-medium text-[#14130e]">Producto disponible</span>
               </div>
 
-              {/* Submit */}
               <div className="flex justify-end gap-2 pt-2">
                 <button
                   type="button"
@@ -808,11 +774,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   disabled={isPending}
                   className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isPending
-                    ? "Guardando..."
-                    : productModal.mode === "create"
-                    ? "Crear Producto"
-                    : "Guardar Cambios"}
+                  {isPending ? "Guardando..." : productModal.mode === "create" ? "Crear Producto" : "Guardar Cambios"}
                 </button>
               </div>
             </form>
@@ -820,7 +782,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         </div>
       )}
 
-      {/* ─── Delete Confirmation Modal ─── */}
+      {/* ─── Delete Confirmation ─── */}
       {deleteConfirm.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-sm p-6">
@@ -855,7 +817,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         </div>
       )}
 
-      {/* ─── Toast Notification ─── */}
+      {/* ─── Toast ─── */}
       {toast.show && (
         <div className="fixed bottom-6 right-6 z-50">
           <div
