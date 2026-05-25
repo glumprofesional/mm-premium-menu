@@ -4,6 +4,17 @@ import { revalidatePath } from "next/cache"
 import { adminDb } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
 
+/* ─── Slug Generator ─── */
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .trim()
+    .replace(/[\s-]+/g, "-")
+}
+
 /* ─── Auth Check ─── */
 async function checkAuth() {
   const supabase = await createClient()
@@ -80,9 +91,11 @@ export async function createCategory(formData: FormData) {
       .single()
 
     const nextSort = (maxSort?.sort_order ?? 0) + 1
+    const slug = generateSlug(name)
 
     const { error } = await adminDb.from("categories").insert({
       name,
+      slug,
       description: description || null,
       is_active: isActive,
       image_url,
@@ -108,6 +121,7 @@ export async function updateCategory(formData: FormData) {
 
     const updateData: Record<string, unknown> = {
       name,
+      slug: generateSlug(name),
       description: description || null,
       is_active: isActive,
     }
