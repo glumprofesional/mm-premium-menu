@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import Image from "next/image"
 import { adminDb } from "@/lib/supabase/admin"
 import { createClient } from "@/lib/supabase/server"
@@ -14,11 +13,12 @@ export default async function AdminLayout({
     data: { user },
   } = await supabase.auth.getUser()
 
+  // Si no hay usuario, solo renderizar children (middleware redirige a /admin/login)
   if (!user) {
-    redirect("/admin/login")
+    return <>{children}</>
   }
 
-  // Check allowed_users
+  // Si el usuario no está en allowed_users, solo renderizar children
   const { data: allowed } = await adminDb
     .from("allowed_users")
     .select("id")
@@ -26,9 +26,10 @@ export default async function AdminLayout({
     .single()
 
   if (!allowed) {
-    redirect("/admin/login")
+    return <>{children}</>
   }
 
+  // Usuario autenticado y autorizado → mostrar layout completo con header
   return (
     <div className="min-h-screen bg-[#e6dec8]">
       {/* Header */}
