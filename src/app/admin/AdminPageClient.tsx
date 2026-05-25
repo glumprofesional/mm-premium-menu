@@ -193,6 +193,10 @@ export default function AdminPageClient({ initialData }: { initialData: Category
   const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null)
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
 
+  // Inline validation
+  const [priceError, setPriceError] = useState<string | null>(null)
+  const [priceValue, setPriceValue] = useState<string>("")
+
   const categoryFormRef = useRef<HTMLFormElement>(null)
   const productFormRef = useRef<HTMLFormElement>(null)
 
@@ -286,22 +290,48 @@ export default function AdminPageClient({ initialData }: { initialData: Category
   /* ─── Product Modal ─── */
   function handleOpenProductModal(mode: "create" | "edit", categoryId: string, product?: Product) {
     setProductImagePreview(product?.image_url ?? null)
+    setPriceValue(product?.price?.toString() ?? "")
+    setPriceError(null)
     setProductModal({ open: true, mode, data: product ?? null, categoryId })
   }
 
   function handleCloseProductModal() {
     setProductModal({ open: false, mode: "create", data: null, categoryId: null })
     setProductImagePreview(null)
+    setPriceValue("")
+    setPriceError(null)
+  }
+
+  function handlePriceChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const value = e.target.value
+    setPriceValue(value)
+
+    if (value === "") {
+      setPriceError(null)
+    } else {
+      const num = parseFloat(value)
+      if (isNaN(num) || num <= 0) {
+        setPriceError("El precio debe ser mayor a $0")
+      } else {
+        setPriceError(null)
+      }
+    }
   }
 
   async function handleProductFormSubmit(formData: FormData) {
+    const price = parseFloat(formData.get("price") as string)
+    if (isNaN(price) || price <= 0) {
+      setPriceError("El precio debe ser mayor a $0")
+      return
+    }
+
     startTransition(async () => {
       const action = productModal.mode === "create" ? createProduct : updateProduct
       const result = await action(formData)
-      handleCloseProductModal()
       if (result?.error) {
         showToast(result.error, "error")
       } else {
+        handleCloseProductModal()
         showToast(
           productModal.mode === "create" ? "Producto creado" : "Producto actualizado",
           "success"
@@ -682,7 +712,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 <input type="hidden" name="id" value={productModal.data.id} />
               )}
 
-              {/* Category selector - always visible when no categoryId, also in edit mode */}
+              {/* Category selector */}
               {(!productModal.categoryId || productModal.mode === "edit") && (
                 <div>
                   <label className="block text-sm font-medium text-[#14130e] mb-1">Categoría *</label>
@@ -700,7 +730,6 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </div>
               )}
 
-              {/* Hidden category_id when it comes from inside a category */}
               {productModal.categoryId && productModal.mode === "create" && (
                 <input type="hidden" name="category_id" value={productModal.categoryId} />
               )}
@@ -723,12 +752,20 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                   type="number"
                   name="price"
                   required
-                  min="0"
+                  min="0.01"
                   step="0.01"
-                  defaultValue={productModal.data?.price ?? ""}
-                  className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  value={priceValue}
+                  onChange={handlePriceChange}
+                  className={`w-full px-3 py-2 rounded-lg border bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:border-transparent text-sm ${
+                    priceError
+                      ? "border-[#da5a47] focus:ring-[#da5a47]"
+                      : "border-[#d4cbaf] focus:ring-[#da5a47]"
+                  }`}
                   placeholder="0.00"
                 />
+                {priceError && (
+                  <p className="mt-1 text-sm text-[#da5a47] font-medium">{priceError}</p>
+                )}
               </div>
 
               <div>
@@ -788,7 +825,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                 </button>
                 <button
                   type="submit"
-                  disabled={isPending}
+                  disabled={isPending || !!priceError}
                   className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isPending ? "Guardando..." : productModal.mode === "create" ? "Crear Producto" : "Guardar Cambios"}
@@ -836,9 +873,9 @@ export default function AdminPageClient({ initialData }: { initialData: Category
 
       {/* ─── Toast ─── */}
       {toast.show && (
-        <div className="fixed bottom-6 right-6 z-50">
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4">
           <div
-            className={`px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium ${
+            className={`px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium text-center ${
               toast.type === "success" ? "bg-emerald-600" : "bg-[#da5a47]"
             }`}
           >
