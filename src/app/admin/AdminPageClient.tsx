@@ -508,7 +508,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                             {category.products.map((product) => (
                               <div
                                 key={product.id}
-                                className="flex items-center justify-between p-3 rounded-lg bg-[#e6dec8] border border-[#d4cbaf]"
+                                className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#d4cbaf]"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   {product.image_url ? (
@@ -527,7 +527,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
                                     </div>
                                   )}
                                   <div className="min-w-0">
-                                    <p className="font-bold text-[#14130e] text-[15px] truncate">
+                                    <p className="font-bold text-[#14130e] text-[15px] line-clamp-2 leading-tight">
                                       {product.name}
                                     </p>
                                     <p className="font-bold text-[13px] text-[#6b6858]">
@@ -738,7 +738,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
               )}
               <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
 
-              {/* Category Selector (when no categoryId pre-selected) */}
+              {/* Category Selector (when no categoryId pre-selected, i.e. "Nuevo Producto" from header) */}
               {!productModal.categoryId && (
                 <div>
                   <label className="block text-sm font-medium text-[#14130e] mb-1">
