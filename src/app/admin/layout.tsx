@@ -21,13 +21,15 @@ export default async function AdminLayout({
   // Si el usuario no está en allowed_users, solo renderizar children
   const { data: allowed } = await adminDb
     .from("allowed_users")
-    .select("id")
+    .select("id, role")
     .eq("email", user.email)
     .single()
 
   if (!allowed) {
     return <>{children}</>
   }
+
+  const role = allowed.role as "super_admin" | "admin"
 
   // Usuario autenticado y autorizado → mostrar layout completo con header
   return (
@@ -43,9 +45,14 @@ export default async function AdminLayout({
               height={64}
               className="rounded-lg w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16"
             />
-            <span className="font-bold text-[#14130e] text-sm sm:text-lg hidden sm:block">
-              M&M Admin
-            </span>
+            <div className="flex flex-col">
+              <span className="font-bold text-[#14130e] text-sm sm:text-lg">
+                M&M Admin
+              </span>
+              <span className="text-[10px] sm:text-xs font-semibold text-[#6b6858] bg-[#d4cbaf] px-1.5 py-0.5 rounded leading-tight w-fit">
+                {role === "super_admin" ? "Super Admin" : "Admin"}
+              </span>
+            </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <a

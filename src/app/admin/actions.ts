@@ -15,7 +15,7 @@ function generateSlug(name: string): string {
     .replace(/[\s-]+/g, "-")
 }
 
-/* ─── Auth Check ─── */
+/* ─── Auth Check (devuelve user + role) ─── */
 async function checkAuth() {
   const supabase = await createClient()
   const {
@@ -25,12 +25,12 @@ async function checkAuth() {
 
   const { data: allowed } = await adminDb
     .from("allowed_users")
-    .select("id")
+    .select("id, role")
     .eq("email", user.email)
     .single()
   if (!allowed) throw new Error("No autorizado")
 
-  return user
+  return { user, role: allowed.role as "super_admin" | "admin" }
 }
 
 /* ─── Image Upload Helper ─── */
@@ -54,6 +54,12 @@ async function uploadToStorage(
 
   const { data: urlData } = adminDb.storage.from(bucket).getPublicUrl(filename)
   return urlData.publicUrl
+}
+
+/* ─── Get User Role ─── */
+export async function getUserRole() {
+  const { role } = await checkAuth()
+  return role
 }
 
 /* ─── Get Admin Data ─── */
@@ -309,6 +315,106 @@ export async function deleteProduct(id: string) {
     await checkAuth()
     const { error } = await adminDb.from("products").delete().eq("id", id)
     if (error) throw new Error(error.message)
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
+  }
+}
+
+/* ─── User Management Actions (solo super_admin) ─── */
+export async function getAdminUsers() {
+  const { role } = await checkAuth()
+  if (role !== "super_admin") throw new Error("No autorizado")
+
+  const { data, error } = await adminDb
+    .from("allowed_users")
+    .select("id, email, role, created_at")
+    .order("created_at", { ascending: true })
+
+  if (error) throw new Error(error.message)
+  return data || []
+}
+
+export async function createAdminUser(formData: FormData) {
+  try {
+    const { role: currentUserRole } = await checkAuth()
+    if (currentUserRole !== "super_admin") {
+      return { error: "Solo super_admin puede crear usuarios" }
+    }
+
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+    const role = formData.get("role") as string
+
+    if (!email || !password) {
+      return { error: "Email y contraseña son obligatorios" }
+    }
+    if (password.length < 6) {
+      return { error: "La contraseña debe tener al menos 6 caracteres" }
+    }
+    if (!["super_admin", "admin"].includes(role)) {
+      return { error: "Rol inválido" }
+    }
+
+    // Verificar si el email ya existe en allowed_users
+    const { data: existing } = await adminDb
+      .from("allowed_users")
+      .select("id")
+      .eq("email", email)
+      .single()
+
+    if (existing) {
+      return { error: "Ya existe un usuario con ese email" }
+    }
+
+    // Crear usuario en Auth
+    const { data: authData, error: authError } = await adminDb.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+    })
+
+    if (authError) throw new Error(authError.message)
+
+    // Agregar a allowed_users
+    const { error: dbError } = await adminDb
+      .from("allowed_users")
+      .insert({ id: authData.user.id, email, role })
+
+    if (dbError) throw new Error(dbError.message)
+
+    revalidatePath("/admin")
+    return { success: true }
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Error desconocido" }
+  }
+}
+
+export async function deleteAdminUser(id: string) {
+  try {
+    const { role: currentUserRole, user: currentUser } = await checkAuth()
+    if (currentUserRole !== "super_admin") {
+      return { error: "Solo super_admin puede eliminar usuarios" }
+    }
+
+    // No puede eliminarse a sí mismo
+    if (id === currentUser.id) {
+      return { error: "No podés eliminar tu propio usuario" }
+    }
+
+    // Eliminar de allowed_users
+    const { error: dbError } = await adminDb
+      .from("allowed_users")
+      .delete()
+      .eq("id", id)
+
+    if (dbError) throw new Error(dbError.message)
+
+    // Eliminar de Auth
+    const { error: authError } = await adminDb.auth.admin.deleteUser(id)
+    if (authError) throw new Error(authError.message)
+
     revalidatePath("/admin")
     return { success: true }
   } catch (err) {

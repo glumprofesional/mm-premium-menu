@@ -12,6 +12,9 @@ import {
   updateCategory,
   createProduct,
   updateProduct,
+  getAdminUsers,
+  createAdminUser,
+  deleteAdminUser,
 } from "./actions"
 
 /* ─── Types ─── */
@@ -35,6 +38,13 @@ type Product = {
   category_id: string
 }
 
+type AdminUser = {
+  id: string
+  email: string
+  role: "super_admin" | "admin"
+  created_at: string
+}
+
 type CategoryModalState = {
   open: boolean
   mode: "create" | "edit"
@@ -48,9 +58,14 @@ type ProductModalState = {
   categoryId: string | null
 }
 
+type UserModalState = {
+  open: boolean
+  mode: "list" | "create"
+}
+
 type DeleteConfirmState = {
   open: boolean
-  type: "category" | "product"
+  type: "category" | "product" | "user"
   id: string
   name: string
 }
@@ -145,6 +160,17 @@ function IconImage() {
   )
 }
 
+function IconUsers() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+
 /* ─── Status Badge ─── */
 function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; activeLabel: string; inactiveLabel: string }) {
   if (active) {
@@ -170,8 +196,24 @@ function ProductCountBadge({ count }: { count: number }) {
   )
 }
 
+/* ─── Role Badge ─── */
+function RoleBadge({ role }: { role: "super_admin" | "admin" }) {
+  if (role === "super_admin") {
+    return (
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+        Super Admin
+      </span>
+    )
+  }
+  return (
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#d4cbaf] text-[#6b6858]">
+      Admin
+    </span>
+  )
+}
+
 /* ─── Main Component ─── */
-export default function AdminPageClient({ initialData }: { initialData: Category[] }) {
+export default function AdminPageClient({ initialData, role }: { initialData: Category[]; role: "super_admin" | "admin" }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -198,6 +240,13 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     message: "",
     type: "success",
   })
+
+  /* User management */
+  const [userModal, setUserModal] = useState<UserModalState>({
+    open: false,
+    mode: "list",
+  })
+  const [users, setUsers] = useState<AdminUser[]>([])
 
   const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null)
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
@@ -257,24 +306,38 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     })
   }
 
-  function handleOpenDeleteConfirm(type: "category" | "product", id: string, name: string) {
+  function handleOpenDeleteConfirm(type: "category" | "product" | "user", id: string, name: string) {
     setDeleteConfirm({ open: true, type, id, name })
   }
 
   function handleConfirmDelete() {
     startTransition(async () => {
-      const action = deleteConfirm.type === "category" ? deleteCategory : deleteProduct
+      let action: (id: string) => Promise<{ error?: string; success?: boolean }>
+      if (deleteConfirm.type === "category") {
+        action = deleteCategory
+      } else if (deleteConfirm.type === "product") {
+        action = deleteProduct
+      } else {
+        action = deleteAdminUser
+      }
       const result = await action(deleteConfirm.id)
       setDeleteConfirm({ open: false, type: "category", id: "", name: "" })
       if (result?.error) {
         showToast(result.error, "error")
       } else {
         showToast(
-          deleteConfirm.type === "category" ? "Categoría eliminada" : "Producto eliminado",
+          deleteConfirm.type === "category"
+            ? "Categoría eliminada"
+            : deleteConfirm.type === "product"
+            ? "Producto eliminado"
+            : "Usuario eliminado",
           "success"
         )
         if (deleteConfirm.type === "category") {
           setExpandedId(null)
+        }
+        if (deleteConfirm.type === "user" && userModal.open) {
+          fetchUsers()
         }
         router.refresh()
       }
@@ -345,6 +408,37 @@ export default function AdminPageClient({ initialData }: { initialData: Category
     })
   }
 
+  /* ─── User Management ─── */
+  function fetchUsers() {
+    startTransition(async () => {
+      const result = await getAdminUsers()
+      setUsers(result as AdminUser[])
+    })
+  }
+
+  function handleOpenUserModal() {
+    setUserModal({ open: true, mode: "list" })
+    fetchUsers()
+  }
+
+  function handleCloseUserModal() {
+    setUserModal({ open: false, mode: "list" })
+    setUsers([])
+  }
+
+  async function handleCreateUser(formData: FormData) {
+    startTransition(async () => {
+      const result = await createAdminUser(formData)
+      if (result?.error) {
+        showToast(result.error, "error")
+      } else {
+        showToast("Usuario creado exitosamente", "success")
+        setUserModal({ open: true, mode: "list" })
+        fetchUsers()
+      }
+    })
+  }
+
   /* ─── Image preview handler ─── */
   function handleImageChange(
     e: React.ChangeEvent<HTMLInputElement>,
@@ -368,6 +462,16 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
           <h1 className="text-xl sm:text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
           <div className="flex items-center gap-2 flex-wrap">
+            {role === "super_admin" && (
+              <button
+                type="button"
+                onClick={handleOpenUserModal}
+                className="inline-flex items-center gap-2 px-3 py-2 bg-[#6b6858] text-white rounded-lg hover:bg-[#5a5749] transition-colors font-medium text-sm cursor-pointer"
+              >
+                <span className="pointer-events-none"><IconUsers /></span>
+                Usuarios
+              </button>
+            )}
             <button
               type="button"
               onClick={() => handleOpenCategoryModal("create")}
@@ -738,7 +842,7 @@ export default function AdminPageClient({ initialData }: { initialData: Category
               )}
               <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
 
-              {/* Category Selector (when no categoryId pre-selected, i.e. "Nuevo Producto" from header) */}
+              {/* Category Selector (when no categoryId pre-selected) */}
               {!productModal.categoryId && (
                 <div>
                   <label className="block text-sm font-medium text-[#14130e] mb-1">
@@ -899,17 +1003,160 @@ export default function AdminPageClient({ initialData }: { initialData: Category
         </div>
       )}
 
+      {/* ─── User Management Modal ─── */}
+      {userModal.open && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-4 border-b border-[#d4cbaf]">
+              <h2 className="text-lg font-semibold text-[#14130e]">
+                {userModal.mode === "create" ? "Nuevo Usuario" : "Usuarios"}
+              </h2>
+              <button
+                type="button"
+                onClick={handleCloseUserModal}
+                className="p-1 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+              >
+                <span className="pointer-events-none"><IconClose /></span>
+              </button>
+            </div>
+
+            {userModal.mode === "list" ? (
+              <div className="p-4">
+                {/* Users list */}
+                <div className="space-y-2 mb-4">
+                  {users.length === 0 ? (
+                    <p className="text-sm text-[#6b6858] text-center py-4">No hay usuarios.</p>
+                  ) : (
+                    users.map((u) => (
+                      <div
+                        key={u.id}
+                        className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#d4cbaf]"
+                      >
+                        <div className="min-w-0">
+                          <p className="font-bold text-[#14130e] text-sm truncate">
+                            {u.email}
+                          </p>
+                          <RoleBadge role={u.role} />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleOpenDeleteConfirm("user", u.id, u.email)}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
+                          title="Eliminar usuario"
+                        >
+                          <span className="pointer-events-none"><IconTrash /></span>
+                          <span className="hidden sm:inline">Eliminar</span>
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                {/* Add User Button */}
+                <button
+                  type="button"
+                  onClick={() => setUserModal({ open: true, mode: "create" })}
+                  className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+                >
+                  <span className="pointer-events-none"><IconPlus /></span>
+                  Agregar Usuario
+                </button>
+              </div>
+            ) : (
+              /* Create User Form */
+              <form action={handleCreateUser} className="p-4 space-y-4">
+                {/* Email */}
+                <div>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    required
+                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                    placeholder="correo@ejemplo.com"
+                  />
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">
+                    Contraseña *
+                  </label>
+                  <input
+                    type="password"
+                    name="password"
+                    required
+                    minLength={6}
+                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                    placeholder="Mínimo 6 caracteres"
+                  />
+                </div>
+
+                {/* Role */}
+                <div>
+                  <label className="block text-sm font-medium text-[#14130e] mb-1">
+                    Rol *
+                  </label>
+                  <select
+                    name="role"
+                    required
+                    defaultValue="admin"
+                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="super_admin">Super Admin</option>
+                  </select>
+                  <p className="mt-1 text-xs text-[#6b6858]">
+                    Admin: gestiona productos y categorías. Super Admin: además puede crear usuarios.
+                  </p>
+                </div>
+
+                {/* Submit */}
+                <div className="flex justify-end gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setUserModal({ open: true, mode: "list" })}
+                    className="px-4 py-2 rounded-lg bg-[#d4cbaf] text-[#14130e] hover:bg-[#c9c0a8] transition-colors font-medium text-sm cursor-pointer"
+                  >
+                    Volver
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isPending ? "Creando..." : "Crear Usuario"}
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ─── Delete Confirmation Modal ─── */}
       {deleteConfirm.open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
           <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-sm p-6">
             <h2 className="text-lg font-semibold text-[#14130e] mb-2">Confirmar eliminación</h2>
             <p className="text-sm text-[#6b6858] mb-6">
-              ¿Estás seguro de que querés eliminar {deleteConfirm.type === "category" ? "la categoría" : "el producto"}{" "}
+              ¿Estás seguro de que querés eliminar{" "}
+              {deleteConfirm.type === "category"
+                ? "la categoría"
+                : deleteConfirm.type === "product"
+                ? "el producto"
+                : "el usuario"}{" "}
               <strong className="text-[#14130e]">&quot;{deleteConfirm.name}&quot;</strong>?
               {deleteConfirm.type === "category" && (
                 <span className="block mt-1 text-[#da5a47]">
                   Esto también eliminará todos los productos dentro de esta categoría.
+                </span>
+              )}
+              {deleteConfirm.type === "user" && (
+                <span className="block mt-1 text-[#da5a47]">
+                  Esto eliminará el acceso del usuario al panel de administración.
                 </span>
               )}
             </p>
