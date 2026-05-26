@@ -353,6 +353,13 @@ export async function createAdminUser(formData: FormData) {
     if (!email || !password) {
       return { error: "Email y contraseña son obligatorios" }
     }
+
+    /* Validar formato de email */
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return { error: "Ingresá un email válido (ej: correo@ejemplo.com)" }
+    }
+
     if (password.length < 6) {
       return { error: "La contraseña debe tener al menos 6 caracteres" }
     }
