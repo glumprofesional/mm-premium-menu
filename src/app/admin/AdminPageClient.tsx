@@ -171,6 +171,14 @@ function IconUsers() {
   )
 }
 
+function IconShield() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  )
+}
+
 /* ─── Status Badge ─── */
 function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; activeLabel: string; inactiveLabel: string }) {
   if (active) {
@@ -200,7 +208,8 @@ function ProductCountBadge({ count }: { count: number }) {
 function RoleBadge({ role }: { role: "super_admin" | "admin" }) {
   if (role === "super_admin") {
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+        <IconShield />
         Super Admin
       </span>
     )
@@ -432,7 +441,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
       if (result?.error) {
         showToast(result.error, "error")
       } else {
-        showToast("Usuario creado exitosamente", "success")
+        showToast("Usuario Admin creado exitosamente", "success")
         setUserModal({ open: true, mode: "list" })
         fetchUsers()
       }
@@ -460,7 +469,10 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header - responsive */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
-          <h1 className="text-xl sm:text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#14130e]">Panel de Administración</h1>
+            <RoleBadge role={role} />
+          </div>
           <div className="flex items-center gap-2 flex-wrap">
             {role === "super_admin" && (
               <button
@@ -1009,7 +1021,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
           <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-4 border-b border-[#d4cbaf]">
               <h2 className="text-lg font-semibold text-[#14130e]">
-                {userModal.mode === "create" ? "Nuevo Usuario" : "Usuarios"}
+                {userModal.mode === "create" ? "Nuevo Usuario Admin" : "Usuarios"}
               </h2>
               <button
                 type="button"
@@ -1038,18 +1050,26 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
                           </p>
                           <RoleBadge role={u.role} />
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => handleOpenDeleteConfirm("user", u.id, u.email)}
-                          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
-                          title="Eliminar usuario"
-                        >
-                          <span className="pointer-events-none"><IconTrash /></span>
-                          <span className="hidden sm:inline">Eliminar</span>
-                        </button>
+                        {/* SEGURIDAD: solo se puede eliminar usuarios admin, no super_admin */}
+                        {u.role !== "super_admin" && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenDeleteConfirm("user", u.id, u.email)}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm font-medium text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
+                            title="Eliminar usuario"
+                          >
+                            <span className="pointer-events-none"><IconTrash /></span>
+                            <span className="hidden sm:inline">Eliminar</span>
+                          </button>
+                        )}
                       </div>
                     ))
                   )}
+                </div>
+
+                {/* Info message */}
+                <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+                  <strong>Super Admin</strong> solo se gestiona desde la base de datos. Desde aquí solo se crean usuarios <strong>Admin</strong>.
                 </div>
 
                 {/* Add User Button */}
@@ -1059,7 +1079,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
                 >
                   <span className="pointer-events-none"><IconPlus /></span>
-                  Agregar Usuario
+                  Agregar Usuario Admin
                 </button>
               </div>
             ) : (
@@ -1094,22 +1114,14 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
                   />
                 </div>
 
-                {/* Role */}
-                <div>
-                  <label className="block text-sm font-medium text-[#14130e] mb-1">
-                    Rol *
-                  </label>
-                  <select
-                    name="role"
-                    required
-                    defaultValue="admin"
-                    className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
-                  >
-                    <option value="admin">Admin</option>
-                    <option value="super_admin">Super Admin</option>
-                  </select>
-                  <p className="mt-1 text-xs text-[#6b6858]">
-                    Admin: gestiona productos y categorías. Super Admin: además puede crear usuarios.
+                {/* SEGURIDAD: Role hardcodeado a admin, sin selector */}
+                <input type="hidden" name="role" value="admin" />
+                <div className="p-3 rounded-lg bg-[#f5f0e2] border border-[#d4cbaf]">
+                  <p className="text-sm font-medium text-[#14130e]">
+                    Rol asignado: <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#d4cbaf] text-[#6b6858]">Admin</span>
+                  </p>
+                  <p className="text-xs text-[#6b6858] mt-1">
+                    Los usuarios Admin pueden gestionar productos y categorías. El rol Super Admin solo se asigna desde la base de datos.
                   </p>
                 </div>
 
@@ -1127,7 +1139,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
                     disabled={isPending}
                     className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isPending ? "Creando..." : "Crear Usuario"}
+                    {isPending ? "Creando..." : "Crear Usuario Admin"}
                   </button>
                 </div>
               </form>

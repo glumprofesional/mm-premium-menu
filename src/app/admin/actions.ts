@@ -345,16 +345,16 @@ export async function createAdminUser(formData: FormData) {
 
     const email = formData.get("email") as string
     const password = formData.get("password") as string
-    const role = formData.get("role") as string
+
+    /* SEGURIDAD: Desde la web solo se puede crear rol admin.
+       El rol super_admin solo se gestiona desde la base de datos. */
+    const role = "admin"
 
     if (!email || !password) {
       return { error: "Email y contraseña son obligatorios" }
     }
     if (password.length < 6) {
       return { error: "La contraseña debe tener al menos 6 caracteres" }
-    }
-    if (!["super_admin", "admin"].includes(role)) {
-      return { error: "Rol inválido" }
     }
 
     // Verificar si el email ya existe en allowed_users
@@ -401,6 +401,18 @@ export async function deleteAdminUser(id: string) {
     // No puede eliminarse a sí mismo
     if (id === currentUser.id) {
       return { error: "No podés eliminar tu propio usuario" }
+    }
+
+    /* SEGURIDAD: No se puede eliminar un super_admin desde la web.
+       Solo se pueden eliminar usuarios con rol admin. */
+    const { data: targetUser } = await adminDb
+      .from("allowed_users")
+      .select("role")
+      .eq("id", id)
+      .single()
+
+    if (targetUser?.role === "super_admin") {
+      return { error: "No se puede eliminar un usuario Super Admin desde aquí. Solo se gestiona desde la base de datos." }
     }
 
     // Eliminar de allowed_users
