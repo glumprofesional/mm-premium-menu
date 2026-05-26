@@ -26,13 +26,18 @@ export const metadata: Metadata = {
     follow: true,
   },
   manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'M&M Admin',
+  },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#0A1128',
+  themeColor: '#da5a47',
 };
 
 /* ---- Anti-flash dark theme script ---- */
@@ -50,6 +55,15 @@ const antiFlashScript = `
   })();
 `;
 
+/* ---- Service Worker Registration ---- */
+const swRegisterScript = `
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').catch(function() {});
+    });
+  }
+`;
+
 export default function RootLayout({
   children,
 }: {
@@ -63,6 +77,9 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <script dangerouslySetInnerHTML={{ __html: swRegisterScript }} />
       </head>
       <body className="antialiased">
         <TopLoadingBar />

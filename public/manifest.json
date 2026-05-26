@@ -1,16 +1,39 @@
 {
-  "name": "M&M Multiespacio",
-  "short_name": "M&M",
-  "description": "Catálogo premium de bebidas y experiencias",
-  "start_url": "/",
+  "name": "M&M Multiespacio - Admin",
+  "short_name": "M&M Admin",
+  "description": "Panel de administración del menú digital de M&M Multiespacio",
+  "start_url": "/admin",
+  "scope": "/admin",
   "display": "standalone",
-  "background_color": "#0A1128",
-  "theme_color": "#0A1128",
+  "orientation": "portrait",
+  "background_color": "#e6dec8",
+  "theme_color": "#da5a47",
   "icons": [
     {
-      "src": "/images/logo.png",
+      "src": "/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
-  ]
+  ],
+  "categories": ["business", "food"],
+  "lang": "es-AR"
 }
