@@ -172,7 +172,7 @@ function ProductCountBadge({ count }: { count: number }) {
 }
 
 /* ─── Main Component ─── */
-export default function AdminPageClient({ initialData }: { initialData: Category[] }) {
+export default function AdminPageClient({ initialData, role }: { initialData: Category[]; role: "super_admin" | "admin" }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [expandedId, setExpandedId] = useState<string | null>(null)
