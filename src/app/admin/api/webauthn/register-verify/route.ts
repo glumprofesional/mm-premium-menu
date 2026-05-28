@@ -1,69 +1,117 @@
-import { cookies } from 'next/headers';
-import { verifyRegistrationResponse } from '@simplewebauthn/server';
-import { createClient } from '@/lib/supabase/server';
-import { adminDb } from '@/lib/supabase/admin';
-import { getRPID, getOrigin, toBase64url } from '@/lib/webauthn';
+// src/app/admin/api/webauthn/register-verify/route.ts
+import { NextRequest, NextResponse } from "next/server"
+import { verifyRegistrationResponse } from "@simplewebauthn/server"
+import { createClient } from "@/lib/supabase/admin"
+import { toBase64url, getRpConfig } from "@/lib/webauthn"
+import { cookies } from "next/headers"
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
+    const cookieStore = await cookies()
+    const challengeB64 = cookieStore.get("webauthn_register_challenge")?.value
 
-    if (!user?.email) {
-      return Response.json({ error: 'No autenticado' }, { status: 401 });
+    if (!challengeB64) {
+      return NextResponse.json(
+        { error: "Challenge no encontrado. Intentá de nuevo." },
+        { status: 400 }
+      )
     }
 
-    const cookieStore = await cookies();
-    const expectedChallenge = cookieStore.get('webauthn-challenge')?.value;
-
-    if (!expectedChallenge) {
-      return Response.json({ error: 'Challenge expirado. Intente de nuevo.' }, { status: 400 });
+    const authToken = cookieStore.get("sb-access-token")?.value
+    if (!authToken) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
-    const body = await request.json();
-    const host = request.headers.get('host') || 'localhost:3000';
-    const rpID = getRPID(host);
-    const expectedOrigin = getOrigin(host);
+    const supabase = createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser(authToken)
+
+    if (userError || !user?.email) {
+      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
+    }
+
+    const email = user.email
+    const body = await req.json()
+
+    const { rpID, origin } = getRpConfig(req.headers)
 
     const verification = await verifyRegistrationResponse({
       response: body,
-      expectedChallenge,
-      expectedOrigin,
+      expectedChallenge: challengeB64,
+      expectedOrigin: origin,
       expectedRPID: rpID,
-    });
+    })
 
     if (!verification.verified || !verification.registrationInfo) {
-      return Response.json({ error: 'Verificacion fallida' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Verificación fallida. Intentá de nuevo." },
+        { status: 400 }
+      )
     }
 
-    const { registrationInfo } = verification;
-    const credential = registrationInfo.credential;
-    const credentialId = typeof credential.id === 'string' ? credential.id : toBase64url(credential.id);
-    const publicKey = toBase64url(credential.publicKey);
+    const { registrationInfo } = verification
+    const credential = registrationInfo.credential
+    const credentialId = typeof credential.id === "string"
+      ? credential.id
+      : toBase64url(credential.id)
+    const publicKey = toBase64url(credential.publicKey)
+    const counter = 0
 
-    const { error: insertError } = await adminDb
-      .from('passkey_credentials')
+    const { error: insertError } = await supabase
+      .from("passkey_credentials")
       .insert({
-        user_email: user.email,
+        user_email: email,
         credential_id: credentialId,
         public_key: publicKey,
-        counter: credential.counter,
-        transports: ['internal'],
-      });
+        counter,
+        transports: body.response?.transports || [],
+      })
 
     if (insertError) {
-      if (insertError.code === '23505') {
-        return Response.json({ error: 'Esta biometria ya esta registrada.' }, { status: 409 });
+      console.error("[register-verify] DB insert error:", insertError)
+
+      if (insertError.code === "23505") {
+        return NextResponse.json(
+          { error: "Esta credencial ya está registrada." },
+          { status: 409 }
+        )
       }
-      console.error('Error saving credential:', insertError);
-      return Response.json({ error: 'Error guardando credencial' }, { status: 500 });
+
+      return NextResponse.json(
+        { error: "Error al guardar credencial en la base de datos." },
+        { status: 500 }
+      )
     }
 
-    cookieStore.delete('webauthn-challenge');
+    const response = NextResponse.json({ verified: true })
+    response.cookies.set("webauthn_register_challenge", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0,
+    })
 
-    return Response.json({ verified: true });
-  } catch (error) {
-    console.error('Error verifying registration:', error);
-    return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
+    return response
+  } catch (err) {
+    console.error("[register-verify] Error:", err)
+    const message = err instanceof Error ? err.message : "Error desconocido"
+
+    if (message.includes("challenge")) {
+      return NextResponse.json(
+        { error: "Sesión expirada. Recargá la página e intentá de nuevo." },
+        { status: 400 }
+      )
+    }
+    if (message.includes("origin") || message.includes("rpID") || message.includes("RP")) {
+      return NextResponse.json(
+        { error: "Error de configuración del servidor. Contactá al administrador." },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: "Error al verificar el registro: " + message },
+      { status: 500 }
+    )
   }
 }

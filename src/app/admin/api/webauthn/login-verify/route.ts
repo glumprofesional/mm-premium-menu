@@ -1,93 +1,170 @@
-import { cookies } from 'next/headers';
-import { verifyAuthenticationResponse } from '@simplewebauthn/server';
-import { createClient } from '@/lib/supabase/server';
-import { adminDb } from '@/lib/supabase/admin';
-import { getRPID, getOrigin, fromBase64url } from '@/lib/webauthn';
+// src/app/admin/api/webauthn/login-verify/route.ts
+import { NextRequest, NextResponse } from "next/server"
+import { verifyAuthenticationResponse } from "@simplewebauthn/server"
+import { createClient } from "@/lib/supabase/admin"
+import { getRpConfig } from "@/lib/webauthn"
+import { cookies } from "next/headers"
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // 1. Get challenge and email from cookies
-    const cookieStore = await cookies();
-    const expectedChallenge = cookieStore.get('webauthn-challenge')?.value;
-    const userEmail = cookieStore.get('webauthn-login-email')?.value;
+    const cookieStore = await cookies()
+    const challengeB64 = cookieStore.get("webauthn_login_challenge")?.value
+    const email = cookieStore.get("webauthn_login_email")?.value
 
-    if (!expectedChallenge || !userEmail) {
-      return Response.json({ error: 'Challenge expirado. Intente de nuevo.' }, { status: 400 });
+    if (!challengeB64 || !email) {
+      return NextResponse.json(
+        { error: "Sesión expirada. Intentá de nuevo." },
+        { status: 400 }
+      )
     }
 
-    // 2. Get the authentication response from the client
-    const body = await request.json();
-    const host = request.headers.get('host') || 'localhost:3000';
-    const rpID = getRPID(host);
-    const expectedOrigin = getOrigin(host);
+    const body = await req.json()
 
-    // 3. Find the credential in the database
-    const { data: credential } = await adminDb
-      .from('passkey_credentials')
-      .select('id, credential_id, public_key, counter, transports, user_email')
-      .eq('credential_id', body.id)
-      .eq('user_email', userEmail)
-      .single();
+    const supabase = createClient()
+    const credentialIdFromBody = body.id || body.rawId
 
-    if (!credential) {
-      return Response.json({ error: 'Credencial no encontrada' }, { status: 401 });
+    const { data: credentials, error: credError } = await supabase
+      .from("passkey_credentials")
+      .select("*")
+      .eq("user_email", email)
+
+    if (credError || !credentials || credentials.length === 0) {
+      return NextResponse.json(
+        { error: "Credencial no encontrada." },
+        { status: 404 }
+      )
     }
 
-    // 4. Verify the authentication response
+    let matchedCred = credentials[0]
+    if (credentialIdFromBody) {
+      const matched = credentials.find(
+        (c) => c.credential_id === credentialIdFromBody
+      )
+      if (matched) matchedCred = matched
+    }
+
+    const base64 = matchedCred.credential_id.replace(/-/g, "+").replace(/_/g, "/")
+    const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4)
+    const buf = Buffer.from(padded, "base64")
+    const credentialIdBytes = new Uint8Array(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
+
+    const pubKeyBase64 = matchedCred.public_key.replace(/-/g, "+").replace(/_/g, "/")
+    const pubKeyPadded = pubKeyBase64 + "=".repeat((4 - (pubKeyBase64.length % 4)) % 4)
+    const pubKeyBuf = Buffer.from(pubKeyPadded, "base64")
+    const publicKeyBytes = new Uint8Array(pubKeyBuf.buffer.slice(pubKeyBuf.byteOffset, pubKeyBuf.byteOffset + pubKeyBuf.byteLength))
+
+    const { rpID, origin } = getRpConfig(req.headers)
+
     const verification = await verifyAuthenticationResponse({
       response: body,
-      expectedChallenge,
-      expectedOrigin,
+      expectedChallenge: challengeB64,
+      expectedOrigin: origin,
       expectedRPID: rpID,
       credential: {
-        id: credential.credential_id,
-        publicKey: fromBase64url(credential.public_key),
-        counter: credential.counter,
-        transports: (credential.transports || ['internal']) as AuthenticatorTransport[],
+        id: credentialIdBytes,
+        publicKey: publicKeyBytes,
+        counter: matchedCred.counter || 0,
+        transports: (matchedCred.transports as AuthenticatorTransport[]) || ["internal"],
       },
-    });
+    })
 
     if (!verification.verified) {
-      return Response.json({ error: 'Verificación fallida' }, { status: 401 });
+      return NextResponse.json(
+        { error: "Verificación fallida." },
+        { status: 400 }
+      )
     }
 
-    // 5. Update the counter in the database
-    await adminDb
-      .from('passkey_credentials')
+    await supabase
+      .from("passkey_credentials")
       .update({ counter: verification.authenticationInfo.newCounter })
-      .eq('id', credential.id);
+      .eq("credential_id", matchedCred.credential_id)
 
-    // 6. Create a Supabase session using admin-generated magic link
-    const { data: linkData, error: linkError } = await adminDb.auth.admin.generateLink({
-      type: 'magiclink',
-      email: userEmail,
-    });
+    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+      type: "magiclink",
+      email,
+    })
 
-    if (linkError || !linkData?.properties?.email_otp) {
-      console.error('Error generating magic link:', linkError);
-      return Response.json({ error: 'Error creando sesión' }, { status: 500 });
+    if (linkError || !linkData?.properties?.action_link) {
+      console.error("[login-verify] Magic link error:", linkError)
+      return NextResponse.json(
+        { error: "Error al crear la sesión. Intentá con contraseña." },
+        { status: 500 }
+      )
     }
 
-    // 7. Verify the OTP to establish the session (sets auth cookies)
-    const supabaseServer = await createClient();
-    const { error: otpError } = await supabaseServer.auth.verifyOtp({
-      email: userEmail,
-      token: linkData.properties.email_otp,
-      type: 'magiclink',
-    });
+    const actionLink = linkData.properties.action_link
+    const tokenHash = new URL(actionLink).searchParams.get("token_hash")
+    const tokenType = "magiclink"
 
-    if (otpError) {
-      console.error('Error verifying OTP:', otpError);
-      return Response.json({ error: 'Error creando sesión' }, { status: 500 });
+    if (!tokenHash) {
+      return NextResponse.json(
+        { error: "Error al crear la sesión. Intentá con contraseña." },
+        { status: 500 }
+      )
     }
 
-    // 8. Clean up cookies
-    cookieStore.delete('webauthn-challenge');
-    cookieStore.delete('webauthn-login-email');
+    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: tokenType,
+    })
 
-    return Response.json({ verified: true });
-  } catch (error) {
-    console.error('Error verifying authentication:', error);
-    return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
+    if (verifyError || !verifyData?.session) {
+      console.error("[login-verify] OTP verify error:", verifyError)
+      return NextResponse.json(
+        { error: "Error al crear la sesión. Intentá con contraseña." },
+        { status: 500 }
+      )
+    }
+
+    const session = verifyData.session
+    const response = NextResponse.json({ verified: true })
+
+    response.cookies.set("sb-access-token", session.access_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    })
+    response.cookies.set("sb-refresh-token", session.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    })
+
+    response.cookies.set("webauthn_login_challenge", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0,
+    })
+    response.cookies.set("webauthn_login_email", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 0,
+    })
+
+    return response
+  } catch (err) {
+    console.error("[login-verify] Error:", err)
+    const message = err instanceof Error ? err.message : "Error desconocido"
+
+    if (message.includes("challenge")) {
+      return NextResponse.json(
+        { error: "Sesión expirada. Recargá la página e intentá de nuevo." },
+        { status: 400 }
+      )
+    }
+
+    return NextResponse.json(
+      { error: "Error al verificar la autenticación: " + message },
+      { status: 500 }
+    )
   }
 }

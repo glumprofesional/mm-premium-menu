@@ -1,23 +1,39 @@
-import { createClient } from '@/lib/supabase/server';
-import { adminDb } from '@/lib/supabase/admin';
+// src/app/admin/api/webauthn/check-credentials/route.ts
+import { NextResponse } from "next/server"
+import { createClient } from "@/lib/supabase/admin"
+import { cookies } from "next/headers"
 
 export async function POST() {
   try {
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
+    const cookieStore = await cookies()
+    const authToken = cookieStore.get("sb-access-token")?.value
 
-    if (!user?.email) {
-      return Response.json({ error: 'No autenticado' }, { status: 401 });
+    if (!authToken) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
-    const { count } = await adminDb
-      .from('passkey_credentials')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_email', user.email);
+    const supabase = createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser(authToken)
 
-    return Response.json({ hasCredential: (count ?? 0) > 0 });
-  } catch (error) {
-    console.error('Error checking credentials:', error);
-    return Response.json({ hasCredential: false });
+    if (userError || !user?.email) {
+      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
+    }
+
+    const { data: credentials, error: credError } = await supabase
+      .from("passkey_credentials")
+      .select("id")
+      .eq("user_email", user.email)
+
+    if (credError) {
+      console.error("[check-credentials] Error:", credError)
+      return NextResponse.json({ hasCredentials: false }, { status: 200 })
+    }
+
+    return NextResponse.json({
+      hasCredentials: (credentials?.length || 0) > 0,
+    })
+  } catch (err) {
+    console.error("[check-credentials] Error:", err)
+    return NextResponse.json({ hasCredentials: false }, { status: 200 })
   }
 }

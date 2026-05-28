@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/types/product';
+import type { Product } from '@/lib/types';
 
 interface ProductCardProps {
   product: Product;
@@ -8,127 +8,75 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
   const isAvailable = product.is_available !== false;
 
   return (
     <button
       onClick={() => onSelect(product)}
-      className={`glass-card ${!isAvailable ? 'opacity-50' : ''}`}
+      className={`glass-card ${!isAvailable ? 'unavailable-overlay' : ''}`}
       style={{
         display: 'flex',
-        alignItems: 'center',
-        gap: '12px',
-        padding: '14px',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        padding: '16px',
+        gap: '10px',
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
         border: 'none',
         outline: 'none',
         background: 'transparent',
+        textDecoration: 'none',
         position: 'relative',
       }}
     >
-      {/* Imagen o Monograma */}
-      <div
+      {/* Product Name - with white background */}
+      <h3
+        className="font-heading"
         style={{
-          width: '44px',
-          height: '44px',
-          borderRadius: '10px',
-          flexShrink: 0,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          overflow: 'hidden',
-          background: 'rgba(212, 175, 55, 0.06)',
-          border: '1px solid rgba(212, 175, 55, 0.15)',
+          fontSize: '16px',
+          fontWeight: 700,
+          color: '#0A1128',
+          margin: 0,
+          lineHeight: 1.3,
+          letterSpacing: '0.2px',
+          paddingRight: '8px',
+          background: 'rgba(255, 255, 255, 0.93)',
+          padding: '3px 8px',
+          borderRadius: '6px',
+          display: 'inline-block',
+          maxWidth: '100%',
         }}
       >
-        {product.image_url ? (
-          <img
-            src={product.image_url}
-            alt={`Imagen de ${product.name}`}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-        ) : (
-          <span
-            className="font-heading"
-            style={{
-              fontSize: '18px',
-              fontWeight: 700,
-              color: 'var(--color-accent)',
-            }}
-          >
-            {product.name.charAt(0).toUpperCase()}
-          </span>
-        )}
-      </div>
+        {product.name}
+      </h3>
 
-      {/* Contenido */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <h3
-          className="font-heading"
+      {/* Description */}
+      {product.description && (
+        <p
           style={{
-            fontSize: '15px',
-            fontWeight: 700,
-            color: 'var(--color-text-primary)',
+            fontSize: '13px',
+            color: '#5B6D8A',
             margin: 0,
-            lineHeight: 1.3,
-            letterSpacing: '0.2px',
+            lineHeight: 1.45,
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
           }}
         >
-          {product.name}
-        </h3>
-        {product.description && (
-          <p
-            className="font-interface"
-            style={{
-              fontSize: '12px',
-              color: 'var(--color-text-secondary)',
-              margin: '3px 0 0 0',
-              lineHeight: 1.4,
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {product.description}
-          </p>
-        )}
-      </div>
+          {product.description}
+        </p>
+      )}
 
-      {/* Precio o Badge */}
-      <div style={{ flexShrink: 0, marginLeft: '4px' }}>
-        {!isAvailable ? (
-          <span
-            style={{
-              fontSize: '10px',
-              fontWeight: 700,
-              color: 'var(--color-danger)',
-              background: 'var(--color-stock-bg)',
-              border: '1px solid rgba(239, 68, 68, 0.25)',
-              borderRadius: '6px',
-              padding: '3px 8px',
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-            }}
-          >
-            Sin stock
+      {/* Price Badge */}
+      {product.price != null && isAvailable && (
+        <div style={{ marginTop: '2px' }}>
+          <span className="price-badge">
+            ${product.price.toLocaleString('es-AR')}
           </span>
-        ) : (
-          <span className="price-badge">{formatPrice(product.price)}</span>
-        )}
-      </div>
+        </div>
+      )}
     </button>
   );
 }

@@ -1,74 +1,87 @@
-import { cookies } from 'next/headers';
-import { generateRegistrationOptions } from '@simplewebauthn/server';
-import { createClient } from '@/lib/supabase/server';
-import { adminDb } from '@/lib/supabase/admin';
-import { getRPID, RP_NAME } from '@/lib/webauthn';
+// src/app/admin/api/webauthn/register-options/route.ts
+import { NextRequest, NextResponse } from "next/server"
+import { generateRegistrationOptions } from "@simplewebauthn/server"
+import { createClient } from "@/lib/supabase/admin"
+import { toBase64url, getRpConfig } from "@/lib/webauthn"
+import { cookies } from "next/headers"
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    // 1. Verify the user is authenticated
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
+    const cookieStore = await cookies()
+    const authToken = cookieStore.get("sb-access-token")?.value
 
-    if (!user?.email) {
-      return Response.json({ error: 'No autenticado' }, { status: 401 });
+    if (!authToken) {
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
-    // 2. Verify the user is in allowed_users
-    const { data: allowedUser } = await adminDb
-      .from('allowed_users')
-      .select('email')
-      .eq('email', user.email)
-      .single();
+    const supabase = createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser(authToken)
 
-    if (!allowedUser) {
-      return Response.json({ error: 'Usuario no autorizado' }, { status: 403 });
+    if (userError || !user?.email) {
+      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
     }
 
-    // 3. Get existing credentials for exclusion list (prevent duplicate registration)
-    const { data: existingCredentials } = await adminDb
-      .from('passkey_credentials')
-      .select('credential_id, transports')
-      .eq('user_email', user.email);
+    const email = user.email
 
-    const excludeCredentials = (existingCredentials || []).map((cred) => ({
-      id: cred.credential_id,
-      type: 'public-key' as const,
-      transports: (cred.transports || ['internal']) as AuthenticatorTransport[],
-    }));
+    const { data: allowedUser, error: allowedError } = await supabase
+      .from("allowed_users")
+      .select("email")
+      .eq("email", email)
+      .single()
 
-    // 4. Get host from request headers
-    const host = request.headers.get('host') || 'localhost:3000';
-    const rpID = getRPID(host);
+    if (allowedError || !allowedUser) {
+      return NextResponse.json({ error: "Usuario no autorizado" }, { status: 403 })
+    }
 
-    // 5. Generate registration options
+    const { data: existingCreds } = await supabase
+      .from("passkey_credentials")
+      .select("credential_id")
+      .eq("user_email", email)
+
+    const excludeCredentials = (existingCreds || []).map((cred) => ({
+      id: fromBase64urlHelper(cred.credential_id),
+      type: "public-key" as const,
+    }))
+
+    const { rpID, origin } = getRpConfig(req.headers)
+
     const options = await generateRegistrationOptions({
-      rpName: RP_NAME,
+      rpName: "M&M Multiespacio",
       rpID,
-      userName: user.email,
-      userDisplayName: user.email,
-      attestationType: 'none',
-      excludeCredentials,
+      userName: email,
+      userDisplayName: email.split("@")[0],
+      attestationType: "none",
       authenticatorSelection: {
-        authenticatorAttachment: 'platform',
-        userVerification: 'preferred',
-        residentKey: 'preferred',
+        authenticatorAttachment: "platform",
+        residentKey: "preferred",
+        userVerification: "preferred",
       },
-    });
+      excludeCredentials,
+    })
 
-    // 6. Store challenge in cookie (2 minutes TTL)
-    const cookieStore = await cookies();
-    cookieStore.set('webauthn-challenge', options.challenge, {
+    const challenge = toBase64url(options.challenge)
+    const response = NextResponse.json({ options })
+    response.cookies.set("webauthn_register_challenge", challenge, {
       httpOnly: true,
-      secure: !host.includes('localhost'),
-      sameSite: 'lax',
+      secure: true,
+      sameSite: "lax",
+      path: "/",
       maxAge: 120,
-      path: '/admin/api/webauthn',
-    });
+    })
 
-    return Response.json(options);
-  } catch (error) {
-    console.error('Error generating registration options:', error);
-    return Response.json({ error: 'Error interno del servidor' }, { status: 500 });
+    return response
+  } catch (err) {
+    console.error("[register-options] Error:", err)
+    return NextResponse.json(
+      { error: "Error al generar opciones de registro" },
+      { status: 500 }
+    )
   }
+}
+
+function fromBase64urlHelper(base64url: string): Uint8Array {
+  const base64 = base64url.replace(/-/g, "+").replace(/_/g, "/")
+  const padded = base64 + "=".repeat((4 - (base64.length % 4)) % 4)
+  const buf = Buffer.from(padded, "base64")
+  return new Uint8Array(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength))
 }
