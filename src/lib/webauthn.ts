@@ -37,9 +37,11 @@ export function toBase64url(data: Uint8Array | ArrayBuffer | string): string {
 
 /**
  * Convert base64url string from database to Uint8Array for verification.
+ * Returns Uint8Array<ArrayBuffer> for strict TypeScript compatibility with @simplewebauthn/server.
  */
-export function fromBase64url(base64url: string): Uint8Array {
-  return new Uint8Array(Buffer.from(base64url, 'base64url'));
+export function fromBase64url(base64url: string): Uint8Array<ArrayBuffer> {
+  const buf = Buffer.from(base64url, 'base64url');
+  return new Uint8Array(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 }
 
 /**
