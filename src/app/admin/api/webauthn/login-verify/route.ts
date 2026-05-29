@@ -1,8 +1,8 @@
 // src/app/admin/api/webauthn/login-verify/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { verifyAuthenticationResponse } from "@simplewebauthn/server"
-import { createClient } from "@/lib/supabase/admin"
-import { getRpConfig } from "@/lib/webauthn"
+import { adminDb } from "@/lib/supabase/admin"
+import { getRPID, getOrigin, getHost } from "@/lib/webauthn"
 import { cookies } from "next/headers"
 
 export async function POST(req: NextRequest) {
@@ -20,7 +20,6 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
 
-    const supabase = createClient()
     const credentialIdFromBody = body.id || body.rawId
 
     const { data: credentials, error: credError } = await supabase
@@ -53,7 +52,7 @@ export async function POST(req: NextRequest) {
     const pubKeyBuf = Buffer.from(pubKeyPadded, "base64")
     const publicKeyBytes = new Uint8Array(pubKeyBuf.buffer.slice(pubKeyBuf.byteOffset, pubKeyBuf.byteOffset + pubKeyBuf.byteLength))
 
-    const { rpID, origin } = getRpConfig(req.headers)
+    const host = getHost(req.headers); const rpID = getRPID(host); const origin = getOrigin(host)
 
     const verification = await verifyAuthenticationResponse({
       response: body,
@@ -80,7 +79,7 @@ export async function POST(req: NextRequest) {
       .update({ counter: verification.authenticationInfo.newCounter })
       .eq("credential_id", matchedCred.credential_id)
 
-    const { data: linkData, error: linkError } = await supabase.auth.admin.generateLink({
+    const { data: linkData, error: linkError } = await adminDb.auth.admin.generateLink({
       type: "magiclink",
       email,
     })
@@ -104,7 +103,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { data: verifyData, error: verifyError } = await supabase.auth.verifyOtp({
+    const { data: verifyData, error: verifyError } = await adminDb.auth.verifyOtp({
       token_hash: tokenHash,
       type: tokenType,
     })

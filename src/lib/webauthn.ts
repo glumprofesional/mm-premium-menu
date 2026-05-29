@@ -34,3 +34,12 @@ export function getOrigin(host: string): string {
   const protocol = host.startsWith('localhost') ? 'http' : 'https';
   return `${protocol}://${host}`;
 }
+
+/**
+ * Derives host from request headers (works on Vercel and local dev).
+ */
+export function getHost(headers: Headers): string {
+  const forwardedHost = headers.get("x-forwarded-host")
+  const host = forwardedHost || headers.get("host") || "localhost:3000"
+  return host
+}

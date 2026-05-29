@@ -1,8 +1,8 @@
 // src/app/admin/api/webauthn/login-options/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { generateAuthenticationOptions } from "@simplewebauthn/server"
-import { createClient } from "@/lib/supabase/admin"
-import { getRpConfig } from "@/lib/webauthn"
+import { adminDb } from "@/lib/supabase/admin"
+import { getRPID, getHost } from "@/lib/webauthn"
 import { cookies } from "next/headers"
 
 export async function POST(req: NextRequest) {
@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email es requerido" }, { status: 400 })
     }
 
-    const supabase = createClient()
     const { data: allowedUser, error: allowedError } = await supabase
       .from("allowed_users")
       .select("email")
@@ -52,7 +51,7 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    const { rpID } = getRpConfig(req.headers)
+    const host = getHost(req.headers); const rpID = getRPID(host)
 
     const options = await generateAuthenticationOptions({
       rpID,

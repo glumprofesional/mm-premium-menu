@@ -1,6 +1,6 @@
 // src/app/admin/api/webauthn/check-credentials/route.ts
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/admin"
+import { adminDb } from "@/lib/supabase/admin"
 import { cookies } from "next/headers"
 
 export async function POST() {
@@ -12,8 +12,7 @@ export async function POST() {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
-    const supabase = createClient()
-    const { data: { user }, error: userError } = await supabase.auth.getUser(authToken)
+    const { data: { user }, error: userError } = await adminDb.auth.getUser(authToken)
 
     if (userError || !user?.email) {
       return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })

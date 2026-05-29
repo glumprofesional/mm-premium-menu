@@ -1,8 +1,8 @@
 // src/app/admin/api/webauthn/register-verify/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { verifyRegistrationResponse } from "@simplewebauthn/server"
-import { createClient } from "@/lib/supabase/admin"
-import { toBase64url, getRpConfig } from "@/lib/webauthn"
+import { adminDb } from "@/lib/supabase/admin"
+import { toBase64url, getRPID, getOrigin, getHost } from "@/lib/webauthn"
 import { cookies } from "next/headers"
 
 export async function POST(req: NextRequest) {
@@ -22,8 +22,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
-    const supabase = createClient()
-    const { data: { user }, error: userError } = await supabase.auth.getUser(authToken)
+    const { data: { user }, error: userError } = await adminDb.auth.getUser(authToken)
 
     if (userError || !user?.email) {
       return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
@@ -32,7 +31,7 @@ export async function POST(req: NextRequest) {
     const email = user.email
     const body = await req.json()
 
-    const { rpID, origin } = getRpConfig(req.headers)
+    const host = getHost(req.headers); const rpID = getRPID(host); const origin = getOrigin(host)
 
     const verification = await verifyRegistrationResponse({
       response: body,
