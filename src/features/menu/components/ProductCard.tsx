@@ -1,6 +1,6 @@
 'use client';
 
-import type { Product } from '@/lib/types';
+import type { Product } from '@/types/product';
 
 interface ProductCardProps {
   product: Product;
@@ -30,7 +30,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         position: 'relative',
       }}
     >
-      {/* Product Name - with white background */}
+      {/* Product Name - with white background pill */}
       <h3
         className="font-heading"
         style={{

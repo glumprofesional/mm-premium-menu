@@ -3,7 +3,6 @@ import { adminDb } from "@/lib/supabase/admin"
 
 export async function GET(req: NextRequest) {
   try {
-    // Get user email from query params
     const { searchParams } = new URL(req.url)
     const email = searchParams.get("email")
 

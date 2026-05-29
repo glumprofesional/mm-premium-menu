@@ -1,116 +1,63 @@
-// src/app/admin/api/webauthn/register-verify/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { verifyRegistrationResponse } from "@simplewebauthn/server"
 import { adminDb } from "@/lib/supabase/admin"
-import { toBase64url, getRPID, getOrigin, getHost } from "@/lib/webauthn"
-import { cookies } from "next/headers"
+import { getHost, getRPID, getOrigin } from "@/lib/webauthn"
 
 export async function POST(req: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const challengeB64 = cookieStore.get("webauthn_register_challenge")?.value
-
-    if (!challengeB64) {
-      return NextResponse.json(
-        { error: "Challenge no encontrado. Intentá de nuevo." },
-        { status: 400 }
-      )
-    }
-
-    const authToken = cookieStore.get("sb-access-token")?.value
-    if (!authToken) {
-      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
-    }
-
-    const { data: { user }, error: userError } = await adminDb.auth.getUser(authToken)
-
-    if (userError || !user?.email) {
-      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
-    }
-
-    const email = user.email
     const body = await req.json()
+    const { credential } = body
 
-    const host = getHost(req.headers); const rpID = getRPID(host); const origin = getOrigin(host)
+    const challenge = req.cookies.get("webauthn_challenge")?.value
+    const email = req.cookies.get("webauthn_email")?.value
+
+    if (!challenge || !email) {
+      return NextResponse.json({ error: "Missing challenge or email" }, { status: 400 })
+    }
+
+    const host = getHost(req.headers)
+    const rpID = getRPID(host)
+    const origin = getOrigin(host)
 
     const verification = await verifyRegistrationResponse({
-      response: body,
-      expectedChallenge: challengeB64,
+      response: credential,
+      expectedChallenge: challenge,
       expectedOrigin: origin,
       expectedRPID: rpID,
     })
 
-    if (!verification.verified || !verification.registrationInfo) {
-      return NextResponse.json(
-        { error: "Verificación fallida. Intentá de nuevo." },
-        { status: 400 }
-      )
-    }
+    if (verification.verified && verification.registrationInfo) {
+      const { registrationInfo } = verification
+      const credentialId = registrationInfo.credential.id
+      const publicKey = registrationInfo.credential.publicKey
+      const counter = registrationInfo.credential.counter
+      const transports = credential.response.transports || []
 
-    const { registrationInfo } = verification
-    const credential = registrationInfo.credential
-    const credentialId = typeof credential.id === "string"
-      ? credential.id
-      : toBase64url(credential.id)
-    const publicKey = toBase64url(credential.publicKey)
-    const counter = 0
+      // Store credential in database
+      const { error: insertError } = await adminDb
+        .from("passkey_credentials")
+        .insert({
+          user_email: email,
+          credential_id: credentialId,
+          public_key: publicKey,
+          counter: counter,
+          transports: transports,
+        })
 
-    const { error: insertError } = await supabase
-      .from("passkey_credentials")
-      .insert({
-        user_email: email,
-        credential_id: credentialId,
-        public_key: publicKey,
-        counter,
-        transports: body.response?.transports || [],
-      })
-
-    if (insertError) {
-      console.error("[register-verify] DB insert error:", insertError)
-
-      if (insertError.code === "23505") {
-        return NextResponse.json(
-          { error: "Esta credencial ya está registrada." },
-          { status: 409 }
-        )
+      if (insertError) {
+        console.error("Error storing credential:", insertError)
+        return NextResponse.json({ error: "Failed to store credential" }, { status: 500 })
       }
 
-      return NextResponse.json(
-        { error: "Error al guardar credencial en la base de datos." },
-        { status: 500 }
-      )
+      const response = NextResponse.json({ verified: true })
+      response.cookies.delete("webauthn_challenge")
+      response.cookies.delete("webauthn_email")
+      return response
     }
 
-    const response = NextResponse.json({ verified: true })
-    response.cookies.set("webauthn_register_challenge", "", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 0,
-    })
-
-    return response
-  } catch (err) {
-    console.error("[register-verify] Error:", err)
-    const message = err instanceof Error ? err.message : "Error desconocido"
-
-    if (message.includes("challenge")) {
-      return NextResponse.json(
-        { error: "Sesión expirada. Recargá la página e intentá de nuevo." },
-        { status: 400 }
-      )
-    }
-    if (message.includes("origin") || message.includes("rpID") || message.includes("RP")) {
-      return NextResponse.json(
-        { error: "Error de configuración del servidor. Contactá al administrador." },
-        { status: 500 }
-      )
-    }
-
-    return NextResponse.json(
-      { error: "Error al verificar el registro: " + message },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: "Verification failed" }, { status: 400 })
+  } catch (error) {
+    console.error("Registration verification error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
