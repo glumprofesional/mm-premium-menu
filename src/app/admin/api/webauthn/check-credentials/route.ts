@@ -18,7 +18,7 @@ export async function POST() {
       return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
     }
 
-    const { data: credentials, error: credError } = await supabase
+    const { data: credentials, error: credError } = await adminDb
       .from("passkey_credentials")
       .select("id")
       .eq("user_email", user.email)
