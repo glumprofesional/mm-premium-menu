@@ -1,38 +1,31 @@
-// src/app/admin/api/webauthn/check-credentials/route.ts
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { adminDb } from "@/lib/supabase/admin"
-import { cookies } from "next/headers"
 
-export async function POST() {
+export async function GET(req: NextRequest) {
   try {
-    const cookieStore = await cookies()
-    const authToken = cookieStore.get("sb-access-token")?.value
+    // Get user email from query params
+    const { searchParams } = new URL(req.url)
+    const email = searchParams.get("email")
 
-    if (!authToken) {
-      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
-    }
-
-    const { data: { user }, error: userError } = await adminDb.auth.getUser(authToken)
-
-    if (userError || !user?.email) {
-      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
+    if (!email) {
+      return NextResponse.json({ error: "Email is required" }, { status: 400 })
     }
 
     const { data: credentials, error: credError } = await adminDb
       .from("passkey_credentials")
       .select("id")
-      .eq("user_email", user.email)
+      .eq("user_email", email)
 
     if (credError) {
-      console.error("[check-credentials] Error:", credError)
-      return NextResponse.json({ hasCredentials: false }, { status: 200 })
+      console.error("Error checking credentials:", credError)
+      return NextResponse.json({ error: "Database error" }, { status: 500 })
     }
 
     return NextResponse.json({
-      hasCredentials: (credentials?.length || 0) > 0,
+      hasCredentials: credentials && credentials.length > 0,
     })
-  } catch (err) {
-    console.error("[check-credentials] Error:", err)
-    return NextResponse.json({ hasCredentials: false }, { status: 200 })
+  } catch (error) {
+    console.error("Check credentials error:", error)
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
