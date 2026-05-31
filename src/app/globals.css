@@ -25,9 +25,9 @@
   --color-surface: #101935;
   --color-surface-alt: #0c0e14;
 
-  /* ---- Gold Accent ---- */
-  --color-accent: #d4af37;
-  --color-on-accent: #0A1128;
+  /* ---- Orange Accent (was Gold) ---- */
+  --color-accent: #da5a47;
+  --color-on-accent: #ffffff;
 
   /* ---- Text ---- */
   --color-text-primary: #F4F7F9;
@@ -80,7 +80,7 @@ body {
 
 .glass-card:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(218, 90, 71, 0.08);
 }
 
 .glass-card:active {
@@ -95,23 +95,23 @@ body {
   background: rgba(16, 25, 53, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(192, 192, 192, 0.25);
+  border: 2px solid rgba(218, 90, 71, 0.4);
   border-radius: 20px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(218, 90, 71, 0.1);
 }
 
 /* ============================================
-   Gold Accent Lines
+   Accent Lines (was Gold)
    ============================================ */
 
 .gold-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(218, 90, 71, 0.5), transparent);
 }
 
 .gold-line-left {
   height: 1px;
-  background: linear-gradient(90deg, rgba(212, 175, 55, 0.5), transparent);
+  background: linear-gradient(90deg, rgba(218, 90, 71, 0.5), transparent);
 }
 
 /* ============================================
@@ -122,7 +122,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  border: 1.5px solid rgba(218, 90, 71, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,18 +130,18 @@ body {
   font-size: 22px;
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(218, 90, 71, 0.08);
   flex-shrink: 0;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .glass-card:hover .monogram {
-  border-color: rgba(212, 175, 55, 0.8);
-  background: rgba(212, 175, 55, 0.15);
+  border-color: rgba(218, 90, 71, 0.8);
+  background: rgba(218, 90, 71, 0.15);
 }
 
 /* ============================================
-   Price Badge
+   Price Badge — Naranja con texto blanco
    ============================================ */
 
 .price-badge {
@@ -149,16 +149,16 @@ body {
   font-weight: 700;
   font-size: 14px;
   letter-spacing: 0.5px;
-  color: var(--color-accent);
-  background: rgba(212, 175, 55, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #ffffff;
+  background: rgba(218, 90, 71, 0.85);
+  border: 1px solid rgba(218, 90, 71, 0.5);
   border-radius: 8px;
   padding: 4px 10px;
   white-space: nowrap;
 }
 
 /* ============================================
-   Pill Button
+   Pill Button — Bordes naranja
    ============================================ */
 
 .pill-button {
@@ -168,7 +168,7 @@ body {
   letter-spacing: 0.5px;
   color: #C0C0C0;
   background: transparent;
-  border: 1px solid rgba(192, 192, 192, 0.3);
+  border: 1px solid rgba(218, 90, 71, 0.4);
   border-radius: 999px;
   padding: 10px 24px;
   cursor: pointer;
@@ -176,9 +176,9 @@ body {
 }
 
 .pill-button:hover {
-  border-color: rgba(212, 175, 55, 0.5);
+  border-color: rgba(218, 90, 71, 0.7);
   color: var(--color-accent);
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(218, 90, 71, 0.08);
 }
 
 /* ============================================
@@ -199,7 +199,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(218, 90, 71, 0.3);
 }
 
 /* ============================================
@@ -235,7 +235,7 @@ body {
   --color-text-primary: #0A1128;
   --color-text-secondary: #6b7280;
   --color-text-muted: #9ca3af;
-  --color-accent: #b8960c;
+  --color-accent: #c44d3c;
   --color-on-accent: #ffffff;
   --color-border: #e5e7eb;
   --color-danger: #dc2626;
@@ -250,38 +250,38 @@ body {
 }
 
 .light .glass-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 12px rgba(184, 150, 12, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 12px rgba(196, 77, 60, 0.08);
 }
 
 .light .glass-modal {
   background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(0, 0, 0, 0.1);
+  border-color: rgba(196, 77, 60, 0.3);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
 }
 
 .light .monogram {
-  border-color: rgba(184, 150, 12, 0.5);
+  border-color: rgba(196, 77, 60, 0.5);
   color: var(--color-accent);
-  background: rgba(184, 150, 12, 0.08);
+  background: rgba(196, 77, 60, 0.08);
 }
 
 .light .price-badge {
-  color: var(--color-accent);
-  background: rgba(184, 150, 12, 0.1);
-  border-color: rgba(184, 150, 12, 0.25);
+  color: #ffffff;
+  background: rgba(196, 77, 60, 0.85);
+  border-color: rgba(196, 77, 60, 0.5);
 }
 
 .light .gold-line,
 .light .gold-line-left {
-  background: linear-gradient(90deg, rgba(184, 150, 12, 0.3), transparent);
+  background: linear-gradient(90deg, rgba(196, 77, 60, 0.3), transparent);
 }
 
 .light .pill-button {
   color: #6b7280;
-  border-color: rgba(0, 0, 0, 0.15);
+  border-color: rgba(196, 77, 60, 0.3);
 }
 
 .light .pill-button:hover {
   color: var(--color-accent);
-  border-color: rgba(184, 150, 12, 0.4);
+  border-color: rgba(196, 77, 60, 0.6);
 }

@@ -192,7 +192,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'var(--color-accent)';
-              e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.5)';
+              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.5)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = 'var(--color-text-secondary)';
@@ -281,6 +281,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               margin: '0 0 8px 0',
               lineHeight: 1.25,
               letterSpacing: '0.3px',
+              textAlign: 'center',
             }}
           >
             {product.name}

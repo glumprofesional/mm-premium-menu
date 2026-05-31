@@ -533,7 +533,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
                                     </div>
                                   )}
                                   <div className="min-w-0">
-                                    <p className="font-bold text-[#14130e] text-[15px] truncate">
+                                    <p className="font-bold text-[#14130e] text-[15px] truncate" style={{ background: "rgba(255, 255, 255, 0.93)", padding: "3px 8px", borderRadius: "6px", display: "inline-block", maxWidth: "100%" }}>
                                       {product.name}
                                     </p>
                                     <p className="font-bold text-[13px] text-[#6b6858]">

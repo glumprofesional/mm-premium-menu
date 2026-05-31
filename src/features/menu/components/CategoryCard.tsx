@@ -31,10 +31,10 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               width: '52px',
               height: '52px',
               borderRadius: '50%',
-              border: '1.5px solid rgba(212, 175, 55, 0.5)',
+              border: '1.5px solid rgba(218, 90, 71, 0.5)',
               overflow: 'hidden',
               flexShrink: 0,
-              background: 'rgba(212, 175, 55, 0.08)',
+              background: 'rgba(218, 90, 71, 0.08)',
             }}
           >
             <img
