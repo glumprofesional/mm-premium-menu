@@ -440,3 +440,8 @@ export async function deleteAdminUser(id: string) {
     return { error: err instanceof Error ? err.message : "Error desconocido" }
   }
 }
+/* ─── Get User Email ─── */
+export async function getUserEmail() {
+  const { user } = await checkAuth()
+  return user.email || ""
+}

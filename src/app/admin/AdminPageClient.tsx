@@ -172,7 +172,7 @@ function ProductCountBadge({ count }: { count: number }) {
 }
 
 /* ─── Main Component ─── */
-export default function AdminPageClient({ initialData, role }: { initialData: Category[]; role: "super_admin" | "admin" }) {
+export default function AdminPageClient({ initialData, role, email }: { initialData: Category[]; role: "super_admin" | "admin"; email: string }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [expandedId, setExpandedId] = useState<string | null>(null)
@@ -390,7 +390,7 @@ export default function AdminPageClient({ initialData, role }: { initialData: Ca
 
         {/* Biometric Registration */}
         <div className="mb-6 sm:mb-8">
-          <PasskeyManager />
+          <PasskeyManager email={email} />
         </div>
 
         {/* Loading bar */}

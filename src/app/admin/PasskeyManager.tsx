@@ -1,17 +1,16 @@
-// src/app/admin/PasskeyManager.tsx
 "use client"
 
 import { useState, useEffect } from "react"
 import { startRegistration } from "@simplewebauthn/browser"
 
-export default function PasskeyManager() {
+export default function PasskeyManager({ email }: { email: string }) {
   const [status, setStatus] = useState<"loading" | "registered" | "not_registered" | "unsupported">("loading")
   const [registering, setRegistering] = useState(false)
   const [message, setMessage] = useState("")
 
   useEffect(() => {
     checkCredentials()
-  }, [])
+  }, [email])
 
   async function checkCredentials() {
     try {
@@ -20,7 +19,7 @@ export default function PasskeyManager() {
         return
       }
 
-      const res = await fetch("/admin/api/webauthn/check-credentials", { method: "POST" })
+      const res = await fetch(`/admin/api/webauthn/check-credentials?email=${encodeURIComponent(email)}`)
       const data = await res.json()
       setStatus(data.hasCredentials ? "registered" : "not_registered")
     } catch {
@@ -33,7 +32,11 @@ export default function PasskeyManager() {
     setMessage("")
 
     try {
-      const optionsRes = await fetch("/admin/api/webauthn/register-options", { method: "POST" })
+      const optionsRes = await fetch("/admin/api/webauthn/register-options", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      })
 
       if (!optionsRes.ok) {
         const errData = await optionsRes.json()
@@ -42,14 +45,14 @@ export default function PasskeyManager() {
         return
       }
 
-      const { options } = await optionsRes.json()
+      const options = await optionsRes.json()
 
-      const registrationResponse = await startRegistration(options)
+      const registrationResponse = await startRegistration({ optionsJSON: options })
 
       const verifyRes = await fetch("/admin/api/webauthn/register-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registrationResponse),
+        body: JSON.stringify({ credential: registrationResponse }),
       })
 
       const verifyData = await verifyRes.json()
