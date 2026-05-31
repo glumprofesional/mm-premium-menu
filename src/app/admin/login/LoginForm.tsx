@@ -64,7 +64,8 @@ export default function LoginForm() {
         return
       }
 
-      router.push("/admin")
+      sessionStorage.setItem("bio_just_unlocked", "true")
+        router.push("/admin")
       router.refresh()
     } catch {
       setError("Error de conexión. Intentá de nuevo.")
@@ -104,6 +105,7 @@ export default function LoginForm() {
       const verifyData = await verifyRes.json()
 
       if (verifyRes.ok && verifyData.verified) {
+        sessionStorage.setItem("bio_just_unlocked", "true")
         router.push("/admin")
         router.refresh()
       } else {

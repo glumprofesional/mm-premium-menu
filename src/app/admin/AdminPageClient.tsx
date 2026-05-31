@@ -181,6 +181,11 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
 
   useEffect(() => {
     async function checkBio() {
+      if (sessionStorage.getItem("bio_just_unlocked")) {
+        sessionStorage.removeItem("bio_just_unlocked")
+        setLocked("unlocked")
+        return
+      }
       try {
         const res = await fetch(`/admin/api/webauthn/check-credentials?email=${encodeURIComponent(email)}`)
         const data = await res.json()
