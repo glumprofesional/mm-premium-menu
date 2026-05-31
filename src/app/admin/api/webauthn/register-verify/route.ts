@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { verifyRegistrationResponse } from "@simplewebauthn/server"
 import { adminDb } from "@/lib/supabase/admin"
+import { createClient } from "@/lib/supabase/server"
 import { toBase64url, getRPID, getOrigin, getHost } from "@/lib/webauthn"
 import { cookies } from "next/headers"
 
@@ -18,24 +19,18 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // 2. Verify user is authenticated
-    const authToken = cookieStore.get("sb-access-token")?.value
-    if (!authToken) {
-      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
-    }
-
-    const { data: { user }, error: userError } = await adminDb.auth.getUser(authToken)
+    // 2. Verify user is authenticated (using Supabase server client)
+    const supabase = await createClient()
+    const { data: { user }, error: userError } = await supabase.auth.getUser()
 
     if (userError || !user?.email) {
-      return NextResponse.json({ error: "Usuario no válido" }, { status: 401 })
+      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
     }
 
     const email = user.email
 
     // 3. Parse the registration response from the client
     const body = await req.json()
-
-    // The client sends: { credential: registrationResponse }
     const credential = body.credential || body
 
     // 4. Derive expected origin and rpID from request headers
@@ -58,7 +53,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // 6. Extract credential info (@simplewebauthn/server v13+ API)
+    // 6. Extract credential info
     const { registrationInfo } = verification
     const credInfo = registrationInfo.credential
     const credentialId = typeof credInfo.id === "string"
@@ -66,8 +61,6 @@ export async function POST(req: NextRequest) {
       : toBase64url(credInfo.id)
     const publicKey = toBase64url(credInfo.publicKey)
     const counter = 0
-
-    // Extract transports from the original response if available
     const transports = credential.response?.transports || []
 
     // 7. Save credential to database
