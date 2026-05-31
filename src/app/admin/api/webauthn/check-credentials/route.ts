@@ -1,23 +1,38 @@
 // src/app/admin/api/webauthn/check-credentials/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { adminDb } from "@/lib/supabase/admin"
-import { createClient } from "@/lib/supabase/server"
 
 export async function GET(req: NextRequest) {
   try {
-    // 1. Verify user is authenticated (using Supabase server client)
-    const supabase = await createClient()
-    const { data: { user }, error: userError } = await supabase.auth.getUser()
+    // Get email from query param (works without authentication)
+    const { searchParams } = new URL(req.url)
+    const email = searchParams.get("email")
 
-    if (userError || !user?.email) {
-      return NextResponse.json({ error: "No autenticado" }, { status: 401 })
+    if (!email) {
+      // Try authenticated user as fallback
+      const { createClient } = await import("@/lib/supabase/server")
+      const supabase = await createClient()
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+      if (userError || !user?.email) {
+        return NextResponse.json({ hasCredentials: false }, { status: 200 })
+      }
+
+      const { data: credentials } = await adminDb
+        .from("passkey_credentials")
+        .select("id")
+        .eq("user_email", user.email)
+
+      return NextResponse.json({
+        hasCredentials: (credentials?.length || 0) > 0,
+      })
     }
 
-    // 2. Check for credentials
+    // Check for credentials by email (no auth required)
     const { data: credentials, error: credError } = await adminDb
       .from("passkey_credentials")
       .select("id")
-      .eq("user_email", user.email)
+      .eq("user_email", email)
 
     if (credError) {
       console.error("[check-credentials] Error:", credError)

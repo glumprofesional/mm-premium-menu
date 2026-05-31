@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useTransition, useRef } from "react"
+import { useState, useEffect, useTransition, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import {
@@ -14,6 +14,7 @@ import {
   updateProduct,
 } from "./actions"
 import PasskeyManager from "./PasskeyManager"
+import BiometricLockScreen from "./BiometricLockScreen"
 
 /* ─── Types ─── */
 type Category = {
@@ -176,6 +177,20 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [locked, setLocked] = useState<"checking" | "locked" | "unlocked">("checking")
+
+  useEffect(() => {
+    async function checkBio() {
+      try {
+        const res = await fetch(`/admin/api/webauthn/check-credentials?email=${encodeURIComponent(email)}`)
+        const data = await res.json()
+        setLocked(data.hasCredentials ? "locked" : "unlocked")
+      } catch {
+        setLocked("unlocked")
+      }
+    }
+    checkBio()
+  }, [email])
 
   const [categoryModal, setCategoryModal] = useState<CategoryModalState>({
     open: false,
@@ -362,6 +377,20 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   }
 
   /* ─── Render ─── */
+    if (locked === "checking") {
+      return (
+        <div className="min-h-screen bg-[#e6dec8] flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-10 h-10 mx-auto mb-3 border-3 border-[#d4cbaf] border-t-[#da5a47] rounded-full animate-spin" />
+            <p className="text-sm text-[#6b6858]">Verificando...</p>
+          </div>
+        </div>
+      )
+    }
+    if (locked === "locked") {
+      return <BiometricLockScreen email={email} onUnlocked={() => setLocked("unlocked")} />
+    }
+
   return (
     <div className="min-h-screen bg-[#e6dec8]">
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
