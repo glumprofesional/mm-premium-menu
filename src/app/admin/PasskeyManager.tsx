@@ -1,3 +1,4 @@
+// src/app/admin/PasskeyManager.tsx
 "use client"
 
 import { useState, useEffect } from "react"
@@ -10,7 +11,7 @@ export default function PasskeyManager({ email }: { email: string }) {
 
   useEffect(() => {
     checkCredentials()
-  }, [email])
+  }, [])
 
   async function checkCredentials() {
     try {
@@ -45,7 +46,7 @@ export default function PasskeyManager({ email }: { email: string }) {
         return
       }
 
-      const options = await optionsRes.json()
+      const { options } = await optionsRes.json()
 
       const registrationResponse = await startRegistration({ optionsJSON: options })
 
@@ -77,6 +78,13 @@ export default function PasskeyManager({ email }: { email: string }) {
       }
       else if (errorMessage.includes("SecurityError")) {
         setMessage("Error de seguridad. Asegurate de usar HTTPS.")
+      }
+      else if (errorMessage.includes("Failed to store") || errorMessage.includes("store credential")) {
+        setMessage("No se pudo guardar la credencial en tu dispositivo. Verificá que tengás configurado un método de desbloqueo (PIN, huella o cara) en tu teléfono e intentá de nuevo.")
+      }
+      else if (errorMessage.includes("WebAuthn is not supported")) {
+        setStatus("unsupported")
+        setMessage("Tu navegador no soporta WebAuthn. Probá con Chrome, Safari o Edge actualizado.")
       }
       else {
         setMessage("Error al registrar: " + errorMessage)
@@ -112,10 +120,10 @@ export default function PasskeyManager({ email }: { email: string }) {
 
       <p className="text-xs text-[#6b6858] mb-3">
         {status === "unsupported"
-          ? "Tu dispositivo no soporta autenticación biométrica (huella, cara o PIN)."
+          ? "Tu dispositivo no soporta autenticación biométrica."
           : status === "registered"
-          ? "Ya podés ingresar usando tu huella, cara o PIN de Windows."
-          : "Registra tu huella, cara o PIN de Windows para ingresar sin contraseña."
+          ? "Ya podés ingresar usando tu desbloqueo biométrico o PIN."
+          : "Registra tu huella, cara o PIN para ingresar sin contraseña."
         }
       </p>
 
