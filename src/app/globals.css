@@ -25,7 +25,7 @@
   --color-surface: #101935;
   --color-surface-alt: #0c0e14;
 
-  /* ---- Orange Accent (was Gold) ---- */
+  /* ---- Orange Accent ---- */
   --color-accent: #da5a47;
   --color-on-accent: #ffffff;
 
@@ -65,14 +65,14 @@ body {
 }
 
 /* ============================================
-   Glassmorphism Card
+   Glassmorphism Card — Borde naranja
    ============================================ */
 
 .glass-card {
   background: rgba(16, 25, 53, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(192, 192, 192, 0.2) !important;
+  border: 2px solid rgba(218, 90, 71, 0.35) !important;
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -81,6 +81,7 @@ body {
 .glass-card:hover {
   transform: scale(1.02);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(218, 90, 71, 0.08);
+  border-color: rgba(218, 90, 71, 0.6) !important;
 }
 
 .glass-card:active {
@@ -88,7 +89,7 @@ body {
 }
 
 /* ============================================
-   Glassmorphism Modal
+   Glassmorphism Modal — Borde naranja
    ============================================ */
 
 .glass-modal {
@@ -101,7 +102,7 @@ body {
 }
 
 /* ============================================
-   Accent Lines (was Gold)
+   Accent Lines
    ============================================ */
 
 .gold-line {
@@ -245,12 +246,13 @@ body {
 
 .light .glass-card {
   background: rgba(255, 255, 255, 0.7);
-  border-color: rgba(0, 0, 0, 0.12) !important;
+  border-color: rgba(196, 77, 60, 0.35) !important;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .light .glass-card:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12), 0 0 12px rgba(196, 77, 60, 0.08);
+  border-color: rgba(196, 77, 60, 0.6) !important;
 }
 
 .light .glass-modal {

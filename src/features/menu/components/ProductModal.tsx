@@ -3,10 +3,6 @@
 import { useState, useEffect, useRef } from 'react';
 import type { Product } from '@/types/product';
 
-// ==========================================================================
-// ICONOS
-// ==========================================================================
-
 const CloseIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path d="M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -22,10 +18,6 @@ const CupIcon = () => (
   </svg>
 );
 
-// ==========================================================================
-// MODAL
-// ==========================================================================
-
 interface ProductModalProps {
   product: Product | null;
   categorySlug: string;
@@ -38,7 +30,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  /* ---- Mount animation ---- */
   useEffect(() => {
     if (isOpen) {
       setIsMounted(true);
@@ -52,7 +43,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     }
   }, [isOpen]);
 
-  /* ---- Escape key ---- */
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') onClose();
@@ -61,7 +51,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  /* ---- Focus trap ---- */
   useEffect(() => {
     if (!isOpen) return;
     const modal = modalRef.current;
@@ -93,7 +82,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     return () => modal.removeEventListener('keydown', handleTabKey);
   }, [isOpen]);
 
-  /* ---- Swipe down to close ---- */
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStart(e.touches[0].clientY);
   };
@@ -111,7 +99,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
     setTouchStart(null);
   };
 
-  /* ---- Format price ---- */
   const formatPrice = (price: number) =>
     new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', minimumFractionDigits: 0 }).format(price);
 
@@ -160,7 +147,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
           position: 'relative',
         }}
       >
-        {/* Swipe indicator */}
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px 0' }}>
           <div
             style={{
@@ -172,7 +158,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
           />
         </div>
 
-        {/* Close button */}
+        {/* Close button — visible por defecto */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 16px' }}>
           <button
             onClick={onClose}
@@ -184,26 +170,27 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
               alignItems: 'center',
               justifyContent: 'center',
               borderRadius: '50%',
-              color: 'var(--color-text-secondary)',
+              color: 'var(--color-accent)',
               background: 'rgba(16, 25, 53, 0.6)',
-              border: '1px solid rgba(192, 192, 192, 0.2)',
+              border: '1px solid rgba(218, 90, 71, 0.4)',
               cursor: 'pointer',
-              transition: 'color 0.2s ease, border-color 0.2s ease',
+              transition: 'color 0.2s ease, border-color 0.2s ease, background 0.2s ease',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--color-accent)';
-              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.5)';
+              e.currentTarget.style.color = '#ffffff';
+              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.8)';
+              e.currentTarget.style.background = 'rgba(218, 90, 71, 0.7)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--color-text-secondary)';
-              e.currentTarget.style.borderColor = 'rgba(192, 192, 192, 0.2)';
+              e.currentTarget.style.color = 'var(--color-accent)';
+              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.4)';
+              e.currentTarget.style.background = 'rgba(16, 25, 53, 0.6)';
             }}
           >
             <CloseIcon />
           </button>
         </div>
 
-        {/* Image */}
         <div style={{ padding: '0 24px 16px 24px' }}>
           <div
             style={{
@@ -269,8 +256,8 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
           </div>
         </div>
 
-        {/* Content */}
         <div style={{ padding: '0 24px 24px 24px' }}>
+          {/* Nombre centrado */}
           <h2
             id="product-modal-title"
             className="font-heading"
@@ -287,7 +274,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
             {product.name}
           </h2>
 
-          {/* Gold separator */}
           <div className="gold-line-left" style={{ margin: '12px 0' }} />
 
           {product.description && (
@@ -304,7 +290,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
             </p>
           )}
 
-          {/* Price / Stock badge */}
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             {isAvailable ? (
               <span className="price-badge" style={{ fontSize: '16px', padding: '8px 18px' }}>
@@ -331,7 +316,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
             )}
           </div>
 
-          {/* Back button — pill style */}
           <button
             onClick={onClose}
             className="pill-button"
