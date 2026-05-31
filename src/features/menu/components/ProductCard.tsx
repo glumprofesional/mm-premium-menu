@@ -35,7 +35,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         style={{
           fontSize: '16px',
           fontWeight: 700,
-          color: '#F4F7F9',
+          color: 'var(--color-text-primary)',
           margin: 0,
           lineHeight: 1.3,
           letterSpacing: '0.2px',
