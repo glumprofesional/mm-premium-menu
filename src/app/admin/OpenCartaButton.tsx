@@ -1,14 +1,13 @@
-"use client"
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function OpenCartaButton() {
-  function handleOpenCarta() {
-    window.open("https://mm-premium-menu.vercel.app/", "_system")
-  }
+  const router = useRouter();
 
   return (
     <button
-      type="button"
-      onClick={handleOpenCarta}
+      onClick={() => router.push("/?from=admin")}
       className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
     >
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sm:hidden">
@@ -24,5 +23,5 @@ export default function OpenCartaButton() {
       <span className="hidden sm:inline">Ver Carta</span>
       <span className="sm:hidden">Carta</span>
     </button>
-  )
+  );
 }
