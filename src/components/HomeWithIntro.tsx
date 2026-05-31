@@ -7,14 +7,14 @@ import Header from './layout/Header';
 import CategoryCard from '@/features/menu/components/CategoryCard';
 
 // ==========================================================================
-// INFO BANNER
+// INFO BANNER — Bordes verdes, texto blanco, ícono verde con ! blanco
 // ==========================================================================
 
 const WarningIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
-    <path d="M12 2L1 21h22L12 2z" fill="#22c55e" stroke="#22c55e" strokeWidth="1" strokeLinejoin="round"/>
-    <path d="M12 9v5" stroke="#0A1128" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="12" cy="17" r="1.2" fill="#0A1128"/>
+    <path d="M12 2L1 21h22L12 2z" stroke="#22c55e" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
+    <path d="M12 9v5" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
+    <circle cx="12" cy="17" r="1.2" fill="#ffffff"/>
   </svg>
 );
 
@@ -27,8 +27,8 @@ function InfoBanner({ text }: { text: string }) {
         gap: '10px',
         padding: '12px 14px',
         borderRadius: '10px',
-        background: 'rgba(34, 197, 94, 0.08)',
-        border: '1px solid rgba(34, 197, 94, 0.25)',
+        background: 'rgba(34, 197, 94, 0.06)',
+        border: '1px solid rgba(34, 197, 94, 0.4)',
       }}
     >
       <WarningIcon />
@@ -37,7 +37,7 @@ function InfoBanner({ text }: { text: string }) {
         style={{
           fontSize: '13px',
           fontWeight: 600,
-          color: '#22c55e',
+          color: '#ffffff',
           margin: 0,
           lineHeight: 1.4,
           letterSpacing: '0.3px',
@@ -134,7 +134,7 @@ export default function HomeWithIntro({ categories }: HomeWithIntroProps) {
         {/* Info banners */}
         <div style={{ marginTop: '32px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           <InfoBanner text="Barra habilitada hasta las 4 a.m." />
-          <InfoBanner text="Pagos con transferencia o tarjetas con un 10% de recargo." />
+          <InfoBanner text="10% de recargo pagando con transferencia o tarjeta" />
         </div>
       </div>
     </>

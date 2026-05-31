@@ -14,19 +14,10 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
       return;
     }
 
-    // Phase 1: Logo bounce in (0ms → 700ms)
     const t1 = setTimeout(() => setPhase('logo'), 50);
-
-    // Phase 2: M&M text slides up (700ms → 1400ms)
     const t2 = setTimeout(() => setPhase('text'), 700);
-
-    // Phase 3: Gold line expands (1400ms → 2200ms)
     const t3 = setTimeout(() => setPhase('line'), 1400);
-
-    // Phase 4: Fade out everything (2200ms → 3000ms)
     const t4 = setTimeout(() => setPhase('fadeOut'), 2200);
-
-    // Phase 5: Remove intro (3000ms)
     const t5 = setTimeout(() => {
       sessionStorage.setItem(INTRO_KEY, 'true');
       onComplete();
@@ -68,7 +59,6 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         opacity: phase === 'fadeOut' ? 0 : 1,
       }}
     >
-      {/* Logo — bounce in */}
       <div
         style={{
           transition: 'transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -87,13 +77,12 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         />
       </div>
 
-      {/* M&M text — slide up */}
       <h1
         className="font-heading"
         style={{
           fontSize: '32px',
           fontWeight: 700,
-          color: '#d4af37',
+          color: '#da5a47',
           margin: '20px 0 0 0',
           letterSpacing: '4px',
           transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
@@ -104,7 +93,6 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         M&M
       </h1>
 
-      {/* MULTIESPACIO text */}
       <p
         className="font-interface"
         style={{
@@ -121,12 +109,11 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         MULTIESPACIO
       </p>
 
-      {/* Gold line */}
       <div
         style={{
           width: phase === 'line' || phase === 'fadeOut' ? '120px' : '0px',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, #d4af37, transparent)',
+          background: 'linear-gradient(90deg, transparent, #da5a47, transparent)',
           marginTop: '24px',
           transition: 'width 0.6s ease-out',
         }}
