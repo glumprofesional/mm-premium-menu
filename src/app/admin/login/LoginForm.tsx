@@ -58,6 +58,7 @@ export default function LoginForm() {
     setBioLoading(true)
 
     try {
+      // Step 1: Get authentication options from server
       const optionsRes = await fetch("/admin/api/webauthn/login-options", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -73,12 +74,14 @@ export default function LoginForm() {
 
       const { options } = await optionsRes.json()
 
-      const authResponse = await startAuthentication(options)
+      // Step 2: Start browser authentication (v13+ API)
+      const authResponse = await startAuthentication({ optionsJSON: options })
 
+      // Step 3: Verify with server
       const verifyRes = await fetch("/admin/api/webauthn/login-verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(authResponse),
+        body: JSON.stringify({ credential: authResponse }),
       })
 
       const verifyData = await verifyRes.json()
@@ -97,6 +100,8 @@ export default function LoginForm() {
         setError("Autenticación cancelada")
       } else if (errorMessage.includes("SecurityError")) {
         setError("Error de seguridad. Asegurate de usar HTTPS.")
+      } else if (errorMessage.includes("WebAuthn is not supported")) {
+        setError("Tu navegador no soporta WebAuthn")
       } else {
         setError("Error biométrico: " + errorMessage)
       }
