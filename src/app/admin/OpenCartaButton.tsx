@@ -2,7 +2,7 @@
 
 export default function OpenCartaButton() {
   function handleOpenCarta() {
-    window.open("/", "_blank", "noopener,noreferrer")
+    window.open("https://mm-premium-menu.vercel.app/", "_system")
   }
 
   return (
