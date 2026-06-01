@@ -12,6 +12,9 @@ import {
   updateCategory,
   createProduct,
   updateProduct,
+  getAdminUsers,
+  createAdminUser,
+  deleteAdminUser,
 } from "./actions"
 import PasskeyManager from "./PasskeyManager"
 import BiometricLockScreen from "./BiometricLockScreen"
@@ -37,6 +40,13 @@ type Product = {
   category_id: string
 }
 
+type AdminUser = {
+  id: string
+  email: string
+  role: string
+  created_at: string
+}
+
 type CategoryModalState = {
   open: boolean
   mode: "create" | "edit"
@@ -52,7 +62,7 @@ type ProductModalState = {
 
 type DeleteConfirmState = {
   open: boolean
-  type: "category" | "product"
+  type: "category" | "product" | "user"
   id: string
   name: string
 }
@@ -147,6 +157,15 @@ function IconImage() {
   )
 }
 
+function IconUser() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  )
+}
+
 /* ─── Status Badge ─── */
 function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; activeLabel: string; inactiveLabel: string }) {
   if (active) {
@@ -179,6 +198,10 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [locked, setLocked] = useState<"checking" | "locked" | "unlocked">("checking")
 
+  /* ─── User Management State ─── */
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
+  const [userModal, setUserModal] = useState<{ open: boolean; email: string; password: string }>({ open: false, email: "", password: "" })
+
   useEffect(() => {
     async function checkBio() {
       if (sessionStorage.getItem("bio_just_unlocked")) {
@@ -196,6 +219,20 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
     }
     checkBio()
   }, [email])
+
+  /* ─── Load admin users (super_admin only) ─── */
+  useEffect(() => {
+    if (role !== "super_admin") return
+    async function loadUsers() {
+      try {
+        const users = await getAdminUsers()
+        setAdminUsers(users)
+      } catch {
+        // silently fail
+      }
+    }
+    loadUsers()
+  }, [role])
 
   const [categoryModal, setCategoryModal] = useState<CategoryModalState>({
     open: false,
@@ -278,26 +315,68 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
     })
   }
 
-  function handleOpenDeleteConfirm(type: "category" | "product", id: string, name: string) {
+  function handleOpenDeleteConfirm(type: "category" | "product" | "user", id: string, name: string) {
     setDeleteConfirm({ open: true, type, id, name })
   }
 
   function handleConfirmDelete() {
     startTransition(async () => {
-      const action = deleteConfirm.type === "category" ? deleteCategory : deleteProduct
-      const result = await action(deleteConfirm.id)
+      let result: { error?: string; success?: boolean } | null = null
+      if (deleteConfirm.type === "category") {
+        result = await deleteCategory(deleteConfirm.id)
+      } else if (deleteConfirm.type === "product") {
+        result = await deleteProduct(deleteConfirm.id)
+      } else if (deleteConfirm.type === "user") {
+        result = await deleteAdminUser(deleteConfirm.id)
+      }
       setDeleteConfirm({ open: false, type: "category", id: "", name: "" })
       if (result?.error) {
         showToast(result.error, "error")
       } else {
-        showToast(
-          deleteConfirm.type === "category" ? "Categoría eliminada" : "Producto eliminado",
-          "success"
-        )
+        const messages: Record<string, string> = {
+          category: "Categoría eliminada",
+          product: "Producto eliminado",
+          user: "Usuario eliminado",
+        }
+        showToast(messages[deleteConfirm.type], "success")
         if (deleteConfirm.type === "category") {
           setExpandedId(null)
         }
+        if (deleteConfirm.type === "user" && role === "super_admin") {
+          const users = await getAdminUsers()
+          setAdminUsers(users)
+        }
         router.refresh()
+      }
+    })
+  }
+
+  /* ─── User Management Handlers ─── */
+  function handleOpenUserModal() {
+    setUserModal({ open: true, email: "", password: "" })
+  }
+
+  function handleCloseUserModal() {
+    setUserModal({ open: false, email: "", password: "" })
+  }
+
+  async function handleCreateUser() {
+    if (!userModal.email || !userModal.password) {
+      showToast("Email y contraseña son obligatorios", "error")
+      return
+    }
+    startTransition(async () => {
+      const formData = new FormData()
+      formData.append("email", userModal.email)
+      formData.append("password", userModal.password)
+      const result = await createAdminUser(formData)
+      handleCloseUserModal()
+      if (result?.error) {
+        showToast(result.error, "error")
+      } else {
+        showToast("Usuario creado correctamente", "success")
+        const users = await getAdminUsers()
+        setAdminUsers(users)
       }
     })
   }
@@ -426,6 +505,65 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
         <div className="mb-6 sm:mb-8">
           <PasskeyManager email={email} />
         </div>
+
+        {/* ─── User Management (super_admin only) ─── */}
+        {role === "super_admin" && (
+          <div className="mb-6 sm:mb-8 border-2 border-[#da5a47] rounded-xl bg-[#eee7d4] overflow-hidden">
+            <div className="flex items-center justify-between p-3 sm:p-4 border-b border-[#d4cbaf]">
+              <div className="flex items-center gap-2">
+                <span className="text-[#da5a47]"><IconUser /></span>
+                <h2 className="font-semibold text-[#14130e] text-sm sm:text-base">Usuarios</h2>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-[#d4cbaf] text-[#6b6858]">
+                  {adminUsers.length}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={handleOpenUserModal}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#da5a47] text-white rounded-lg hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer"
+              >
+                <span className="pointer-events-none"><IconPlus /></span>
+                Nuevo Usuario
+              </button>
+            </div>
+            <div className="p-3 sm:p-4">
+              {adminUsers.length === 0 ? (
+                <p className="text-sm text-[#6b6858] text-center py-4">No hay usuarios registrados.</p>
+              ) : (
+                <div className="space-y-2">
+                  {adminUsers.map((u) => (
+                    <div
+                      key={u.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-[#e6dec8] border border-[#d4cbaf]"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-full bg-[#d4cbaf] flex items-center justify-center flex-shrink-0">
+                          <span className="pointer-events-none text-[#6b6858]"><IconUser /></span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-[#14130e] text-sm truncate">{u.email}</p>
+                          <p className="text-xs text-[#6b6858]">
+                            {u.role === "super_admin" ? "Super Admin" : "Admin"} &middot; {new Date(u.created_at).toLocaleDateString("es-AR")}
+                          </p>
+                        </div>
+                      </div>
+                      {u.role !== "super_admin" && (
+                        <button
+                          type="button"
+                          onClick={() => handleOpenDeleteConfirm("user", u.id, u.email)}
+                          className="p-1.5 rounded-lg text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer flex-shrink-0"
+                          title="Eliminar usuario"
+                        >
+                          <span className="pointer-events-none"><IconTrash /></span>
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Loading bar */}
         {isPending && (
@@ -631,6 +769,68 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
           </div>
         )}
       </div>
+
+      {/* ─── User Modal ─── */}
+      {userModal.open && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-black/40">
+          <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-md">
+            <div className="flex items-center justify-between p-4 border-b border-[#d4cbaf]">
+              <h2 className="text-lg font-semibold text-[#14130e]">Nuevo Usuario</h2>
+              <button
+                type="button"
+                onClick={handleCloseUserModal}
+                className="p-1 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+              >
+                <span className="pointer-events-none"><IconClose /></span>
+              </button>
+            </div>
+            <div className="p-4 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Email *</label>
+                <input
+                  type="email"
+                  value={userModal.email}
+                  onChange={(e) => setUserModal({ ...userModal, email: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  placeholder="correo@ejemplo.com"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">Contraseña *</label>
+                <input
+                  type="password"
+                  value={userModal.password}
+                  onChange={(e) => setUserModal({ ...userModal, password: e.target.value })}
+                  className="w-full px-3 py-2 rounded-lg border border-[#d4cbaf] bg-[#f5f0e2] text-[#14130e] placeholder:text-[#a09e8e] focus:outline-none focus:ring-2 focus:ring-[#da5a47] focus:border-transparent text-sm"
+                  placeholder="Mínimo 6 caracteres"
+                />
+              </div>
+              <div className="p-3 rounded-lg bg-[#e6dec8] border border-[#d4cbaf]">
+                <p className="text-xs text-[#6b6858]">
+                  Se creará un usuario con rol <strong>Admin</strong>. Los Super Admin solo se gestionan desde la base de datos.
+                </p>
+              </div>
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={handleCloseUserModal}
+                  className="px-4 py-2 rounded-lg bg-[#d4cbaf] text-[#14130e] hover:bg-[#c9c0a8] transition-colors font-medium text-sm cursor-pointer"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCreateUser}
+                  disabled={isPending}
+                  className="px-4 py-2 rounded-lg bg-[#da5a47] text-white hover:bg-[#c44d3c] transition-colors font-medium text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? "Creando..." : "Crear Usuario"}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ─── Category Modal ─── */}
       {categoryModal.open && (
@@ -945,12 +1145,24 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
           <div className="bg-[#eee7d4] rounded-2xl border border-[#d4cbaf] shadow-xl w-full max-w-sm p-6">
             <h2 className="text-lg font-semibold text-[#14130e] mb-2">Confirmar eliminación</h2>
             <p className="text-sm text-[#6b6858] mb-6">
-              ¿Estás seguro de que querés eliminar {deleteConfirm.type === "category" ? "la categoría" : "el producto"}{" "}
-              <strong className="text-[#14130e]">&quot;{deleteConfirm.name}&quot;</strong>?
-              {deleteConfirm.type === "category" && (
-                <span className="block mt-1 text-[#da5a47]">
-                  Esto también eliminará todos los productos dentro de esta categoría.
-                </span>
+              {deleteConfirm.type === "user" ? (
+                <>
+                  ¿Estás seguro de que querés eliminar al usuario{" "}
+                  <strong className="text-[#14130e]">&quot;{deleteConfirm.name}&quot;</strong>?
+                  <span className="block mt-1 text-[#da5a47]">
+                    Este usuario perderá acceso permanentemente.
+                  </span>
+                </>
+              ) : (
+                <>
+                  ¿Estás seguro de que querés eliminar {deleteConfirm.type === "category" ? "la categoría" : "el producto"}{" "}
+                  <strong className="text-[#14130e]">&quot;{deleteConfirm.name}&quot;</strong>?
+                  {deleteConfirm.type === "category" && (
+                    <span className="block mt-1 text-[#da5a47]">
+                      Esto también eliminará todos los productos dentro de esta categoría.
+                    </span>
+                  )}
+                </>
               )}
             </p>
             <div className="flex justify-end gap-2">
