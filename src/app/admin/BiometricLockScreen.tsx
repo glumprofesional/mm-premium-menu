@@ -11,7 +11,7 @@ interface BiometricLockScreenProps {
 export default function BiometricLockScreen({ email, onUnlocked }: BiometricLockScreenProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showPasswordOption, setShowPasswordOption] = useState(false);
+  const [showSkip, setShowSkip] = useState(false);
 
   async function handleBiometricUnlock() {
     setLoading(true);
@@ -23,7 +23,7 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
 
       if (!optionsRes.ok) {
         setError("No se encontraron credenciales biométricas");
-        setShowPasswordOption(true);
+        setShowSkip(true);
         setLoading(false);
         return;
       }
@@ -43,7 +43,7 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
         onUnlocked();
       } else {
         setError(verifyData.error || "Verificación fallida");
-        setShowPasswordOption(true);
+        setShowSkip(true);
       }
     } catch (err: any) {
       if (err.name === "NotAllowedError") {
@@ -51,7 +51,7 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
       } else {
         setError("Error de autenticación biométrica");
       }
-      setShowPasswordOption(true);
+      setShowSkip(true);
     } finally {
       setLoading(false);
     }
@@ -65,30 +65,15 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
   }, []);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center"
-      style={{ background: "#e6dec8" }}
-    >
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center" style={{ background: "#e6dec8" }}>
       <div className="flex flex-col items-center gap-6 px-8 max-w-sm w-full">
-        {/* Logo */}
         <div className="flex flex-col items-center gap-1">
-          <span className="text-3xl font-bold" style={{ color: "#14130e" }}>M&M</span>
+          <span className="text-3xl font-bold" style={{ color: "#14130e" }}>M&amp;M</span>
           <span className="text-sm tracking-widest uppercase" style={{ color: "#6b6858" }}>Multiespacio</span>
         </div>
 
-        {/* Fingerprint icon */}
         <div className="my-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="64"
-            height="64"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#da5a47"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#da5a47" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 10a2 2 0 0 0-2 2c0 1.02-.1 2.51-.26 4" />
             <path d="M14 13.12c0 2.38 0 6.38-1 8.88" />
             <path d="M17.29 21.02c.12-.6.43-2.3.5-3.02" />
@@ -101,7 +86,6 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
           </svg>
         </div>
 
-        {/* Status */}
         {loading && (
           <div className="flex items-center gap-2" style={{ color: "#6b6858" }}>
             <div className="w-4 h-4 border-2 border-[#da5a47] border-t-transparent rounded-full animate-spin" />
@@ -113,26 +97,16 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
           <p className="text-sm text-center" style={{ color: "#da5a47" }}>{error}</p>
         )}
 
-        {/* Unlock button */}
         {!loading && (
-          <button
-            onClick={handleBiometricUnlock}
-            className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-            style={{ background: "#da5a47" }}
-          >
+          <button onClick={handleBiometricUnlock} className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "#da5a47" }}>
             Desbloquear con biometría
           </button>
         )}
 
-        {/* Password fallback */}
-        {showPasswordOption && (
-          <a
-            href="/admin/login"
-            className="text-sm underline transition-colors"
-            style={{ color: "#6b6858" }}
-          >
-            Ingresar con contraseña
-          </a>
+        {showSkip && (
+          <button onClick={onUnlocked} className="text-sm underline transition-colors cursor-pointer" style={{ color: "#6b6858" }}>
+            Omitir e ingresar
+          </button>
         )}
       </div>
     </div>
