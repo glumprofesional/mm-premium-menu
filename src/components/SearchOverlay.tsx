@@ -17,7 +17,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
 
-  // Focus input when opened
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => inputRef.current?.focus(), 100);
@@ -29,7 +28,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     }
   }, [isOpen]);
 
-  // Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -38,7 +36,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
-  // Debounced search
   const handleSearch = useCallback((value: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
 
@@ -79,9 +76,8 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
         position: 'fixed',
         inset: 0,
         zIndex: 200,
-        background: 'rgba(10, 17, 40, 0.95)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
+        background: 'var(--color-bg)',
+        opacity: 0.97,
         display: 'flex',
         flexDirection: 'column',
       }}
@@ -102,7 +98,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             gap: '12px',
           }}
         >
-          {/* Back / close */}
           <button
             onClick={onClose}
             aria-label="Cerrar búsqueda"
@@ -125,7 +120,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
             </svg>
           </button>
 
-          {/* Input */}
           <input
             ref={inputRef}
             type="text"
@@ -159,12 +153,11 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           padding: '16px 24px',
         }}
       >
-        {/* No query yet */}
         {query.trim().length < 2 && (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.3, marginBottom: '12px' }}>
-              <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M21 21L16.65 16.65" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="var(--color-text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M21 21L16.65 16.65" stroke="var(--color-text-secondary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
             <p className="font-interface" style={{ color: 'var(--color-text-muted)', fontSize: '14px', margin: 0 }}>
               Escribí al menos 2 letras para buscar
@@ -172,7 +165,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           </div>
         )}
 
-        {/* Loading */}
         {isSearching && (
           <div style={{ textAlign: 'center', padding: '40px 0' }}>
             <div className="gold-line" style={{ width: '60px', margin: '0 auto 16px auto' }} />
@@ -182,7 +174,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           </div>
         )}
 
-        {/* Results list */}
         {!isSearching && results.length > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {results.map((result) => (
@@ -195,15 +186,15 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   gap: '12px',
                   padding: '14px',
                   borderRadius: '12px',
-                  background: 'rgba(16, 25, 53, 0.5)',
-                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-surface)',
+                  border: '2px solid rgba(218, 90, 71, 0.35)',
                   cursor: 'pointer',
                   textAlign: 'left',
                   width: '100%',
-                  transition: 'background 0.2s ease',
+                  transition: 'border-color 0.2s ease',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(212, 175, 55, 0.08)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(16, 25, 53, 0.5)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.6)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.35)'; }}
               >
                 {/* Icon */}
                 <div
@@ -215,8 +206,8 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'rgba(212, 175, 55, 0.06)',
-                    border: '1px solid rgba(212, 175, 55, 0.15)',
+                    background: 'rgba(218, 90, 71, 0.08)',
+                    border: '1px solid rgba(218, 90, 71, 0.2)',
                     overflow: 'hidden',
                   }}
                 >
@@ -234,7 +225,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   <p
                     className="font-heading"
                     style={{
-                      fontSize: '14px',
+                      fontSize: '15px',
                       fontWeight: 700,
                       color: 'var(--color-text-primary)',
                       margin: 0,
@@ -249,7 +240,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   <p
                     className="font-interface"
                     style={{
-                      fontSize: '11px',
+                      fontSize: '12px',
                       color: 'var(--color-text-secondary)',
                       margin: '2px 0 0 0',
                       letterSpacing: '0.5px',
@@ -277,7 +268,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           </div>
         )}
 
-        {/* No results */}
         {!isSearching && query.trim().length >= 2 && results.length === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 0' }}>
             <p className="font-heading" style={{ color: 'var(--color-text-secondary)', fontSize: '16px', margin: '0 0 4px 0' }}>

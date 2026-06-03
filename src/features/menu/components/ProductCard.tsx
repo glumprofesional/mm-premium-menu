@@ -34,7 +34,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         <h3
           className="font-heading"
           style={{
-            fontSize: '16px',
+            fontSize: '17px',
             fontWeight: 700,
             color: 'var(--color-text-primary)',
             margin: 0,
@@ -49,7 +49,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         {product.description && (
           <p
             style={{
-              fontSize: '13px',
+              fontSize: '14px',
               color: 'var(--color-text-secondary)',
               margin: 0,
               lineHeight: 1.45,
@@ -72,7 +72,6 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         )}
       </div>
 
-      {/* Chevron — color naranja, respeta ambos modos */}
       <svg
         width="18"
         height="18"
