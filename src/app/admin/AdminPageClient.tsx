@@ -976,7 +976,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
               {productModal.mode === "edit" && productModal.data && (
                 <input type="hidden" name="id" value={productModal.data.id} />
               )}
-              <input type="hidden" name="category_id" value={productModal.categoryId ?? ""} />
+              {productModal.categoryId && <input type="hidden" name="category_id" value={productModal.categoryId} />}
 
               {/* Category Selector (when no categoryId pre-selected) */}
               {!productModal.categoryId && (

@@ -53,7 +53,7 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
       if (err.name === "NotAllowedError") {
         setError("");
       } else {
-        setError("Error de autenticación biométrica");
+        setError("Bio error: " + (err.message || err.name || err));
       }
       setShowSkip(true);
     } finally {

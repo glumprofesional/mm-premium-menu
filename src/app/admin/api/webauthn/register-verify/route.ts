@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json(
-        { error: "Error DB: " + insertError.message + " | code: " + insertError.code },
+        { error: "Error al guardar credencial. Intentá de nuevo." },
         { status: 500 }
       )
     }
