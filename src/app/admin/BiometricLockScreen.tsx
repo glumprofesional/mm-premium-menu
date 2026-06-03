@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { startAuthentication } from "@simplewebauthn/browser";
 
 interface BiometricLockScreenProps {
@@ -51,22 +51,15 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
       }
     } catch (err: any) {
       if (err.name === "NotAllowedError") {
-        setError("");
+        setError("Autenticación cancelada");
       } else {
-        setError("Bio error: " + (err.message || err.name || err));
+        setError("Error de autenticación biométrica");
       }
       setShowSkip(true);
     } finally {
       setLoading(false);
     }
   }
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      handleBiometricUnlock();
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col items-center justify-center" style={{ background: "#e6dec8" }}>
@@ -90,13 +83,6 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
           </svg>
         </div>
 
-        {loading && (
-          <div className="flex items-center gap-2" style={{ color: "#6b6858" }}>
-            <div className="w-4 h-4 border-2 border-[#da5a47] border-t-transparent rounded-full animate-spin" />
-            <span className="text-sm">Verificando...</span>
-          </div>
-        )}
-
         {error && (
           <p className="text-sm text-center" style={{ color: "#da5a47" }}>{error}</p>
         )}
@@ -105,6 +91,13 @@ export default function BiometricLockScreen({ email, onUnlocked }: BiometricLock
           <button onClick={handleBiometricUnlock} className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all hover:scale-[1.02] active:scale-[0.98]" style={{ background: "#da5a47" }}>
             Desbloquear con biometría
           </button>
+        )}
+
+        {loading && (
+          <div className="flex items-center gap-2" style={{ color: "#6b6858" }}>
+            <div className="w-4 h-4 border-2 border-[#da5a47] border-t-transparent rounded-full animate-spin" />
+            <span className="text-sm">Verificando...</span>
+          </div>
         )}
 
         {showSkip && (
