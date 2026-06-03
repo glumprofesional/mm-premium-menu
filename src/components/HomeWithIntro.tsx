@@ -13,8 +13,8 @@ import CategoryCard from '@/features/menu/components/CategoryCard';
 const WarningIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style={{ flexShrink: 0 }}>
     <path d="M12 2L1 21h22L12 2z" stroke="#22c55e" strokeWidth="1.5" strokeLinejoin="round" fill="none"/>
-    <path d="M12 9v5" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="12" cy="17" r="1.2" fill="#ffffff"/>
+    <path d="M12 9v5" stroke="var(--color-text-primary)" strokeWidth="2.5" strokeLinecap="round"/>
+    <circle cx="12" cy="17" r="1.2" fill="var(--color-text-primary)"/>
   </svg>
 );
 
@@ -37,7 +37,7 @@ function InfoBanner({ text }: { text: string }) {
         style={{
           fontSize: '13px',
           fontWeight: 600,
-          color: '#ffffff',
+          color: 'var(--color-text-primary)',
           margin: 0,
           lineHeight: 1.4,
           letterSpacing: '0.3px',
