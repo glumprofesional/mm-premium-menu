@@ -170,13 +170,13 @@ function IconUser() {
 function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; activeLabel: string; inactiveLabel: string }) {
   if (active) {
     return (
-      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+      <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800">
         {activeLabel}
       </span>
     )
   }
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#fde8e5] text-[#b9412f]">
+    <span className="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-semibold bg-[#fde8e5] text-[#b9412f]">
       {inactiveLabel}
     </span>
   )
@@ -643,7 +643,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                   {isExpanded && (
                     <div className="border-t border-[#d4cbaf]">
                       {/* Category Actions */}
-                      <div className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 bg-[#e6dec8] border-b border-[#d4cbaf] flex-wrap">
+                      <div className="flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 bg-[#f5f0e2] border-b border-[#d4cbaf] flex-wrap">
                         <button
                           type="button"
                           onClick={() => handleOpenCategoryModal("edit", category)}
@@ -686,7 +686,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                             {category.products.map((product) => (
                               <div
                                 key={product.id}
-                                className="flex items-center justify-between p-3 rounded-lg bg-[#e6dec8] border border-[#d4cbaf]"
+                                className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#d4cbaf]"
                               >
                                 <div className="flex items-center gap-3 min-w-0">
                                   {product.image_url ? (
