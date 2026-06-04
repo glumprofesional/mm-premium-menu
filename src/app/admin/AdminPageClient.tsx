@@ -185,7 +185,7 @@ function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; 
 /* ─── Product Count Badge ─── */
 function ProductCountBadge({ count }: { count: number }) {
   return (
-    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#d4cbaf] text-[#6b6858]">
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-[#da5a47] text-white">
       {count} {count === 1 ? "producto" : "productos"}
     </span>
   )
@@ -463,7 +463,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   /* ─── Render ─── */
     if (locked === "checking") {
       return (
-        <div className="min-h-screen bg-[#e6dec8] flex items-center justify-center">
+        <div className="min-h-screen bg-white flex items-center justify-center">
           <div className="text-center">
             <div className="w-10 h-10 mx-auto mb-3 border-3 border-[#d4cbaf] border-t-[#da5a47] rounded-full animate-spin" />
             <p className="text-sm text-[#6b6858]">Verificando...</p>
@@ -476,7 +476,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
     }
 
   return (
-    <div className="min-h-screen bg-[#e6dec8]">
+    <div className="min-h-screen bg-white">
       <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
         {/* Header - responsive */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6 sm:mb-8">
@@ -615,7 +615,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                         </div>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-[#14130e] truncate text-sm sm:text-base">{category.name}</h3>
+                        <h3 className="font-semibold text-[#14130e] truncate text-[15px] sm:text-[17px]">{category.name}</h3>
                         {category.description && (
                           <p className="text-xs sm:text-sm text-[#6b6858] truncate">{category.description}</p>
                         )}
@@ -705,7 +705,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                                     </div>
                                   )}
                                   <div className="min-w-0">
-                                    <p className="font-bold text-[#14130e] text-[15px] truncate" style={{ background: "rgba(255, 255, 255, 0.93)", padding: "3px 8px", borderRadius: "6px", display: "inline-block", maxWidth: "100%" }}>
+                                    <p className="font-bold text-[#14130e] text-[15px]" style={{ background: "rgba(255, 255, 255, 0.93)", padding: "3px 8px", borderRadius: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "100%" }}>
                                       {product.name}
                                     </p>
                                     <p className="font-bold text-[13px] text-[#6b6858]">

@@ -181,7 +181,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               <h1
                 className="font-heading"
                 style={{
-                  fontSize: '16px',
+                  fontSize: '17px',
                   fontWeight: 600,
                   color: 'var(--color-accent)',
                   margin: 0,
@@ -196,12 +196,12 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               </h1>
             ) : (
               <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none' }}>
-                <div style={{ width: '44px', height: '44px', position: 'relative' }}>
+                <div style={{ width: '50px', height: '50px', position: 'relative' }}>
                   <Image
                     src="/images/logo.png"
                     alt="M&M Multiespacio"
                     fill
-                    sizes="44px"
+                    sizes="50px"
                     priority
                   />
                 </div>
