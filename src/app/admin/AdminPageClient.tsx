@@ -534,7 +534,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                   {adminUsers.map((u) => (
                     <div
                       key={u.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-[#e6dec8] border border-[#d4cbaf]"
+                      className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#d4cbaf]"
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="w-9 h-9 rounded-full bg-[#d4cbaf] flex items-center justify-center flex-shrink-0">
@@ -615,7 +615,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                         </div>
                       )}
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-[#14130e] truncate text-[15px] sm:text-[17px]">{category.name}</h3>
+                        <h3 className="font-semibold text-[#14130e] truncate text-[17px] sm:text-[19px]">{category.name}</h3>
                         {category.description && (
                           <p className="text-xs sm:text-sm text-[#6b6858] truncate">{category.description}</p>
                         )}
@@ -705,7 +705,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                                     </div>
                                   )}
                                   <div className="min-w-0">
-                                    <p className="font-bold text-[#14130e] text-[15px]" style={{ background: "rgba(255, 255, 255, 0.93)", padding: "3px 8px", borderRadius: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "100%" }}>
+                                    <p className="font-bold text-[#14130e] text-[15px]" style={{ padding: "3px 8px", borderRadius: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "100%" }}>
                                       {product.name}
                                     </p>
                                     <p className="font-bold text-[13px] text-[#6b6858]">
