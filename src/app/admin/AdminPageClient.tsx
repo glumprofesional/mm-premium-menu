@@ -185,8 +185,8 @@ function StatusBadge({ active, activeLabel, inactiveLabel }: { active: boolean; 
 /* ─── Product Count Badge ─── */
 function ProductCountBadge({ count }: { count: number }) {
   return (
-    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-[#da5a47] text-white">
-      {count} {count === 1 ? "producto" : "productos"}
+    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full text-base font-bold bg-yellow-400 text-black">
+      {count}
     </span>
   )
 }
@@ -625,7 +625,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                       <span className="hidden sm:inline-flex">
                         <ProductCountBadge count={category.products.length} />
                       </span>
-                      <span className="sm:hidden inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-[#d4cbaf] text-[#6b6858]">
+                      <span className="sm:hidden inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold bg-yellow-400 text-black">
                         {category.products.length}
                       </span>
                       <StatusBadge
@@ -684,69 +684,73 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                         ) : (
                           <div className="space-y-2">
                             {category.products.map((product) => (
-                              <div
-                                key={product.id}
-                                className="flex items-center justify-between p-3 rounded-lg bg-white border border-[#d4cbaf]"
-                              >
-                                <div className="flex items-center gap-3 min-w-0">
-                                  {product.image_url ? (
-                                    <Image
-                                      src={product.image_url}
-                                      alt={product.name}
-                                      width={36}
-                                      height={36}
-                                      className="rounded-lg object-cover flex-shrink-0"
-                                    />
-                                  ) : (
-                                    <div className="w-9 h-9 rounded-lg bg-[#d4cbaf] flex items-center justify-center flex-shrink-0">
-                                      <span className="pointer-events-none text-[#6b6858]">
-                                        <IconImage />
-                                      </span>
+                                <div
+                                  key={product.id}
+                                  className="p-3 rounded-lg bg-white border border-[#d4cbaf]"
+                                >
+                                  <div className="flex items-start gap-3">
+                                    {product.image_url ? (
+                                      <Image
+                                        src={product.image_url}
+                                        alt={product.name}
+                                        width={48}
+                                        height={48}
+                                        className="rounded-lg object-cover flex-shrink-0"
+                                      />
+                                    ) : (
+                                      <div className="w-12 h-12 rounded-lg bg-[#d4cbaf] flex items-center justify-center flex-shrink-0">
+                                        <span className="pointer-events-none text-[#6b6858]">
+                                          <IconImage />
+                                        </span>
+                                      </div>
+                                    )}
+                                    <div className="flex-1 min-w-0">
+                                      <div className="flex items-start justify-between gap-2">
+                                        <p className="font-bold text-[#14130e] text-[15px] leading-tight" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                                          {product.name}
+                                        </p>
+                                        <div className="flex items-center gap-1 flex-shrink-0">
+                                          <button
+                                            type="button"
+                                            onClick={() => handleOpenProductModal("edit", category.id, product)}
+                                            className="p-1.5 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+                                            title="Editar producto"
+                                          >
+                                            <span className="pointer-events-none"><IconEdit /></span>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleToggleProduct(product.id)}
+                                            className="p-1.5 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
+                                            title={product.is_available ? "Marcar no disponible" : "Marcar disponible"}
+                                          >
+                                            <span className="pointer-events-none">
+                                              {product.is_available ? <IconToggleOn /> : <IconToggleOff />}
+                                            </span>
+                                          </button>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleOpenDeleteConfirm("product", product.id, product.name)}
+                                            className="p-1.5 rounded-lg text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
+                                            title="Eliminar producto"
+                                          >
+                                            <span className="pointer-events-none"><IconTrash /></span>
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-2 mt-1.5">
+                                        <StatusBadge
+                                          active={product.is_available}
+                                          activeLabel="Disponible"
+                                          inactiveLabel="No disponible"
+                                        />
+                                        <span className="font-bold text-[15px] text-[#da5a47]">
+                                          ${product.price.toLocaleString("es-AR")}
+                                        </span>
+                                      </div>
                                     </div>
-                                  )}
-                                  <div className="min-w-0">
-                                    <p className="font-bold text-[#14130e] text-[15px]" style={{ padding: "3px 8px", borderRadius: "6px", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", maxWidth: "100%" }}>
-                                      {product.name}
-                                    </p>
-                                    <p className="font-bold text-[13px] text-[#6b6858]">
-                                      ${product.price.toLocaleString("es-AR")}
-                                    </p>
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-1.5 flex-shrink-0 ml-3">
-                                  <StatusBadge
-                                    active={product.is_available}
-                                    activeLabel="Disponible"
-                                    inactiveLabel="No disponible"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => handleOpenProductModal("edit", category.id, product)}
-                                    className="p-1.5 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
-                                    title="Editar producto"
-                                  >
-                                    <span className="pointer-events-none"><IconEdit /></span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleToggleProduct(product.id)}
-                                    className="p-1.5 rounded-lg text-[#6b6858] hover:bg-[#d4cbaf] transition-colors cursor-pointer"
-                                    title={product.is_available ? "Marcar no disponible" : "Marcar disponible"}
-                                  >
-                                    <span className="pointer-events-none">
-                                      {product.is_available ? <IconToggleOn /> : <IconToggleOff />}
-                                    </span>
-                                  </button>
-                                  <button
-                                    type="button"
-                                    onClick={() => handleOpenDeleteConfirm("product", product.id, product.name)}
-                                    className="p-1.5 rounded-lg text-[#da5a47] hover:bg-[#fde8e5] transition-colors cursor-pointer"
-                                    title="Eliminar producto"
-                                  >
-                                    <span className="pointer-events-none"><IconTrash /></span>
-                                  </button>
-                                </div>
-                              </div>
                             ))}
                           </div>
                         )}
