@@ -36,7 +36,7 @@ async function checkAuth() {
 /* ─── Image Upload Helper ─── */
 async function uploadToStorage(
   file: File,
-  bucket: "category-images" | "product-images"
+  bucket: "category-images" | "product-images" | "category-banners"
 ): Promise<string> {
   const ext = file.name.split(".").pop() || "webp"
   const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
@@ -83,6 +83,7 @@ export async function createCategory(formData: FormData) {
     const description = formData.get("description") as string
     const isActive = formData.get("is_active") === "on"
     const imageFile = formData.get("image") as File | null
+    const bannerFile = formData.get("banner") as File | null
 
     if (!name || name.trim().length === 0) {
       return { error: "El nombre es obligatorio" }
@@ -91,6 +92,11 @@ export async function createCategory(formData: FormData) {
     let image_url: string | null = null
     if (imageFile && imageFile.size > 0) {
       image_url = await uploadToStorage(imageFile, "category-images")
+    }
+
+    let banner_url: string | null = null
+    if (bannerFile && bannerFile.size > 0) {
+      banner_url = await uploadToStorage(bannerFile, "category-banners")
     }
 
     const { data: maxSort } = await adminDb
@@ -109,6 +115,7 @@ export async function createCategory(formData: FormData) {
       description: description || null,
       is_active: isActive,
       image_url,
+      banner_url,
       sort_order: nextSort,
     })
 
@@ -128,6 +135,7 @@ export async function updateCategory(formData: FormData) {
     const description = formData.get("description") as string
     const isActive = formData.get("is_active") === "on"
     const imageFile = formData.get("image") as File | null
+    const bannerFile = formData.get("banner") as File | null
 
     if (!name || name.trim().length === 0) {
       return { error: "El nombre es obligatorio" }
@@ -142,6 +150,10 @@ export async function updateCategory(formData: FormData) {
 
     if (imageFile && imageFile.size > 0) {
       updateData.image_url = await uploadToStorage(imageFile, "category-images")
+    }
+
+    if (bannerFile && bannerFile.size > 0) {
+      updateData.banner_url = await uploadToStorage(bannerFile, "category-banners")
     }
 
     const { error } = await adminDb

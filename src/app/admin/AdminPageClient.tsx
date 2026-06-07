@@ -259,6 +259,7 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   })
 
   const [categoryImagePreview, setCategoryImagePreview] = useState<string | null>(null)
+  const [categoryBannerPreview, setCategoryBannerPreview] = useState<string | null>(null)
   const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
 
   /* Live price validation */
@@ -385,12 +386,14 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   /* ─── Category Modal ─── */
   function handleOpenCategoryModal(mode: "create" | "edit", category?: Category) {
     setCategoryImagePreview(category?.image_url ?? null)
+    setCategoryBannerPreview(category?.banner_url ?? null)
     setCategoryModal({ open: true, mode, data: category ?? null })
   }
 
   function handleCloseCategoryModal() {
     setCategoryModal({ open: false, mode: "create", data: null })
     setCategoryImagePreview(null)
+    setCategoryBannerPreview(null)
   }
 
   async function handleCategoryFormSubmit(formData: FormData) {
@@ -922,11 +925,12 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                 />
               </div>
 
-              {/* Image */}
+              {/* Image (thumbnail para admin) */}
               <div>
                 <label className="block text-sm font-medium text-[#14130e] mb-1">
-                  Imagen
+                  Imagen (miniatura)
                 </label>
+                <p className="text-xs text-[#6b6858] mb-1">Se muestra en el panel admin. Cuadrada, 400x400px recomendado.</p>
                 <div className="flex items-center gap-3">
                   {(categoryImagePreview || categoryModal.data?.image_url) && (
                     <div className="relative w-16 h-16 flex-shrink-0">
@@ -944,6 +948,33 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
                     accept="image/webp,image/png,image/jpeg"
                     onChange={(e) => handleImageChange(e, setCategoryImagePreview)}
                     className="block w-full text-sm text-[#6b6858] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#da5a47] file:text-white hover:file:bg-[#c44d3c] file:cursor-pointer"
+                  />
+                </div>
+              </div>
+
+              {/* Banner (fondo para menú público) */}
+              <div>
+                <label className="block text-sm font-medium text-[#14130e] mb-1">
+                  Banner (fondo menú)
+                </label>
+                <p className="text-xs text-[#6b6858] mb-1">Se muestra como fondo en la carta digital. Horizontal, 1200x600px recomendado.</p>
+                <div className="flex items-center gap-3">
+                  {(categoryBannerPreview || categoryModal.data?.banner_url) && (
+                    <div className="relative w-24 h-12 flex-shrink-0">
+                      <Image
+                        src={(categoryBannerPreview || categoryModal.data?.banner_url)!}
+                        alt="Banner preview"
+                        fill
+                        className="rounded-lg object-cover"
+                      />
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    name="banner"
+                    accept="image/webp,image/png,image/jpeg"
+                    onChange={(e) => handleImageChange(e, setCategoryBannerPreview)}
+                    className="block w-full text-sm text-[#6b6858] file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#6b6858] file:text-white hover:file:bg-[#555545] file:cursor-pointer"
                   />
                 </div>
               </div>
