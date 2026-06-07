@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { searchProducts, type SearchResult } from '@/app/actions/search';
+import ProductModal from '@/features/menu/components/ProductModal';
+import type { Product } from '@/types/product';
 
 interface SearchOverlayProps {
   isOpen: boolean;
@@ -13,9 +14,10 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedCategorySlug, setSelectedCategorySlug] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     if (isOpen) {
@@ -60,8 +62,24 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
   };
 
   const handleResultClick = (result: SearchResult) => {
-    onClose();
-    router.push(`/categoria/${result.category_slug}`);
+    setSelectedProduct({
+      id: result.id,
+      category_id: result.category_id,
+      name: result.name,
+      slug: result.slug,
+      description: result.description,
+      price: result.price ?? 0,
+      image_url: result.image_url,
+      family: null,
+      is_available: result.is_available,
+      sort_order: 0,
+    });
+    setSelectedCategorySlug(result.category_slug);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+    setSelectedCategorySlug('');
   };
 
   const formatPrice = (price: number) =>
@@ -279,6 +297,15 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           </div>
         )}
       </div>
+    </div>
+
+      <ProductModal
+        product={selectedProduct}
+        categorySlug={selectedCategorySlug}
+        isOpen={!!selectedProduct}
+        onClose={handleCloseModal}
+        zIndex={250}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { publicDb } from '@/lib/supabase/public';
 
 export interface SearchResult {
   id: string;
@@ -18,7 +18,7 @@ export interface SearchResult {
 export async function searchProducts(query: string): Promise<SearchResult[]> {
   if (!query || query.trim().length < 2) return [];
 
-  const supabase = await createClient();
+  const supabase = publicDb;
   const term = query.trim();
 
   const { data, error } = await supabase

@@ -23,9 +23,10 @@ interface ProductModalProps {
   categorySlug: string;
   isOpen: boolean;
   onClose: () => void;
+  zIndex?: number;
 }
 
-export default function ProductModal({ product, categorySlug, isOpen, onClose }: ProductModalProps) {
+export default function ProductModal({ product, categorySlug, isOpen, onClose, zIndex }: ProductModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -112,7 +113,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose }:
       style={{
         position: 'fixed',
         inset: 0,
-        zIndex: 50,
+        zIndex: zIndex ?? 50,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
