@@ -3,6 +3,7 @@
 import { useState, useEffect, useTransition, useRef } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import imageCompression from "browser-image-compression"
 import {
   toggleCategoryActive,
   toggleProductAvailable,
@@ -446,17 +447,48 @@ export default function AdminPageClient({ initialData, role, email }: { initialD
   }
 
   /* ─── Image preview handler ─── */
-  function handleImageChange(
+  async function handleImageChange(
     e: React.ChangeEvent<HTMLInputElement>,
     setPreview: (url: string | null) => void
   ) {
     const file = e.target.files?.[0]
-    if (file) {
+    if (!file) {
+      setPreview(null)
+      return
+    }
+
+    // Validar tamaño máximo (5MB antes de comprimir)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen es demasiado grande. Máximo 5MB.')
+      e.target.value = ''
+      setPreview(null)
+      return
+    }
+
+    try {
+      // Comprimir imagen en el navegador
+      const compressedFile = await imageCompression(file, {
+        maxSizeMB: 0.1,            // Target: 100KB
+        maxWidthOrHeight: 800,     // Max dimension: 800px
+        useWebWorker: true,
+        fileType: 'image/webp',    // Convertir a WebP
+      })
+
+      // Reemplazar el archivo en el input con el comprimido
+      const dataTransfer = new DataTransfer()
+      dataTransfer.items.add(new File([compressedFile], file.name.replace(/.[^.]+$/, '.webp'), { type: 'image/webp' }))
+      e.target.files = dataTransfer.files
+
+      // Mostrar preview del archivo comprimido
+      const reader = new FileReader()
+      reader.onloadend = () => setPreview(reader.result as string)
+      reader.readAsDataURL(compressedFile)
+    } catch (err) {
+      // Si la compresión falla, usar el archivo original
+      console.warn('Compresión falló, usando original:', err)
       const reader = new FileReader()
       reader.onloadend = () => setPreview(reader.result as string)
       reader.readAsDataURL(file)
-    } else {
-      setPreview(null)
     }
   }
 
