@@ -30,6 +30,45 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         position: 'relative',
       }}
     >
+      {/* Thumbnail del producto */}
+      {product.image_url ? (
+        <div
+          style={{
+            width: '52px',
+            height: '52px',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            flexShrink: 0,
+            background: 'var(--color-surface-alt)',
+          }}
+        >
+          <img
+            src={product.image_url}
+            alt={product.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          />
+        </div>
+      ) : (
+        <div
+          style={{
+            width: '52px',
+            height: '52px',
+            borderRadius: '10px',
+            overflow: 'hidden',
+            flexShrink: 0,
+            background: 'var(--color-surface-alt)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" opacity="0.5">
+            <path d="M8 3L4 7h16l-4-4H8z" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M18 7H6a1 1 0 00-1 1v6c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V8a1 1 0 00-1-1z" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+      )}
+
       <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <h3
           className="font-heading"
