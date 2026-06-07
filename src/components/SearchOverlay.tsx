@@ -297,7 +297,6 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
           </div>
         )}
       </div>
-    </div>
 
       <ProductModal
         product={selectedProduct}
