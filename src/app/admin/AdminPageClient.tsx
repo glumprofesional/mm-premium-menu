@@ -26,6 +26,7 @@ type Category = {
   name: string
   description: string | null
   image_url: string | null
+  banner_url: string | null
   is_active: boolean
   sort_order: number
   products: Product[]
