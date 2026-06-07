@@ -1,8 +1,16 @@
 // src/app/admin/api/webauthn/check-credentials/route.ts
 import { NextRequest, NextResponse } from "next/server"
 import { adminDb } from "@/lib/supabase/admin"
+import { rateLimit } from "@/lib/rate-limit"
 
 export async function GET(req: NextRequest) {
+  // Rate limit: 5 requests per IP per minute
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || req.headers.get("x-real-ip") || "unknown"
+  const { allowed } = rateLimit(ip, { maxRequests: 5, windowMs: 60_000 })
+  if (!allowed) {
+    return NextResponse.json({ hasCredentials: false }, { status: 429 })
+  }
+
   try {
     // Get email from query param (works without authentication)
     const { searchParams } = new URL(req.url)

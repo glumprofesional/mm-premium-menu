@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server"
+import { adminDb } from "@/lib/supabase/admin"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
@@ -9,6 +10,20 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Email y contraseña son requeridos" },
         { status: 400 }
+      )
+    }
+
+    // Verificar que el usuario esté autorizado ANTES de autenticar
+    const { data: allowedUser } = await adminDb
+      .from("allowed_users")
+      .select("id")
+      .eq("email", email)
+      .single()
+
+    if (!allowedUser) {
+      return NextResponse.json(
+        { error: "Credenciales inválidas" },
+        { status: 401 }
       )
     }
 
