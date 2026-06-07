@@ -254,11 +254,11 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                 {/* Price */}
                 <div style={{ flexShrink: 0 }}>
                   {!result.is_available ? (
-                    <span style={{ fontSize: '10px', fontWeight: 700, color: 'var(--color-danger)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-danger)', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
                       Sin stock
                     </span>
                   ) : result.price != null ? (
-                    <span className="price-badge" style={{ fontSize: '12px', padding: '3px 8px' }}>
+                    <span className="price-badge" style={{ fontSize: '14px', padding: '4px 10px' }}>
                       {formatPrice(result.price)}
                     </span>
                   ) : null}
