@@ -18,8 +18,8 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: '16px',
-        gap: '12px',
+        padding: '14px',
+        gap: '10px',
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
@@ -73,7 +73,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         <h3
           className="font-heading"
           style={{
-            fontSize: '17px',
+            fontSize: '16px',
             fontWeight: 700,
             color: 'var(--color-text-primary)',
             margin: 0,
