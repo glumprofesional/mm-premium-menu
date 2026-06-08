@@ -21,9 +21,9 @@
 
 @theme {
   /* ---- Backgrounds ---- */
-  --color-bg: #0A1128;
-  --color-surface: #101935;
-  --color-surface-alt: #0c0e14;
+  --color-bg: #181820;
+  --color-surface: #1E1E2E;
+  --color-surface-alt: #12121A;
 
   /* ---- Orange Accent ---- */
   --color-accent: #da5a47;
@@ -35,7 +35,7 @@
   --color-text-muted: #5a6478;
 
   /* ---- Borders ---- */
-  --color-border: #1e2a4a;
+  --color-border: #2A2A3C;
 
   /* ---- Functional ---- */
   --color-danger: #ef4444;
@@ -70,7 +70,7 @@ body {
    ============================================ */
 
 .glass-card {
-  background: rgba(16, 25, 53, 0.7);
+  background: rgba(30, 30, 46, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 2px solid rgba(218, 90, 71, 0.35);
@@ -94,7 +94,7 @@ body {
    ============================================ */
 
 .glass-modal {
-  background: rgba(16, 25, 53, 0.85);
+  background: rgba(30, 30, 46, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 2px solid rgba(218, 90, 71, 0.4);

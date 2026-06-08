@@ -18,7 +18,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '28px',
         height: '28px',
         borderRadius: '50%',
-        background: 'rgba(10, 17, 40, 0.45)',
+        background: 'rgba(24, 24, 32, 0.45)',
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
         border: '1px solid rgba(218, 90, 71, 0.2)',

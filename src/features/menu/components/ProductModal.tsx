@@ -118,7 +118,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        backgroundColor: 'rgba(10, 17, 40, 0.9)',
+        backgroundColor: 'rgba(24, 24, 32, 0.9)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         transition: 'opacity 200ms',
@@ -172,7 +172,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               justifyContent: 'center',
               borderRadius: '50%',
               color: 'var(--color-accent)',
-              background: 'rgba(16, 25, 53, 0.6)',
+              background: 'rgba(30, 30, 46, 0.6)',
               border: '1px solid rgba(218, 90, 71, 0.4)',
               cursor: 'pointer',
               transition: 'color 0.2s ease, border-color 0.2s ease, background 0.2s ease',
@@ -185,7 +185,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
             onMouseLeave={(e) => {
               e.currentTarget.style.color = 'var(--color-accent)';
               e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.4)';
-              e.currentTarget.style.background = 'rgba(16, 25, 53, 0.6)';
+              e.currentTarget.style.background = 'rgba(30, 30, 46, 0.6)';
             }}
           >
             <CloseIcon />
@@ -232,7 +232,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'rgba(10, 17, 40, 0.5)',
+                  background: 'rgba(24, 24, 32, 0.5)',
                   backdropFilter: 'blur(4px)',
                   WebkitBackdropFilter: 'blur(4px)',
                   display: 'flex',

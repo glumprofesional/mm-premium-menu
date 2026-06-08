@@ -19,7 +19,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
         width: '32px',
         height: '32px',
         borderRadius: '50%',
-        background: 'rgba(10, 17, 40, 0.55)',
+        background: 'rgba(24, 24, 32, 0.55)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         border: '1px solid rgba(218, 90, 71, 0.25)',
@@ -82,7 +82,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               position: 'absolute',
               inset: 0,
               background:
-                'linear-gradient(to top, rgba(10,17,40,0.82) 0%, rgba(10,17,40,0.50) 40%, rgba(10,17,40,0.08) 75%, transparent 100%)',
+                'linear-gradient(to top, rgba(24,24,32,0.82) 0%, rgba(24,24,32,0.50) 40%, rgba(24,24,32,0.08) 75%, transparent 100%)',
             }}
           />
           <div
