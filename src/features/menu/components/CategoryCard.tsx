@@ -1,6 +1,3 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { Category } from '@/types/category';
 
@@ -9,24 +6,7 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
-  const [isDark, setIsDark] = useState(true);
   const monogram = category.name.charAt(0).toUpperCase();
-
-  useEffect(() => {
-    const checkTheme = () => {
-      setIsDark(!document.documentElement.classList.contains('light'));
-    };
-    checkTheme();
-
-    const observer = new MutationObserver(checkTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
   const hasBanner = !!category.banner_url;
   const accent = '#da5a47';
 
@@ -39,22 +19,18 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             position: 'relative',
             borderRadius: '14px',
             overflow: 'hidden',
-            border: `2.5px solid ${isDark ? 'rgba(218, 90, 71, 0.3)' : 'rgba(218, 90, 71, 0.25)'}`,
-            minHeight: '110px',
+            border: '2.5px solid rgba(218, 90, 71, 0.3)',
+            minHeight: '120px',
             cursor: 'pointer',
             transition: 'transform 0.25s ease, box-shadow 0.25s ease',
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.02)';
-            e.currentTarget.style.boxShadow = isDark
-              ? '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(218,90,71,0.08)'
-              : '0 12px 40px rgba(0,0,0,0.12), 0 0 20px rgba(218,90,71,0.06)';
+            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(218,90,71,0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
-            e.currentTarget.style.boxShadow = isDark
-              ? '0 8px 32px rgba(0,0,0,0.5)'
-              : '0 4px 16px rgba(0,0,0,0.08)';
+            e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
           }}
         >
           {/* Background image */}
@@ -68,30 +44,26 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             }}
           />
 
-          {/* Overlay adaptativo — dark: azul, light: blanco */}
+          {/* Dark overlay with noise gradient */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              background: isDark
-                ? 'linear-gradient(to top, rgba(10,17,40,0.82) 0%, rgba(10,17,40,0.50) 40%, rgba(10,17,40,0.08) 75%, transparent 100%)'
-                : 'linear-gradient(to top, rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.65) 40%, rgba(255,255,255,0.15) 75%, transparent 100%)',
+              background: 'linear-gradient(to top, rgba(10,17,40,0.82) 0%, rgba(10,17,40,0.50) 40%, rgba(10,17,40,0.08) 75%, transparent 100%)',
             }}
           />
 
-          {/* Noise texture (dark mode only) */}
-          {isDark && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                opacity: 0.04,
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
-                backgroundSize: '128px 128px',
-                pointerEvents: 'none',
-              }}
-            />
-          )}
+          {/* Noise texture */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              opacity: 0.04,
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+              backgroundSize: '128px 128px',
+              pointerEvents: 'none',
+            }}
+          />
 
           {/* Content — centrado verticalmente */}
           <div
@@ -101,8 +73,8 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '22px 20px',
-              minHeight: '110px',
+              padding: '24px 20px',
+              minHeight: '120px',
             }}
           >
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -111,7 +83,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 style={{
                   fontSize: '19px',
                   fontWeight: 700,
-                  color: isDark ? '#F4F7F9' : '#0A1128',
+                  color: '#F4F7F9',
                   margin: 0,
                   lineHeight: 1.3,
                   letterSpacing: '0.3px',
@@ -123,7 +95,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 <p
                   style={{
                     fontSize: '13px',
-                    color: isDark ? '#8899B0' : '#6b7280',
+                    color: '#8899B0',
                     margin: '4px 0 0 0',
                     lineHeight: 1.4,
                     overflow: 'hidden',
@@ -145,7 +117,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{ flexShrink: 0, marginLeft: '12px', opacity: 0.8 }}
+              style={{ flexShrink: 0, marginLeft: '12px', opacity: 0.85 }}
             >
               <polyline points="9 18 15 12 9 6" />
             </svg>
@@ -159,33 +131,16 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link href={`/categoria/${category.slug}`} className="block no-underline">
       <div
-        className={isDark ? 'glass-card' : ''}
-        style={
-          !isDark
-            ? {
-                padding: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                cursor: 'pointer',
-                borderRadius: '14px',
-                border: '2.5px solid rgba(218, 90, 71, 0.2)',
-                background: 'rgba(255, 255, 255, 0.85)',
-                backdropFilter: 'blur(12px)',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
-                transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-              }
-            : {
-                padding: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                cursor: 'pointer',
-                border: '2.5px solid rgba(218, 90, 71, 0.25)',
-              }
-        }
+        className="glass-card"
+        style={{
+          padding: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px',
+          cursor: 'pointer',
+          border: '2.5px solid rgba(218, 90, 71, 0.25)',
+        }}
       >
-        {/* Monogram / Image — accent en ambos modos */}
         {category.image_url ? (
           <div
             style={{
@@ -193,7 +148,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               height: '52px',
               borderRadius: '50%',
               overflow: 'hidden',
-              border: `2px solid ${isDark ? 'rgba(218,90,71,0.4)' : 'rgba(218,90,71,0.3)'}`,
+              border: '2px solid rgba(218,90,71,0.4)',
               flexShrink: 0,
             }}
           >
@@ -209,7 +164,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               width: '52px',
               height: '52px',
               borderRadius: '50%',
-              border: `2px solid ${isDark ? 'rgba(218,90,71,0.4)' : 'rgba(218,90,71,0.3)'}`,
+              border: '2px solid rgba(218,90,71,0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -217,7 +172,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               fontSize: '22px',
               fontWeight: 700,
               color: accent,
-              background: isDark ? 'rgba(218,90,71,0.08)' : 'rgba(218,90,71,0.06)',
+              background: 'rgba(218,90,71,0.08)',
               flexShrink: 0,
             }}
           >
@@ -231,7 +186,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             style={{
               fontSize: '18px',
               fontWeight: 700,
-              color: isDark ? '#F4F7F9' : '#0A1128',
+              color: '#F4F7F9',
               margin: 0,
               lineHeight: 1.3,
               letterSpacing: '0.3px',
@@ -243,7 +198,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             <p
               style={{
                 fontSize: '13px',
-                color: isDark ? '#5B6D8A' : '#6b7280',
+                color: '#5B6D8A',
                 margin: '4px 0 0 0',
                 lineHeight: 1.4,
                 overflow: 'hidden',
@@ -265,7 +220,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ flexShrink: 0, opacity: 0.7 }}
+          style={{ flexShrink: 0, opacity: 0.85 }}
         >
           <polyline points="9 18 15 12 9 6" />
         </svg>

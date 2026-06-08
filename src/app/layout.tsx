@@ -36,34 +36,13 @@ export const viewport: Viewport = {
   themeColor: '#da5a47',
 };
 
-const antiFlashScript = `
-  (function(){
-    try {
-      var s = localStorage.getItem('theme');
-      if (s === 'light') {
-        document.documentElement.classList.remove('dark');
-        document.documentElement.classList.add('light');
-      } else {
-        document.documentElement.classList.add('dark');
-      }
-    } catch(e){}
-  })();
-`;
-
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="es"
-      className="dark"
-      suppressHydrationWarning
-    >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: antiFlashScript }} />
-      </head>
+    <html lang="es" className="dark" suppressHydrationWarning>
       <body className="antialiased">
         <TopLoadingBar />
         <main>{children}</main>
