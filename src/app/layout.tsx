@@ -44,6 +44,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark" suppressHydrationWarning>
       <body className="antialiased">
+        <script dangerouslySetInnerHTML={{ __html: "window.history.scrollRestoration=\x27manual\x27;" }} />
         <TopLoadingBar />
         <main>{children}</main>
       </body>
