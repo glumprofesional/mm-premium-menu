@@ -12,7 +12,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const hasBanner = !!category.banner_url;
   const hasImage = !!category.image_url;
 
-  // Si tiene banner, mostrar tarjeta premium con fondo
   if (hasBanner) {
     return (
       <Link
@@ -27,6 +26,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             borderRadius: '16px',
             minHeight: '130px',
             cursor: 'pointer',
+            border: '1.5px solid rgba(218, 90, 71, 0.3)',
           }}
         >
           {/* Banner de fondo */}
@@ -43,42 +43,51 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             }}
           />
 
-          {/* Overlay con gradiente oscuro desde abajo */}
+          {/* Gradiente oscuro desde abajo */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(to top, rgba(10, 17, 40, 0.88) 0%, rgba(10, 17, 40, 0.45) 50%, rgba(10, 17, 40, 0.15) 100%)',
+              background: 'linear-gradient(to top, rgba(10, 17, 40, 0.82) 0%, rgba(10, 17, 40, 0.4) 40%, rgba(10, 17, 40, 0.05) 70%, transparent 100%)',
               zIndex: 1,
             }}
           />
 
-          {/* Capa de vidrio esmerilado sobre el texto */}
+          {/* Textura de ruido sutil */}
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              zIndex: 2,
+              opacity: 0.04,
+              backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")',
+              backgroundSize: '128px 128px',
+              pointerEvents: 'none',
+            }}
+          />
+
+          {/* Contenido */}
           <div
             style={{
               position: 'absolute',
               bottom: 0,
               left: 0,
               right: 0,
-              zIndex: 2,
-              padding: '20px',
-              background: 'rgba(10, 17, 40, 0.35)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              borderTop: '1px solid rgba(212, 175, 55, 0.15)',
+              zIndex: 3,
+              padding: '18px',
               display: 'flex',
               alignItems: 'center',
-              gap: '14px',
+              gap: '12px',
             }}
           >
-            {/* Miniatura circular */}
+            {/* Miniatura o monogram */}
             {hasImage ? (
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '50%',
-                  border: '1.5px solid rgba(212, 175, 55, 0.5)',
+                  border: '1.5px solid rgba(218, 90, 71, 0.5)',
                   overflow: 'hidden',
                   flexShrink: 0,
                 }}
@@ -92,18 +101,18 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             ) : (
               <div
                 style={{
-                  width: '44px',
-                  height: '44px',
+                  width: '40px',
+                  height: '40px',
                   borderRadius: '50%',
-                  background: 'rgba(212, 175, 55, 0.15)',
-                  border: '1.5px solid rgba(212, 175, 55, 0.5)',
+                  background: 'rgba(218, 90, 71, 0.12)',
+                  border: '1.5px solid rgba(218, 90, 71, 0.5)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  color: 'var(--color-accent)',
+                  color: '#da5a47',
                   fontWeight: 700,
-                  fontSize: '18px',
+                  fontSize: '16px',
                 }}
               >
                 {monogram}
@@ -115,13 +124,13 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               <h3
                 className="font-heading"
                 style={{
-                  fontSize: '17px',
+                  fontSize: '16px',
                   fontWeight: 700,
                   color: '#ffffff',
                   margin: 0,
                   lineHeight: 1.3,
                   letterSpacing: '0.3px',
-                  textShadow: '0 1px 3px rgba(0,0,0,0.4)',
+                  textShadow: '0 1px 4px rgba(0,0,0,0.6)',
                 }}
               >
                 {category.name}
@@ -132,12 +141,12 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                   style={{
                     fontSize: '12px',
                     color: 'rgba(255,255,255,0.7)',
-                    margin: '3px 0 0 0',
+                    margin: '2px 0 0 0',
                     lineHeight: 1.4,
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                    textShadow: '0 1px 3px rgba(0,0,0,0.5)',
                   }}
                 >
                   {category.description}
@@ -147,11 +156,11 @@ export default function CategoryCard({ category }: CategoryCardProps) {
 
             {/* Chevron */}
             <svg
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="rgba(212, 175, 55, 0.8)"
+              stroke="rgba(218, 90, 71, 0.9)"
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -165,7 +174,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
     );
   }
 
-  // Si NO tiene banner, mostrar estilo clásico con monograma o imagen
+  // Si NO tiene banner, mostrar estilo clásico
   return (
     <Link
       href={`/categoria/${category.slug}`}
@@ -182,7 +191,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           cursor: 'pointer',
         }}
       >
-        {/* Monogram o Imagen */}
         {hasImage ? (
           <div
             style={{
@@ -205,7 +213,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           <div className="monogram">{monogram}</div>
         )}
 
-        {/* Texto */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <h3
             className="font-heading"
@@ -238,7 +245,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           )}
         </div>
 
-        {/* Gold chevron */}
         <svg
           width="18"
           height="18"
