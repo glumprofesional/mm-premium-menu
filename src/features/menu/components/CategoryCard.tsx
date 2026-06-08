@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import type { Category } from '@/lib/types';
+import type { Category } from '@/types/category';
 
 interface CategoryCardProps {
   category: Category;
