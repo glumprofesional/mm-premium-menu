@@ -9,6 +9,39 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const isAvailable = product.is_available !== false;
+  const accent = '#da5a47';
+
+  /* Chevron con círculo frosted glass — igual que CategoryCard */
+  const ChevronCircle = () => (
+    <div
+      style={{
+        width: '28px',
+        height: '28px',
+        borderRadius: '50%',
+        background: 'rgba(10, 17, 40, 0.45)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        border: '1px solid rgba(218, 90, 71, 0.2)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={accent}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </div>
+  );
 
   return (
     <button
@@ -23,19 +56,19 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
-        border: 'none',
+        border: '1px solid rgba(218, 90, 71, 0.15)',
         outline: 'none',
         background: 'transparent',
         textDecoration: 'none',
         position: 'relative',
       }}
     >
-      {/* Thumbnail del producto */}
+      {/* Thumbnail */}
       {product.image_url ? (
         <div
           style={{
-            width: '52px',
-            height: '52px',
+            width: '48px',
+            height: '48px',
             borderRadius: '10px',
             overflow: 'hidden',
             flexShrink: 0,
@@ -51,8 +84,8 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       ) : (
         <div
           style={{
-            width: '52px',
-            height: '52px',
+            width: '48px',
+            height: '48px',
             borderRadius: '10px',
             overflow: 'hidden',
             flexShrink: 0,
@@ -62,14 +95,14 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             justifyContent: 'center',
           }}
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--color-accent)" strokeWidth="1.5" opacity="0.5">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.5">
             <path d="M8 3L4 7h16l-4-4H8z" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M18 7H6a1 1 0 00-1 1v6c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V8a1 1 0 00-1-1z" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
       )}
 
-      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <h3
           className="font-heading"
           style={{
@@ -111,19 +144,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         )}
       </div>
 
-      <svg
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="var(--color-accent)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        style={{ flexShrink: 0, opacity: 0.7 }}
-      >
-        <polyline points="9 18 15 12 9 6" />
-      </svg>
+      <ChevronCircle />
     </button>
   );
 }
