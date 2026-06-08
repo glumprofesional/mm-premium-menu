@@ -58,7 +58,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '100%',
         border: '1px solid rgba(218, 90, 71, 0.15)',
         outline: 'none',
-        background: 'transparent',
+        background: 'rgba(16, 25, 53, 0.7)',
         textDecoration: 'none',
         position: 'relative',
       }}
