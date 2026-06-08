@@ -58,7 +58,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '100%',
         border: '1px solid rgba(218, 90, 71, 0.15)',
         outline: 'none',
-        background: 'rgba(16, 25, 53, 0.7)',
+        background: 'linear-gradient(to right, #1E1E2E 75%, #181820 100%)',
         textDecoration: 'none',
         position: 'relative',
       }}
