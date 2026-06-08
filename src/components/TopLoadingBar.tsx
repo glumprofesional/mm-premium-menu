@@ -7,12 +7,10 @@ export default function TopLoadingBar() {
   const pathname = usePathname();
   const [isNavigating, setIsNavigating] = useState(false);
 
-  // Cuando pathname cambia, la navegación terminó
   useEffect(() => {
     setIsNavigating(false);
   }, [pathname]);
 
-  // Detectar clicks en links internos automáticamente
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
@@ -40,16 +38,20 @@ export default function TopLoadingBar() {
         height: '2px',
         overflow: 'hidden',
         opacity: isNavigating ? 1 : 0,
-        transition: 'opacity 0.3s ease',
+        transition: 'opacity 0.15s ease',
         pointerEvents: 'none',
       }}
     >
       <div
         style={{
           height: '100%',
-          background: 'linear-gradient(90deg, transparent, #d4af37, #d4af37)',
-          width: isNavigating ? '70%' : '100%',
-          transition: isNavigating ? 'width 3s ease-out' : 'width 0.15s ease-out',
+          background: 'linear-gradient(90deg, transparent, #da5a47, #da5a47, transparent)',
+          backgroundSize: '200% 100%',
+          width: isNavigating ? '80%' : '100%',
+          transition: isNavigating
+            ? 'width 1.5s cubic-bezier(0.22, 1, 0.36, 1)'
+            : 'width 0.1s ease-out',
+          animation: isNavigating ? 'loadingShimmer 1s ease infinite' : 'none',
         }}
       />
     </div>

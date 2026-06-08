@@ -47,7 +47,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   /* ─── Banner Card ─── */
   if (hasBanner) {
     return (
-      <Link href={`/categoria/${category.slug}`} className="block no-underline">
+      <Link href={`/categoria/${category.slug}`} prefetch={true} className="block no-underline">
         <div
           style={{
             position: 'relative',
@@ -145,7 +145,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
 
   /* ─── Classic Card ─── */
   return (
-    <Link href={`/categoria/${category.slug}`} className="block no-underline">
+    <Link href={`/categoria/${category.slug}`} prefetch={true} className="block no-underline">
       <div
         className="glass-card"
         style={{
