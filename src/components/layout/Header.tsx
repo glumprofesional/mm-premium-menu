@@ -111,12 +111,12 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               </h1>
             ) : (
               <Link href="/" aria-label="Ir al inicio" style={{ textDecoration: 'none' }}>
-                <div style={{ width: '50px', height: '50px', position: 'relative' }}>
+                <div style={{ width: '56px', height: '56px', position: 'relative' }}>
                   <Image
                     src="/images/logo.png"
                     alt="M&M Multiespacio"
                     fill
-                    sizes="50px"
+                    sizes="56px"
                     priority
                   />
                 </div>
