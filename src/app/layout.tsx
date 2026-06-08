@@ -43,8 +43,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className="dark" suppressHydrationWarning>
+      <head>
+        <link rel="preload" href="/fonts/CabinetGrotesk.woff2" as="font" type="font/woff2" crossOrigin="" />
+        <link rel="preload" href="/fonts/Manrope.woff2" as="font" type="font/woff2" crossOrigin="" />
+      </head>
       <body className="antialiased">
-        <script dangerouslySetInnerHTML={{ __html: "window.history.scrollRestoration=\x27manual\x27;" }} />
+        <script dangerouslySetInnerHTML={{ __html: "window.history.scrollRestoration='manual';" }} />
         <TopLoadingBar />
         <main>{children}</main>
       </body>
