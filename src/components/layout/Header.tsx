@@ -54,6 +54,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
             height: '64px',
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'space-between',
             position: 'relative',
           }}
         >
@@ -79,27 +80,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               <span className="font-interface">Menú</span>
             </Link>
           ) : (
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              aria-label="Buscar"
-              style={{
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '50%',
-                color: 'var(--color-text-secondary)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
-            >
-              <SearchIcon />
-            </button>
+            <div style={{ width: '36px' }} /> /* Espaciador para centrar el logo */
           )}
 
           {/* Centro — Logo o categoría */}
@@ -142,6 +123,33 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               </Link>
             )}
           </div>
+
+          {/* Derecha — Lupa de búsqueda (home) o espaciador (category) */}
+          {variant === 'home' ? (
+            <button
+              onClick={() => setIsSearchOpen(true)}
+              aria-label="Buscar"
+              style={{
+                width: '36px',
+                height: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '50%',
+                color: 'var(--color-text-secondary)',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.2s ease',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
+            >
+              <SearchIcon />
+            </button>
+          ) : (
+            <div style={{ width: '36px' }} /> /* Espaciador para centrar el título */
+          )}
         </div>
 
         {/* Gold accent line */}

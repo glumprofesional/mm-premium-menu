@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import type { Category } from '@/types/category';
 
@@ -6,11 +8,43 @@ interface CategoryCardProps {
 }
 
 export default function CategoryCard({ category }: CategoryCardProps) {
-  const monogram = category.name.charAt(0).toUpperCase();
   const hasBanner = !!category.banner_url;
   const accent = '#da5a47';
+  const monogram = category.name.charAt(0).toUpperCase();
 
-  /* ─── Banner Card (with background image) ─── */
+  /* Chevron con círculo frosted glass */
+  const ChevronCircle = () => (
+    <div
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '50%',
+        background: 'rgba(10, 17, 40, 0.55)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '1px solid rgba(218, 90, 71, 0.25)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
+      }}
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke={accent}
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </div>
+  );
+
+  /* ─── Banner Card ─── */
   if (hasBanner) {
     return (
       <Link href={`/categoria/${category.slug}`} className="block no-underline">
@@ -26,14 +60,14 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.02)';
-            e.currentTarget.style.boxShadow = '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(218,90,71,0.08)';
+            e.currentTarget.style.boxShadow =
+              '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(218,90,71,0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
             e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
           }}
         >
-          {/* Background image */}
           <div
             style={{
               position: 'absolute',
@@ -43,17 +77,14 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               backgroundPosition: 'center',
             }}
           />
-
-          {/* Dark overlay with noise gradient */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(to top, rgba(10,17,40,0.82) 0%, rgba(10,17,40,0.50) 40%, rgba(10,17,40,0.08) 75%, transparent 100%)',
+              background:
+                'linear-gradient(to top, rgba(10,17,40,0.82) 0%, rgba(10,17,40,0.50) 40%, rgba(10,17,40,0.08) 75%, transparent 100%)',
             }}
           />
-
-          {/* Noise texture */}
           <div
             style={{
               position: 'absolute',
@@ -64,8 +95,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               pointerEvents: 'none',
             }}
           />
-
-          {/* Content — centrado verticalmente */}
           <div
             style={{
               position: 'relative',
@@ -73,7 +102,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '24px 20px',
+              padding: '22px 20px',
               minHeight: '120px',
             }}
           >
@@ -107,27 +136,14 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 </p>
               )}
             </div>
-
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke={accent}
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              style={{ flexShrink: 0, marginLeft: '12px', opacity: 0.85 }}
-            >
-              <polyline points="9 18 15 12 9 6" />
-            </svg>
+            <ChevronCircle />
           </div>
         </div>
       </Link>
     );
   }
 
-  /* ─── Classic Card (no banner — monogram/image fallback) ─── */
+  /* ─── Classic Card ─── */
   return (
     <Link href={`/categoria/${category.slug}`} className="block no-underline">
       <div
@@ -179,7 +195,6 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             {monogram}
           </div>
         )}
-
         <div style={{ flex: 1, minWidth: 0 }}>
           <h2
             className="font-heading"
@@ -210,20 +225,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             </p>
           )}
         </div>
-
-        <svg
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke={accent}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          style={{ flexShrink: 0, opacity: 0.85 }}
-        >
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
+        <ChevronCircle />
       </div>
     </Link>
   );
