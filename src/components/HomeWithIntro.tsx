@@ -95,18 +95,6 @@ export default function HomeWithIntro({ categories }: HomeWithIntroProps) {
           >
             Carta Exclusiva
           </h1>
-          <p
-            className="font-interface"
-            style={{
-              fontSize: '13px',
-              color: 'var(--color-text-secondary)',
-              margin: 0,
-              lineHeight: 1.6,
-              letterSpacing: '0.5px',
-            }}
-          >
-            Selección premium de bebidas y experiencias
-          </p>
         </div>
 
         <div className="gold-line" style={{ marginBottom: '28px' }} />
