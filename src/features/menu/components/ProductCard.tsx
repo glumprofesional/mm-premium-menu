@@ -9,7 +9,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const isAvailable = product.is_available !== false;
-  const accent = '#da5a47';
+  const accent = '#a31830';
 
   /* Chevron con círculo frosted glass — igual que CategoryCard */
   const ChevronCircle = () => (
@@ -18,10 +18,10 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '28px',
         height: '28px',
         borderRadius: '50%',
-        background: 'rgba(24, 24, 32, 0.45)',
+        background: 'rgba(48, 48, 45, 0.45)',
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
-        border: '1px solid rgba(218, 90, 71, 0.2)',
+        border: '1px solid rgba(163, 24, 48, 0.2)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -56,9 +56,9 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
-        border: '1px solid rgba(218, 90, 71, 0.15)',
+        border: '1px solid rgba(163, 24, 48, 0.15)',
         outline: 'none',
-        background: 'linear-gradient(to right, #1E1E2E 75%, #181820 100%)',
+        background: 'linear-gradient(to right, #3e3d3a 75%, #30302d 100%)',
         textDecoration: 'none',
         position: 'relative',
       }}

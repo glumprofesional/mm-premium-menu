@@ -45,7 +45,7 @@ export default function TopLoadingBar() {
       <div
         style={{
           height: '100%',
-          background: 'linear-gradient(90deg, transparent, #da5a47, #da5a47, transparent)',
+          background: 'linear-gradient(90deg, transparent, #a31830, #a31830, transparent)',
           backgroundSize: '200% 100%',
           width: isNavigating ? '80%' : '100%',
           transition: isNavigating

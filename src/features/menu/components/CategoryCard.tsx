@@ -9,7 +9,7 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category }: CategoryCardProps) {
   const hasBanner = !!category.banner_url;
-  const accent = '#da5a47';
+  const accent = '#a31830';
   const monogram = category.name.charAt(0).toUpperCase();
 
   /* Chevron con círculo frosted glass */
@@ -19,10 +19,10 @@ export default function CategoryCard({ category }: CategoryCardProps) {
         width: '32px',
         height: '32px',
         borderRadius: '50%',
-        background: 'rgba(24, 24, 32, 0.55)',
+        background: 'rgba(48, 48, 45, 0.55)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(218, 90, 71, 0.25)',
+        border: '1px solid rgba(163, 24, 48, 0.25)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -53,7 +53,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             position: 'relative',
             borderRadius: '14px',
             overflow: 'hidden',
-            border: '2.5px solid rgba(218, 90, 71, 0.3)',
+            border: '2.5px solid rgba(163, 24, 48, 0.3)',
             minHeight: '120px',
             cursor: 'pointer',
             transition: 'transform 0.25s ease, box-shadow 0.25s ease',
@@ -112,7 +112,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 style={{
                   fontSize: '19px',
                   fontWeight: 700,
-                  color: '#F4F7F9',
+                  color: '#d1cfb9',
                   margin: 0,
                   lineHeight: 1.3,
                   letterSpacing: '0.3px',
@@ -154,7 +154,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           alignItems: 'center',
           gap: '16px',
           cursor: 'pointer',
-          border: '2.5px solid rgba(218, 90, 71, 0.25)',
+          border: '2.5px solid rgba(163, 24, 48, 0.25)',
         }}
       >
         {category.image_url ? (
@@ -201,7 +201,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             style={{
               fontSize: '18px',
               fontWeight: 700,
-              color: '#F4F7F9',
+              color: '#d1cfb9',
               margin: 0,
               lineHeight: 1.3,
               letterSpacing: '0.3px',

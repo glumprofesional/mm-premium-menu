@@ -118,7 +118,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        backgroundColor: 'rgba(24, 24, 32, 0.9)',
+        backgroundColor: 'rgba(48, 48, 45, 0.9)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         transition: 'opacity 200ms',
@@ -172,20 +172,20 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               justifyContent: 'center',
               borderRadius: '50%',
               color: 'var(--color-accent)',
-              background: 'rgba(30, 30, 46, 0.6)',
-              border: '1px solid rgba(218, 90, 71, 0.4)',
+              background: 'rgba(62, 61, 58, 0.6)',
+              border: '1px solid rgba(163, 24, 48, 0.4)',
               cursor: 'pointer',
               transition: 'color 0.2s ease, border-color 0.2s ease, background 0.2s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = '#ffffff';
-              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.8)';
-              e.currentTarget.style.background = 'rgba(218, 90, 71, 0.7)';
+              e.currentTarget.style.borderColor = 'rgba(163, 24, 48, 0.8)';
+              e.currentTarget.style.background = 'rgba(163, 24, 48, 0.7)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = 'var(--color-accent)';
-              e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.4)';
-              e.currentTarget.style.background = 'rgba(30, 30, 46, 0.6)';
+              e.currentTarget.style.borderColor = 'rgba(163, 24, 48, 0.4)';
+              e.currentTarget.style.background = 'rgba(62, 61, 58, 0.6)';
             }}
           >
             <CloseIcon />
@@ -200,7 +200,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               width: '100%',
               borderRadius: '12px',
               overflow: 'hidden',
-              background: '#181820',
+              background: '#3e3d3a',
             }}
           >
             {product.image_url ? (
@@ -232,7 +232,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'rgba(24, 24, 32, 0.5)',
+                  background: 'rgba(48, 48, 45, 0.5)',
                   backdropFilter: 'blur(4px)',
                   WebkitBackdropFilter: 'blur(4px)',
                   display: 'flex',

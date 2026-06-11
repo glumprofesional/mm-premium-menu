@@ -54,7 +54,7 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#181820',
+        background: '#30302d',
         transition: 'opacity 0.8s ease-out',
         opacity: phase === 'fadeOut' ? 0 : 1,
       }}
@@ -82,7 +82,7 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         style={{
           fontSize: '32px',
           fontWeight: 700,
-          color: '#da5a47',
+          color: '#a31830',
           margin: '20px 0 0 0',
           letterSpacing: '4px',
           transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
@@ -113,7 +113,7 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         style={{
           width: phase === 'line' || phase === 'fadeOut' ? '120px' : '0px',
           height: '1px',
-          background: 'linear-gradient(90deg, transparent, #da5a47, transparent)',
+          background: 'linear-gradient(90deg, transparent, #a31830, transparent)',
           marginTop: '24px',
           transition: 'width 0.6s ease-out',
         }}

@@ -21,21 +21,21 @@
 
 @theme {
   /* ---- Backgrounds ---- */
-  --color-bg: #181820;
-  --color-surface: #1E1E2E;
-  --color-surface-alt: #C8AE92;
+  --color-bg: #30302d;
+  --color-surface: #3e3d3a;
+  --color-surface-alt: #3e3d3a;
 
   /* ---- Orange Accent ---- */
-  --color-accent: #da5a47;
+  --color-accent: #a31830;
   --color-on-accent: #ffffff;
 
   /* ---- Text ---- */
-  --color-text-primary: #F4F7F9;
+  --color-text-primary: #d1cfb9;
   --color-text-secondary: #8892a4;
   --color-text-muted: #5a6478;
 
   /* ---- Borders ---- */
-  --color-border: #2A2A3C;
+  --color-border: #a31830;
 
   /* ---- Functional ---- */
   --color-danger: #ef4444;
@@ -70,10 +70,10 @@ body {
    ============================================ */
 
 .glass-card {
-  background: rgba(30, 30, 46, 0.7);
+  background: rgba(62, 61, 58, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 2px solid rgba(218, 90, 71, 0.35);
+  border: 2px solid rgba(163, 24, 48, 0.35);
   border-radius: 14px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -81,8 +81,8 @@ body {
 
 .glass-card:hover {
   transform: scale(1.02);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(218, 90, 71, 0.08);
-  border-color: rgba(218, 90, 71, 0.6);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(163, 24, 48, 0.08);
+  border-color: rgba(163, 24, 48, 0.6);
 }
 
 .glass-card:active {
@@ -94,12 +94,12 @@ body {
    ============================================ */
 
 .glass-modal {
-  background: rgba(30, 30, 46, 0.85);
+  background: rgba(62, 61, 58, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 2px solid rgba(218, 90, 71, 0.4);
+  border: 2px solid rgba(163, 24, 48, 0.4);
   border-radius: 20px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(218, 90, 71, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 30px rgba(163, 24, 48, 0.1);
 }
 
 /* ============================================
@@ -108,12 +108,12 @@ body {
 
 .gold-line {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(218, 90, 71, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(163, 24, 48, 0.5), transparent);
 }
 
 .gold-line-left {
   height: 1px;
-  background: linear-gradient(90deg, rgba(218, 90, 71, 0.5), transparent);
+  background: linear-gradient(90deg, rgba(163, 24, 48, 0.5), transparent);
 }
 
 /* ============================================
@@ -124,7 +124,7 @@ body {
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  border: 1.5px solid rgba(218, 90, 71, 0.5);
+  border: 1.5px solid rgba(163, 24, 48, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,14 +132,14 @@ body {
   font-size: 22px;
   font-weight: 700;
   color: var(--color-accent);
-  background: rgba(218, 90, 71, 0.08);
+  background: rgba(163, 24, 48, 0.08);
   flex-shrink: 0;
   transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .glass-card:hover .monogram {
-  border-color: rgba(218, 90, 71, 0.8);
-  background: rgba(218, 90, 71, 0.15);
+  border-color: rgba(163, 24, 48, 0.8);
+  background: rgba(163, 24, 48, 0.15);
 }
 
 /* ============================================
@@ -152,8 +152,8 @@ body {
   font-size: 15px;
   letter-spacing: 0.5px;
   color: #ffffff;
-  background: rgba(218, 90, 71, 0.85);
-  border: 1px solid rgba(218, 90, 71, 0.5);
+  background: rgba(163, 24, 48, 0.85);
+  border: 1px solid rgba(163, 24, 48, 0.5);
   border-radius: 8px;
   padding: 5px 11px;
   white-space: nowrap;
@@ -170,7 +170,7 @@ body {
   letter-spacing: 0.5px;
   color: #C0C0C0;
   background: transparent;
-  border: 1px solid rgba(218, 90, 71, 0.4);
+  border: 1px solid rgba(163, 24, 48, 0.4);
   border-radius: 999px;
   padding: 10px 24px;
   cursor: pointer;
@@ -178,9 +178,9 @@ body {
 }
 
 .pill-button:hover {
-  border-color: rgba(218, 90, 71, 0.7);
+  border-color: rgba(163, 24, 48, 0.7);
   color: var(--color-accent);
-  background: rgba(218, 90, 71, 0.08);
+  background: rgba(163, 24, 48, 0.08);
 }
 
 /* ============================================
@@ -201,7 +201,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(218, 90, 71, 0.3);
+  background: rgba(163, 24, 48, 0.3);
 }
 
 /* ============================================

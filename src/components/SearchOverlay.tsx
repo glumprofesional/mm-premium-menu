@@ -205,14 +205,14 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                   padding: '14px',
                   borderRadius: '12px',
                   background: 'var(--color-surface)',
-                  border: '2px solid rgba(218, 90, 71, 0.35)',
+                  border: '2px solid rgba(163, 24, 48, 0.35)',
                   cursor: 'pointer',
                   textAlign: 'left',
                   width: '100%',
                   transition: 'border-color 0.2s ease',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.6)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(218, 90, 71, 0.35)'; }}
+                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(163, 24, 48, 0.6)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(163, 24, 48, 0.35)'; }}
               >
                 {/* Icon */}
                 <div
@@ -225,7 +225,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     alignItems: 'center',
                     justifyContent: 'center',
                     background: 'transparent',
-                    border: '1px solid rgba(218, 90, 71, 0.2)',
+                    border: '1px solid rgba(163, 24, 48, 0.2)',
                     overflow: 'hidden',
                   }}
                 >
