@@ -224,7 +224,7 @@ export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    background: 'rgba(218, 90, 71, 0.08)',
+                    background: 'transparent',
                     border: '1px solid rgba(218, 90, 71, 0.2)',
                     overflow: 'hidden',
                   }}

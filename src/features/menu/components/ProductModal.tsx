@@ -200,7 +200,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               width: '100%',
               borderRadius: '12px',
               overflow: 'hidden',
-              background: 'var(--color-surface-alt)',
+              background: '#181820',
             }}
           >
             {product.image_url ? (

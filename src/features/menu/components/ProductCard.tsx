@@ -67,12 +67,12 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       {product.image_url ? (
         <div
           style={{
-            width: '48px',
-            height: '48px',
+            width: '50px',
+            height: '50px',
             borderRadius: '10px',
             overflow: 'hidden',
             flexShrink: 0,
-            background: 'var(--color-surface-alt)',
+            background: 'transparent',
           }}
         >
           <img
@@ -84,12 +84,12 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       ) : (
         <div
           style={{
-            width: '48px',
-            height: '48px',
+            width: '50px',
+            height: '50px',
             borderRadius: '10px',
             overflow: 'hidden',
             flexShrink: 0,
-            background: 'var(--color-surface-alt)',
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
