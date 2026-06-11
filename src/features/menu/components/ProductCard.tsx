@@ -17,10 +17,10 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '28px',
         height: '28px',
         borderRadius: '50%',
-        background: 'rgba(26, 26, 26, 0.45)',
-        backdropFilter: 'blur(6px)',
-        WebkitBackdropFilter: 'blur(6px)',
-        border: '1px solid rgba(163, 24, 48, 0.2)',
+        background: 'rgba(255, 255, 255, 0.04)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -44,22 +44,38 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
 
   return (
     <button
-      onClick={() => onSelect(product)}
-      className={`glass-card ${!isAvailable ? 'unavailable-overlay' : ''}`}
+      onClick=|() => onSelect(product)}
+      className={!isAvailable ? 'unavailable-overlay' : ''}
       style={{
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        padding: '14px',
-        gap: '10px',
+        padding: '16px',
+        gap: '12px',
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
-        border: '2px solid rgba(163, 24, 48, 0.15)',
+        border: 'none',
         outline: 'none',
-        background: '#3e3d3a',
+        background: 'rgba(255, 255, 255, 0.06)',
+        backdropFilter: 'blur(24px) saturate(1.4)',
+        WebkitBackdropFilter: 'blur(24px) saturate(1.4)',
+        borderRadius: '20px',
+        boxShadow:
+          'rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.3) 0px 24px 48px -12px',
         textDecoration: 'none',
         position: 'relative',
+        transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'scale(1.02)';
+        e.currentTarget.style.boxShadow =
+          'rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.4) 0px 28px 56px -12px';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'scale(1)';
+        e.currentTarget.style.boxShadow =
+          'rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.3) 0px 24px 48px -12px';
       }}
     >
       {/* Thumbnail */}
@@ -68,7 +84,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           style={{
             width: '50px',
             height: '50px',
-            borderRadius: '10px',
+            borderRadius: '12px',
             overflow: 'hidden',
             flexShrink: 0,
             background: 'transparent',
@@ -85,7 +101,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           style={{
             width: '50px',
             height: '50px',
-            borderRadius: '10px',
+            borderRadius: '12px',
             overflow: 'hidden',
             flexShrink: 0,
             background: 'transparent',
