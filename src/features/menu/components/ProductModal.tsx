@@ -200,7 +200,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               aspectRatio: '4/3',
               width: '100%',
               borderRadius: '12px',
-              border: '1px solid #d1cfb9',
+              border: '1px solid rgba(209, 207, 185, 0.5)',
               overflow: 'hidden',
               background: '#1a1a1a',
             }}
