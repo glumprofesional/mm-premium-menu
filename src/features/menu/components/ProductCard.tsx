@@ -11,14 +11,13 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const isAvailable = product.is_available !== false;
   const accent = '#a31830';
 
-  /* Chevron con círculo frosted glass — igual que CategoryCard */
   const ChevronCircle = () => (
     <div
       style={{
         width: '28px',
         height: '28px',
         borderRadius: '50%',
-        background: 'rgba(48, 48, 45, 0.45)',
+        background: 'rgba(26, 26, 26, 0.45)',
         backdropFilter: 'blur(6px)',
         WebkitBackdropFilter: 'blur(6px)',
         border: '1px solid rgba(163, 24, 48, 0.2)',
@@ -56,9 +55,9 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
-        border: '1px solid rgba(163, 24, 48, 0.15)',
+        border: '1px solid #d1cfb9',
         outline: 'none',
-        background: 'linear-gradient(to right, #3e3d3a 75%, #30302d 100%)',
+        background: '#3e3d3a',
         textDecoration: 'none',
         position: 'relative',
       }}

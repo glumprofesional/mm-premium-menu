@@ -21,11 +21,11 @@
 
 @theme {
   /* ---- Backgrounds ---- */
-  --color-bg: #30302d;
+  --color-bg: #1a1a1a;
   --color-surface: #3e3d3a;
   --color-surface-alt: #3e3d3a;
 
-  /* ---- Orange Accent ---- */
+  /* ---- Accent ---- */
   --color-accent: #a31830;
   --color-on-accent: #ffffff;
 
@@ -66,7 +66,7 @@ body {
 }
 
 /* ============================================
-   Glassmorphism Card — Borde naranja
+   Glassmorphism Card
    ============================================ */
 
 .glass-card {
@@ -90,7 +90,7 @@ body {
 }
 
 /* ============================================
-   Glassmorphism Modal — Borde naranja
+   Glassmorphism Modal
    ============================================ */
 
 .glass-modal {
@@ -143,7 +143,7 @@ body {
 }
 
 /* ============================================
-   Price Badge — Naranja con texto blanco
+   Price Badge
    ============================================ */
 
 .price-badge {
@@ -160,7 +160,7 @@ body {
 }
 
 /* ============================================
-   Pill Button — Bordes naranja
+   Pill Button
    ============================================ */
 
 .pill-button {

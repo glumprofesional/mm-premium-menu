@@ -25,8 +25,8 @@ export default async function CategoriaPage({ params }: PageProps) {
 
   if (!category) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#30302d' }}>
-        <p className="font-heading" style={{ color: '#5B6D8A', fontSize: '16px' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#1a1a1a' }}>
+        <p className="font-heading" style={{ color: '#5a6478', fontSize: '16px' }}>
           Categoría no encontrada
         </p>
       </div>

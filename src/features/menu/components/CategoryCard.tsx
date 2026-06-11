@@ -12,14 +12,13 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const accent = '#a31830';
   const monogram = category.name.charAt(0).toUpperCase();
 
-  /* Chevron con círculo frosted glass */
   const ChevronCircle = () => (
     <div
       style={{
         width: '32px',
         height: '32px',
         borderRadius: '50%',
-        background: 'rgba(48, 48, 45, 0.55)',
+        background: 'rgba(26, 26, 26, 0.55)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         border: '1px solid rgba(163, 24, 48, 0.25)',
@@ -61,7 +60,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'scale(1.02)';
             e.currentTarget.style.boxShadow =
-              '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(218,90,71,0.08)';
+              '0 12px 40px rgba(0,0,0,0.6), 0 0 20px rgba(163,24,48,0.08)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'scale(1)';
@@ -82,7 +81,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               position: 'absolute',
               inset: 0,
               background:
-                'linear-gradient(to top, rgba(24,24,32,0.82) 0%, rgba(24,24,32,0.50) 40%, rgba(24,24,32,0.08) 75%, transparent 100%)',
+                'linear-gradient(to top, rgba(26,26,26,0.82) 0%, rgba(26,26,26,0.50) 40%, rgba(26,26,26,0.08) 75%, transparent 100%)',
             }}
           />
           <div
@@ -124,7 +123,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                 <p
                   style={{
                     fontSize: '13px',
-                    color: '#8899B0',
+                    color: '#8892a4',
                     margin: '4px 0 0 0',
                     lineHeight: 1.4,
                     overflow: 'hidden',
@@ -164,7 +163,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               height: '52px',
               borderRadius: '50%',
               overflow: 'hidden',
-              border: '2px solid rgba(218,90,71,0.4)',
+              border: '2px solid rgba(163, 24, 48, 0.4)',
               flexShrink: 0,
             }}
           >
@@ -180,7 +179,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               width: '52px',
               height: '52px',
               borderRadius: '50%',
-              border: '2px solid rgba(218,90,71,0.4)',
+              border: '2px solid rgba(163, 24, 48, 0.4)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -188,7 +187,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               fontSize: '22px',
               fontWeight: 700,
               color: accent,
-              background: 'rgba(218,90,71,0.08)',
+              background: 'rgba(163, 24, 48, 0.08)',
               flexShrink: 0,
             }}
           >
@@ -213,7 +212,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             <p
               style={{
                 fontSize: '13px',
-                color: '#5B6D8A',
+                color: '#5a6478',
                 margin: '4px 0 0 0',
                 lineHeight: 1.4,
                 overflow: 'hidden',

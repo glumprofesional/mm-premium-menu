@@ -118,7 +118,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
         alignItems: 'center',
         justifyContent: 'center',
         padding: '24px',
-        backgroundColor: 'rgba(48, 48, 45, 0.9)',
+        backgroundColor: 'rgba(26, 26, 26, 0.9)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
         transition: 'opacity 200ms',
@@ -146,6 +146,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
           maxHeight: '80vh',
           overflowY: 'auto',
           position: 'relative',
+          border: '2px solid #d1cfb9',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px 0' }}>
@@ -159,7 +160,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
           />
         </div>
 
-        {/* Close button — visible por defecto */}
+        {/* Close button */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '0 16px' }}>
           <button
             onClick={onClose}
@@ -232,7 +233,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
                 style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'rgba(48, 48, 45, 0.5)',
+                  background: 'rgba(26, 26, 26, 0.5)',
                   backdropFilter: 'blur(4px)',
                   WebkitBackdropFilter: 'blur(4px)',
                   display: 'flex',
@@ -258,7 +259,6 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
         </div>
 
         <div style={{ padding: '0 24px 24px 24px' }}>
-          {/* Nombre centrado */}
           <h2
             id="product-modal-title"
             className="font-heading"
@@ -320,7 +320,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
           <button
             onClick={onClose}
             className="pill-button"
-            style={{ width: '100%', height: '48px' }}
+            style={{ width: '100%', height: '48px', borderWidth: '2px' }}
           >
             Volver al menú
           </button>

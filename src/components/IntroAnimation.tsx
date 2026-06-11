@@ -54,7 +54,7 @@ export default function IntroAnimation({ onComplete }: { onComplete: () => void 
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: '#30302d',
+        background: '#1a1a1a',
         transition: 'opacity 0.8s ease-out',
         opacity: phase === 'fadeOut' ? 0 : 1,
       }}
