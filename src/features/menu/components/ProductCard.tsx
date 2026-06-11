@@ -44,7 +44,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
 
   return (
     <button
-      onClick=|() => onSelect(product)}
+      onClick={() => onSelect(product)}
       className={!isAvailable ? 'unavailable-overlay' : ''}
       style={{
         display: 'flex',
