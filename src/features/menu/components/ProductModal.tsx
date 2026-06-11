@@ -146,7 +146,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
           maxHeight: '80vh',
           overflowY: 'auto',
           position: 'relative',
-          border: '2px solid #d1cfb9',
+          border: '2px solid rgba(163, 24, 48, 0.4)',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px 0' }}>
@@ -200,6 +200,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               aspectRatio: '4/3',
               width: '100%',
               borderRadius: '12px',
+              border: '1px solid #d1cfb9',
               overflow: 'hidden',
               background: '#3e3d3a',
             }}
