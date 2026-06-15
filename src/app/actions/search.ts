@@ -18,14 +18,10 @@ export interface SearchResult {
 export async function searchProducts(query: string): Promise<SearchResult[]> {
   if (!query || query.trim().length < 2) return [];
 
-  const supabase = publicDb;
   const term = query.trim();
 
-  const { data, error } = await supabase
-    .from('products')
-    .select('id, name, slug, description, price, image_url, is_available, category_id, categories!inner(name, slug)')
-    .or(`name.ilike.%${term}%,description.ilike.%${term}%`)
-    .limit(20);
+  const { data, error } = await publicDb
+    .rpc('search_products_smart', { search_term: term });
 
   if (error || !data) return [];
 
@@ -38,7 +34,7 @@ export async function searchProducts(query: string): Promise<SearchResult[]> {
     image_url: item.image_url,
     is_available: item.is_available,
     category_id: item.category_id,
-    category_name: item.categories?.name || '',
-    category_slug: item.categories?.slug || '',
+    category_name: item.category_name || '',
+    category_slug: item.category_slug || '',
   }));
 }
