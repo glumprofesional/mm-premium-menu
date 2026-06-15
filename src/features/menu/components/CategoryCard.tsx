@@ -53,7 +53,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             borderRadius: '14px',
             overflow: 'hidden',
             border: '2.5px solid rgba(163, 24, 48, 0.3)',
-            minHeight: '120px',
+            minHeight: '140px',
             cursor: 'pointer',
             transition: 'transform 0.25s ease, box-shadow 0.25s ease',
           }}
@@ -102,7 +102,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '22px 20px',
-              minHeight: '120px',
+              minHeight: '140px',
             }}
           >
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -154,6 +154,7 @@ export default function CategoryCard({ category }: CategoryCardProps) {
           gap: '16px',
           cursor: 'pointer',
           border: '2.5px solid rgba(163, 24, 48, 0.25)',
+          minHeight: '110px',
         }}
       >
         {category.image_url ? (
