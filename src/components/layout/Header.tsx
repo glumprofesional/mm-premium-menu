@@ -80,7 +80,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
               <span className="font-interface">Menú</span>
             </Link>
           ) : (
-            <div style={{ width: '36px' }} /> /* Espaciador para centrar el logo */
+            <div style={{ width: '36px' }} />
           )}
 
           {/* Centro — Logo o categoría */}
@@ -98,7 +98,7 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
                 style={{
                   fontSize: '17px',
                   fontWeight: 600,
-                  color: 'var(--color-accent)',
+                  color: 'var(--color-text-secondary)',
                   margin: 0,
                   letterSpacing: '0.3px',
                   whiteSpace: 'nowrap',
@@ -124,32 +124,28 @@ export default function Header({ variant = 'home', name }: HeaderProps) {
             )}
           </div>
 
-          {/* Derecha — Lupa de búsqueda (home) o espaciador (category) */}
-          {variant === 'home' ? (
-            <button
-              onClick={() => setIsSearchOpen(true)}
-              aria-label="Buscar"
-              style={{
-                width: '36px',
-                height: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '50%',
-                color: 'var(--color-text-secondary)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                transition: 'color 0.2s ease',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
-            >
-              <SearchIcon />
-            </button>
-          ) : (
-            <div style={{ width: '36px' }} /> /* Espaciador para centrar el título */
-          )}
+          {/* Derecha — Lupa de búsqueda (home y category) */}
+          <button
+            onClick={() => setIsSearchOpen(true)}
+            aria-label="Buscar"
+            style={{
+              width: '36px',
+              height: '36px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '50%',
+              color: 'var(--color-text-secondary)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-secondary)'; }}
+          >
+            <SearchIcon />
+          </button>
         </div>
 
         {/* Gold accent line */}
