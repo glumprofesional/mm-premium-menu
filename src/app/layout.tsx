@@ -44,6 +44,8 @@ export default function RootLayout({
   return (
     <html lang="es" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="preconnect" href="https://wyoqqsvjjlaivaqeblsr.supabase.co" />
+        <link rel="dns-prefetch" href="https://wyoqqsvjjlaivaqeblsr.supabase.co" />
         <link rel="preload" href="/fonts/CabinetGrotesk.woff2" as="font" type="font/woff2" crossOrigin="" />
         <link rel="preload" href="/fonts/Manrope.woff2" as="font" type="font/woff2" crossOrigin="" />
       </head>
