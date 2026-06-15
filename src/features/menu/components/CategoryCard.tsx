@@ -12,6 +12,22 @@ export default function CategoryCard({ category }: CategoryCardProps) {
   const accent = '#a31830';
   const monogram = category.name.charAt(0).toUpperCase();
 
+  const InlineChevron = () => (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={accent}
+      strokeWidth="2.5"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ flexShrink: 0, marginLeft: '6px' }}
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+
   const ChevronCircle = () => (
     <div
       style={{
@@ -99,13 +115,14 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               position: 'relative',
               zIndex: 2,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
+              flexDirection: 'column',
+              justifyContent: 'flex-end',
               padding: '22px 20px',
               minHeight: '140px',
             }}
           >
-            <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ flex: 1 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
               <h2
                 className="font-heading"
                 style={{
@@ -115,27 +132,29 @@ export default function CategoryCard({ category }: CategoryCardProps) {
                   margin: 0,
                   lineHeight: 1.3,
                   letterSpacing: '0.3px',
+                  display: 'flex',
+                  alignItems: 'center',
                 }}
               >
                 {category.name}
+                <InlineChevron />
               </h2>
-              {category.description && (
-                <p
-                  style={{
-                    fontSize: '13px',
-                    color: '#8892a4',
-                    margin: '4px 0 0 0',
-                    lineHeight: 1.4,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {category.description}
-                </p>
-              )}
             </div>
-            <ChevronCircle />
+            {category.description && (
+              <p
+                style={{
+                  fontSize: '13px',
+                  color: '#8892a4',
+                  margin: '4px 0 0 0',
+                  lineHeight: 1.4,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {category.description}
+              </p>
+            )}
           </div>
         </div>
       </Link>
