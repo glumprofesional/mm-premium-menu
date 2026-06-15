@@ -131,7 +131,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
     >
       <div
         ref={modalRef}
-        className="glass-modal animate-slide-up"
+        className="animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -146,7 +146,11 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
           maxHeight: '80vh',
           overflowY: 'auto',
           position: 'relative',
+          background: 'linear-gradient(43deg, #4a4a4f 0%, #303035 46%, #1e1e22 100%)',
+          borderRadius: '16px',
           border: '2px solid rgba(163, 24, 48, 0.4)',
+          boxShadow:
+            'rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px',
         }}
       >
         <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px 0' }}>
@@ -173,8 +177,8 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               justifyContent: 'center',
               borderRadius: '50%',
               color: 'var(--color-accent)',
-              background: 'rgba(62, 61, 58, 0.6)',
-              border: '1px solid rgba(163, 24, 48, 0.4)',
+              background: 'rgba(0, 0, 0, 0.3)',
+              border: '1px solid rgba(255, 255, 255, 0.08)',
               cursor: 'pointer',
               transition: 'color 0.2s ease, border-color 0.2s ease, background 0.2s ease',
             }}
@@ -185,8 +189,8 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.color = 'var(--color-accent)';
-              e.currentTarget.style.borderColor = 'rgba(163, 24, 48, 0.4)';
-              e.currentTarget.style.background = 'rgba(62, 61, 58, 0.6)';
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.3)';
             }}
           >
             <CloseIcon />
