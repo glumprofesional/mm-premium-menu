@@ -1,4 +1,3 @@
-cat > ~/mm-premium-menu/src/features/menu/components/ProductCard.tsx << 'EOF'
 'use client';
 
 import Image from 'next/image';
@@ -168,4 +167,3 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
     </button>
   );
 }
-EOF

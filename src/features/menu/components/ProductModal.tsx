@@ -1,4 +1,3 @@
-cat > ~/mm-premium-menu/src/features/menu/components/ProductModal.tsx << 'EOF'
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -336,4 +335,3 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
     </div>
   );
 }
-EOF
