@@ -116,12 +116,11 @@ export default function CategoryCard({ category }: CategoryCardProps) {
               zIndex: 2,
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'flex-end',
+              justifyContent: 'center',
               padding: '22px 20px',
               minHeight: '140px',
             }}
           >
-            <div style={{ flex: 1 }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: '0' }}>
               <h2
                 className="font-heading"
