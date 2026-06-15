@@ -1,15 +1,18 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import type { Product } from '@/types/product';
 import { getOptimizedImageUrl } from '@/lib/utils/image';
 
 interface ProductCardProps {
   product: Product;
+  index?: number;
   onSelect: (product: Product) => void;
 }
 
-export default function ProductCard({ product, onSelect }: ProductCardProps) {
+export default function ProductCard({ product, index = 0, onSelect }: ProductCardProps) {
+  const [imageLoaded, setImageLoaded] = useState(false);
   const isAvailable = product.is_available !== false;
   const accent = '#a31830';
   const thumbUrl = getOptimizedImageUrl(product.image_url, { width: 120, height: 120 });
@@ -77,7 +80,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           'rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px';
       }}
     >
-      {/* Thumbnail */}
+      {/* Thumbnail con shimmer + fade-in */}
       {thumbUrl ? (
         <div
           style={{
@@ -91,12 +94,31 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             background: 'rgba(255, 255, 255, 0.03)',
           }}
         >
+          {/* Shimmer placeholder */}
+          {!imageLoaded && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(110deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.08) 40%, rgba(255,255,255,0.03) 60%)',
+                backgroundSize: '200% 100%',
+                animation: 'shimmer 1.5s ease-in-out infinite',
+                zIndex: 1,
+              }}
+            />
+          )}
           <Image
             src={thumbUrl}
             alt={product.name}
             fill
             sizes="58px"
-            style={{ objectFit: 'cover' }}
+            style={{
+              objectFit: 'cover',
+              opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.4s ease-in',
+            }}
+            onLoad={() => setImageLoaded(true)}
+            priority={index < 4}
           />
         </div>
       ) : (

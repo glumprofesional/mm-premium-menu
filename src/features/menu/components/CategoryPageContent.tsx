@@ -39,10 +39,11 @@ export default function CategoryPageContent({ slug, initialCategory, initialProd
       >
         {initialProducts.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {initialProducts.map((product) => (
+            {initialProducts.map((product, index) => (
               <ProductCard
                 key={product.id}
                 product={product}
+                index={index}
                 onSelect={handleProductClick}
               />
             ))}
