@@ -1,6 +1,9 @@
+cat > ~/mm-premium-menu/src/features/menu/components/ProductCard.tsx << 'EOF'
 'use client';
 
+import Image from 'next/image';
 import type { Product } from '@/types/product';
+import { getOptimizedImageUrl } from '@/lib/utils/image';
 
 interface ProductCardProps {
   product: Product;
@@ -10,6 +13,7 @@ interface ProductCardProps {
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const isAvailable = product.is_available !== false;
   const accent = '#a31830';
+  const thumbUrl = getOptimizedImageUrl(product.image_url, { width: 120, height: 120 });
 
   const ChevronCircle = () => (
     <div
@@ -75,7 +79,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       }}
     >
       {/* Thumbnail */}
-      {product.image_url ? (
+      {thumbUrl ? (
         <div
           style={{
             width: '58px',
@@ -84,13 +88,16 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
             overflow: 'hidden',
             flexShrink: 0,
             border: '1px solid rgba(255, 255, 255, 0.06)',
-            background: 'transparent',
+            position: 'relative',
+            background: 'rgba(255, 255, 255, 0.03)',
           }}
         >
-          <img
-            src={product.image_url}
+          <Image
+            src={thumbUrl}
             alt={product.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            fill
+            sizes="58px"
+            style={{ objectFit: 'cover' }}
           />
         </div>
       ) : (
@@ -161,3 +168,4 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
     </button>
   );
 }
+EOF

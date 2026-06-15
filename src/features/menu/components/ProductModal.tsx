@@ -1,7 +1,10 @@
+cat > ~/mm-premium-menu/src/features/menu/components/ProductModal.tsx << 'EOF'
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import type { Product } from '@/types/product';
+import { getOptimizedImageUrl } from '@/lib/utils/image';
 
 const CloseIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -106,6 +109,7 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
   if (!isMounted || !product) return null;
 
   const isAvailable = product.is_available !== false;
+  const modalImageUrl = getOptimizedImageUrl(product.image_url, { width: 400, quality: 85 });
 
   return (
     <div
@@ -209,16 +213,14 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
               background: '#1a1a1a',
             }}
           >
-            {product.image_url ? (
-              <img
-                src={product.image_url}
+            {modalImageUrl ? (
+              <Image
+                src={modalImageUrl}
                 alt={product.name}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  opacity: isAvailable ? 1 : 0.4,
-                }}
+                fill
+                sizes="(max-width: 384px) 100vw, 384px"
+                style={{ objectFit: 'cover', opacity: isAvailable ? 1 : 0.4 }}
+                priority
               />
             ) : (
               <div
@@ -334,3 +336,4 @@ export default function ProductModal({ product, categorySlug, isOpen, onClose, z
     </div>
   );
 }
+EOF
