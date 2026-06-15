@@ -49,7 +49,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         flexDirection: 'row',
         alignItems: 'center',
         padding: '16px',
-        gap: '12px',
+        gap: '14px',
         cursor: 'pointer',
         textAlign: 'left',
         width: '100%',
@@ -78,11 +78,12 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       {product.image_url ? (
         <div
           style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '12px',
+            width: '58px',
+            height: '58px',
+            borderRadius: '14px',
             overflow: 'hidden',
             flexShrink: 0,
+            border: '1px solid rgba(255, 255, 255, 0.06)',
             background: 'transparent',
           }}
         >
@@ -95,18 +96,19 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       ) : (
         <div
           style={{
-            width: '50px',
-            height: '50px',
-            borderRadius: '12px',
+            width: '58px',
+            height: '58px',
+            borderRadius: '14px',
             overflow: 'hidden',
             flexShrink: 0,
+            border: '1px solid rgba(255, 255, 255, 0.06)',
             background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.5">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="1.5" opacity="0.5">
             <path d="M8 3L4 7h16l-4-4H8z" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M18 7H6a1 1 0 00-1 1v6c0 1.66 1.34 3 3 3h8c1.66 0 3-1.34 3-3V8a1 1 0 00-1-1z" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
