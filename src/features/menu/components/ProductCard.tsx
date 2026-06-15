@@ -17,10 +17,8 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '28px',
         height: '28px',
         borderRadius: '50%',
-        background: 'rgba(255, 255, 255, 0.04)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        background: 'rgba(0, 0, 0, 0.25)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -57,12 +55,10 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '100%',
         border: 'none',
         outline: 'none',
-        background: 'rgba(255, 255, 255, 0.06)',
-        backdropFilter: 'blur(24px) saturate(1.4)',
-        WebkitBackdropFilter: 'blur(24px) saturate(1.4)',
-        borderRadius: '20px',
+        background: 'linear-gradient(43deg, #2a1520 0%, #1a0a10 46%, #1a1a1a 100%)',
+        borderRadius: '16px',
         boxShadow:
-          'rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.3) 0px 24px 48px -12px',
+          'rgba(0, 0, 0, 0.2) 0px -6px 10px 0px inset, rgba(0, 0, 0, 0.15) 0px -10px 8px 0px inset, rgba(0, 0, 0, 0.1) 0px -20px 12px 0px inset, rgba(0, 0, 0, 0.06) 0px 1px 1px, rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px',
         textDecoration: 'none',
         position: 'relative',
         transition: 'transform 0.25s ease, box-shadow 0.25s ease',
@@ -70,12 +66,12 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = 'scale(1.02)';
         e.currentTarget.style.boxShadow =
-          'rgba(255, 255, 255, 0.25) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.4) 0px 28px 56px -12px';
+          'rgba(0, 0, 0, 0.25) 0px -8px 14px 0px inset, rgba(0, 0, 0, 0.2) 0px -14px 12px 0px inset, rgba(0, 0, 0, 0.12) 0px -28px 16px 0px inset, rgba(0, 0, 0, 0.06) 0px 1px 1px, rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px';
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = 'scale(1)';
         e.currentTarget.style.boxShadow =
-          'rgba(255, 255, 255, 0.2) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.1) 0px -1px 0px 0px inset, rgba(0, 0, 0, 0.3) 0px 24px 48px -12px';
+          'rgba(0, 0, 0, 0.2) 0px -6px 10px 0px inset, rgba(0, 0, 0, 0.15) 0px -10px 8px 0px inset, rgba(0, 0, 0, 0.1) 0px -20px 12px 0px inset, rgba(0, 0, 0, 0.06) 0px 1px 1px, rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px';
       }}
     >
       {/* Thumbnail */}
