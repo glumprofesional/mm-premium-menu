@@ -55,7 +55,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         width: '100%',
         border: 'none',
         outline: 'none',
-        background: 'linear-gradient(43deg, #2a1520 0%, #1a0a10 46%, #1a1a1a 100%)',
+        background: 'linear-gradient(43deg, #2d1a1e 0%, #1f1215 46%, #1a1a1a 100%)',
         borderRadius: '16px',
         boxShadow:
           'rgba(0, 0, 0, 0.2) 0px -6px 10px 0px inset, rgba(0, 0, 0, 0.15) 0px -10px 8px 0px inset, rgba(0, 0, 0, 0.1) 0px -20px 12px 0px inset, rgba(0, 0, 0, 0.06) 0px 1px 1px, rgba(0, 0, 0, 0.09) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px',
