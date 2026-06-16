@@ -50,7 +50,6 @@ export default function RootLayout({
         <link rel="preload" href="/fonts/Manrope.woff2" as="font" type="font/woff2" crossOrigin="" />
       </head>
       <body className="antialiased">
-        <script dangerouslySetInnerHTML={{ __html: "window.history.scrollRestoration='manual';" }} />
         <TopLoadingBar />
         <main>{children}</main>
       </body>
