@@ -1,13 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Category } from '@/types/category';
 
 interface CategoryCardProps {
   category: Category;
+  index?: number;
 }
 
-export default function CategoryCard({ category }: CategoryCardProps) {
+export default function CategoryCard({ category, index = 0 }: CategoryCardProps) {
   const hasBanner = !!category.banner_url;
   const accent = '#a31830';
   const monogram = category.name.charAt(0).toUpperCase();
@@ -83,14 +86,14 @@ export default function CategoryCard({ category }: CategoryCardProps) {
             e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,0,0,0.5)';
           }}
         >
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundImage: `url(${category.banner_url})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
+          {/* Imagen con next/image (lazy-loading automático) */}
+          <Image
+            src={category.banner_url!}
+            alt={category.name}
+            fill
+            sizes="(max-width: 448px) 100vw, 448px"
+            style={{ objectFit: 'cover' }}
+            priority={index < 4}
           />
           <div
             style={{

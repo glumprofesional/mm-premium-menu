@@ -101,8 +101,8 @@ export default function HomeWithIntro({ categories }: HomeWithIntroProps) {
 
         {categories.length > 0 ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {categories.map((category) => (
-              <CategoryCard key={category.id} category={category} />
+            {categories.map((category, index) => (
+              <CategoryCard key={category.id} category={category} index={index} />
             ))}
           </div>
         ) : (
